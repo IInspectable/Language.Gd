@@ -3,18 +3,18 @@
 Begin(model, context) ::=<<
 <writeFileHeader(context)>
 
-namespace <model.Namespace> {
+namespace Pharmatechnik.Language.Gd {
 
     public enum SyntaxKind {
-        <writeEnumMembers(model.Members)>
+        <writeEnumMembers(model.EnumMembers)>
     }
 }
 >>
 
-writeEnumMembers(members) ::=<<
-<members:writeEnumMember(); separator="\r\n">
+writeEnumMembers(enumMembers) ::=<<
+<enumMembers:writeEnumMember(); separator="\r\n">
 >>
 
-writeEnumMember(member) ::=<<
-<member.Name> = <member.Value>,
+writeEnumMember(enumMember) ::=<<
+<enumMember.Name> = <enumMember.Value>,
 >>

@@ -1,8 +1,17 @@
-﻿namespace Tool.GdSyntaxGenerator.Models {
+﻿using Pharmatechnik.Language.Text;
 
-    class CodeMemberModel {
+namespace Tool.GdSyntaxGenerator.Models
+{
+    class SlotMemberModel {
 
-        public string Namespace { get; set; }
+        public bool IsToken { get;set;}
+        public int SlotIndex { get; set; }
+
+        public string Type          { get; set; }
+        public string Name          { get; set; }
+       
+        public string ParameterName => Name.ToCamelcase();
+        public string FieldName     => $"_{Name.ToCamelcase()}";
 
     }
 

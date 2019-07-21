@@ -3,12 +3,12 @@
 Begin(model, context) ::=<<
 <writeFileHeader(context)>
 
-using <model.SlotNamespace>;
+using Pharmatechnik.Language.Gd.Internal;
 
-namespace <model.SyntaxNamespace> {
+namespace Pharmatechnik.Language.Gd.Internal {
    
-    <writeAbstractClasses(model.AbstractClasses)>
-    <writeClasses(model.Classes)>
+    <writeAbstractClasses(model.AbstractSlots)>
+    <writeClasses(model.Slots)>
 }
 >>
 

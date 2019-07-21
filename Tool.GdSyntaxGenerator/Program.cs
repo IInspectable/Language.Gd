@@ -41,9 +41,9 @@ namespace Tool.GdSyntaxGenerator {
                 Directory.CreateDirectory(targetDirectory);
             }
 
-            WriteSyntaxKind(targetNamespace, targetDirectory, tokenInfo, grammarInfo);
-            WriteSyntaxSlots(targetNamespace, targetDirectory, tokenInfo, grammarInfo);
-            WriteSyntaxNodes(targetNamespace, targetDirectory, tokenInfo, grammarInfo);
+            WriteSyntaxKind(targetDirectory, tokenInfo, grammarInfo);
+            WriteSyntaxSlots(targetDirectory, tokenInfo, grammarInfo);
+            WriteSyntaxNodes(targetDirectory, tokenInfo, grammarInfo);
         }
 
         static GrammarInfo ReadGrammarInfo(string grammarPath) {
@@ -83,13 +83,11 @@ namespace Tool.GdSyntaxGenerator {
             return tokenInfo;
         }
 
-        private static void WriteSyntaxKind(string targetNamespace,
-                                            string targetDirectory,
+        private static void WriteSyntaxKind(string targetDirectory,
                                             TokenInfo tokenInfo,
                                             GrammarInfo grammarInfo) {
 
             var model = new SyntaxKindEnumModel(
-                @namespace: targetNamespace,
                 tokenInfo: tokenInfo,
                 grammarInfo: grammarInfo
             );
@@ -101,13 +99,11 @@ namespace Tool.GdSyntaxGenerator {
             File.WriteAllText(fullname, content, Encoding.UTF8);
         }
 
-        private static void WriteSyntaxSlots(string targetNamespace,
-                                             string targetDirectory,
+        private static void WriteSyntaxSlots(string targetDirectory,
                                              TokenInfo tokenInfo,
                                              GrammarInfo grammarInfo) {
 
             var model = new SyntaxCodeModels(
-                @namespace: targetNamespace,
                 tokenInfo: tokenInfo,
                 grammarInfo: grammarInfo
             );
@@ -119,13 +115,11 @@ namespace Tool.GdSyntaxGenerator {
             File.WriteAllText(fullname, content, Encoding.UTF8);
         }
 
-        private static void WriteSyntaxNodes(string targetNamespace,
-                                             string targetDirectory,
+        private static void WriteSyntaxNodes(string targetDirectory,
                                              TokenInfo tokenInfo,
                                              GrammarInfo grammarInfo) {
 
             var model = new SyntaxCodeModels(
-                @namespace: targetNamespace,
                 tokenInfo: tokenInfo,
                 grammarInfo: grammarInfo
             );

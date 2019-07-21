@@ -4,20 +4,17 @@ using System.Collections.Generic;
 
 using Pharmatechnik.Language.Text;
 
-namespace Tool.GdSyntaxGenerator.Models {
+namespace Tool.GdSyntaxGenerator.Models
+{
 
     class SyntaxCodeModels {
 
-        public SyntaxCodeModels(string @namespace,
-                                TokenInfo tokenInfo,
+        public SyntaxCodeModels(TokenInfo tokenInfo,
                                 GrammarInfo grammarInfo) {
-
-            SlotNamespace   = $"{@namespace}.Internal";
-            SyntaxNamespace = @namespace;
 
             Dictionary<string, string> baseRules = new Dictionary<string, string>();
             foreach (var parserRule in grammarInfo.Rules.Where(rule => rule.Alternatives.Count > 1)) {
-                AbstractClasses.Add(new AbstractSyntaxModel(parserRule));
+                AbstractSlots.Add(new AbstractSlotModel(parserRule));
                 foreach (var alternative in parserRule.Alternatives) {
                     baseRules[alternative.Elements[0].Name] = parserRule.Name;
                 }
@@ -25,78 +22,66 @@ namespace Tool.GdSyntaxGenerator.Models {
 
             foreach (var parserRule in grammarInfo.Rules.Where(rule => rule.Alternatives.Count == 1)) {
                 baseRules.TryGetValue(parserRule.Name, out var baseRule);
-                Classes.Add(new SyntaxModel(parserRule, baseRule));
+                Slots.Add(new SlotModel(parserRule, baseRule));
             }
 
         }
 
-        public string SlotNamespace   { get; }
-        public string SyntaxNamespace { get; }
+       
 
-        public List<SyntaxModel>         Classes         { get; } = new List<SyntaxModel>();
-        public List<AbstractSyntaxModel> AbstractClasses { get; } = new List<AbstractSyntaxModel>();
-
-    }
-
-    class PropertyModel {
-
-        public string Type          { get; set; }
-        public string Name          { get; set; }
-        public string ParameterName => Name.ToCamelcase();
-        public string FieldName     => $"_{Name.ToCamelcase()}";
+        public List<SlotModel>         Slots         { get; } = new List<SlotModel>();
+        public List<AbstractSlotModel> AbstractSlots { get; } = new List<AbstractSlotModel>();
 
     }
 
-    class AbstractSyntaxModel {
+    class SlotModel: AbstractSlotModel {
 
-        public AbstractSyntaxModel(ParserRule rule) {
-            // TODO richtige Basisklasse?
-            SyntaxBaseClassName = "SyntaxNode";
-            SyntaxClassName     = $"{rule.Name.ToPascalcase()}Syntax";
-            SlotClassName       = $"{rule.Name.ToPascalcase()}SyntaxSlot";
-        }
-
-        public string SyntaxBaseClassName { get; }
-        public string SyntaxClassName     { get; }
-        public string SlotClassName       { get; }
-
-    }
-
-    class SyntaxModel {
-
-        public string SyntaxBaseClassName { get; }
-        public string SyntaxClassName     { get; }
-        public string SlotClassName       { get; }
+        public string BaseRuleName { get; }
         public string SyntaxKind          { get; }
 
-        public List<PropertyModel> TokenSlots  { get; } = new List<PropertyModel>();
-        public List<PropertyModel> SyntaxSlots { get; } = new List<PropertyModel>();
+        public List<SlotMemberModel> Slots { get; } = new List<SlotMemberModel>();
 
-        public List<PropertyModel> SyntaxTokens { get; } = new List<PropertyModel>();
-        public List<PropertyModel> SyntaxNodes  { get; } = new List<PropertyModel>();
 
-        public SyntaxModel(ParserRule rule, string baseRule) {
+        public List<SlotMemberModel> TokenSlots  { get; } = new List<SlotMemberModel>();
+        public List<SlotMemberModel> SyntaxSlots { get; } = new List<SlotMemberModel>();
+
+        public List<SlotMemberModel> SyntaxTokens { get; } = new List<SlotMemberModel>();
+        public List<SlotMemberModel> SyntaxNodes  { get; } = new List<SlotMemberModel>();
+
+        public SlotModel(ParserRule rule, string baseRule): base(rule) {
 
             if (rule.Alternatives.Count != 1) {
                 throw new ArgumentException();
             }
 
-            // TODO richtige Basisklasse
-            SyntaxBaseClassName = baseRule != null ? $"{baseRule.ToPascalcase()}Syntax" : $"SyntaxNode";
-            SyntaxClassName     = $"{rule.Name.ToPascalcase()}Syntax";
-            SlotClassName       = $"{rule.Name.ToPascalcase()}SyntaxSlot";
+            BaseRuleName= baseRule!=null? baseRule.ToPascalcase():"";
+
+          
             SyntaxKind          = $"{rule.Name.ToPascalcase()}Syntax";
 
-            foreach (var alternative in rule.Alternatives) {
-                foreach (var element in alternative.Elements) {
+            int index=0;
+        
+                foreach (var element in rule.Alternatives.Single().Elements) {
 
+                    var slotModel=new SlotMemberModel
+                    {
+                        Name= element.Name.ToPascalcase(),
+                        IsToken= element is TokenElement,
+                        SlotIndex=index++
+                    };
+                    Slots.Add(slotModel);
+
+                // TODO ab hier eigentlich obsolet...
                     if (element is TokenElement) {
-                        TokenSlots.Add(new PropertyModel {
+
+                        TokenSlots.Add(new SlotMemberModel
+                        {
                             Name = $"{element.Name.ToPascalcase()}Token",
                             Type = "TokenSlot",
                         });
 
-                        SyntaxTokens.Add(new PropertyModel {
+                        SyntaxTokens.Add(new SlotMemberModel
+                        {
                             Name = $"{element.Name.ToPascalcase()}Token",
                             Type = "SyntaxToken",
                         });
@@ -108,17 +93,18 @@ namespace Tool.GdSyntaxGenerator.Models {
                         var slotName   = $"{baseName}Slot";
                         var syntaxName = $"{baseName}";
 
-                        SyntaxSlots.Add(new PropertyModel {
+                        SyntaxSlots.Add(new SlotMemberModel
+                        {
                             Name = $"{ruleElement.Name.ToPascalcase()}Syntax",
                             Type = slotName,
                         });
 
-                        SyntaxNodes.Add(new PropertyModel {
+                        SyntaxNodes.Add(new SlotMemberModel
+                        {
                             Name = $"{ruleElement.Name.ToPascalcase()}",
                             Type = syntaxName,
                         });
                     }
-                }
             }
 
         }

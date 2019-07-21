@@ -3,25 +3,26 @@
 Begin(model, context) ::=<<
 <writeFileHeader(context)>
 
+using JetBrains.Annotations;
 using Pharmatechnik.Language.Text;
 
-namespace <model.SlotNamespace>{
+namespace Pharmatechnik.Language.Gd.Internal {
 
-    <writeAbstractClasses(model.AbstractClasses)>
+    <writeAbstractSlots(model.AbstractSlots)>
 
-    <writeClasses(model.Classes)>
+    <writeSlots(model.Slots)>
 }
 >>
 
-writeAbstractClasses(classes) ::=<<
-<classes:writeAbstractClass(); separator="\r\n">
+writeAbstractSlots(abstractSlots) ::=<<
+<abstractSlots:writeAbstractSlot(); separator="\r\n">
   
 >>
 
-writeAbstractClass(class) ::=<<
-abstract partial class <class.SlotClassName>: SyntaxSlot {
+writeAbstractSlot(abstractSlot) ::=<<
+abstract partial class <abstractSlot.RuleName>SyntaxSlot: SyntaxSlot {
     
-    protected <class.SlotClassName>(
+    protected <abstractSlot.RuleName>SyntaxSlot(
         TextExtent textExtent,
         SyntaxKind kind)
 
@@ -34,60 +35,115 @@ abstract partial class <class.SlotClassName>: SyntaxSlot {
 >>
 
 
-writeClasses(classes) ::=<<
-<classes:writeClass(); separator="\r\n">
+writeSlots(slots) ::=<<
+<slots:writeSlot(); separator="\r\n">
   
 >>
 
-writeClass(class) ::=<<
-partial class <class.SlotClassName>: SyntaxSlot {
+writeSlot(slot) ::=<<
+partial class <slot.RuleName>SyntaxSlot: SyntaxSlot {
     
-    internal <class.SlotClassName>(
+    internal <slot.RuleName>SyntaxSlot(
         TextExtent textExtent, 
-        <writeParameterList([class.TokenSlots, class.SyntaxSlots])>)
+        <writeParameterList(slot.Slots)>)
 
         : base(textExtent: textExtent, 
-               kind      : SyntaxKind.<class.SyntaxKind>) {
+               kind      : SyntaxKind.<slot.SyntaxKind>) {
 
-        <writePropertyInits([class.TokenSlots, class.SyntaxSlots])>
+        <writePropertyInits(slot.Slots)>
     }
 
-    <writeProperties([class.TokenSlots, class.SyntaxSlots])>
+    <writeProperties(slot.Slots)>
+
+	<writeSlotMethod(slot.Slots)>
 
     public override SyntaxNode Realize(
         SyntaxTree syntaxTree,
         SyntaxNode parent) {
 
-        return new <class.SyntaxClassName>(syntaxTree, this, parent);
+        return new <slot.SyntaxClassName>(syntaxTree, this, parent);
     }
 }
 
 >>
 
+// Properties
 
-writeProperties(properties) ::=<<
-<properties:writeProperty(); separator="\r\n">
+writeProperties(slotModels) ::=<<
+<slotModels:writeProperty(); separator="\r\n">
 >>
 
-writeProperty(property)::=<<
-public <property.Type> <property.Name> { get; }
+writeProperty(slotModel)::=<<
+<if(slotModel.IsToken)><writeTokenProperty(slotModel)><else><writeSyntaxProperty(slotModel)><endif>
 >>
 
-
-writeParameterList(properties) ::=<<
-<properties:writeParameter(); anchor, separator=",\r\n">
+writeTokenProperty(slotModel)::=<<
+public TokenSlot <slotModel.Name>Token { get; }
 >>
 
-writeParameter(property) ::=<<
-<property.Type> <property.ParameterName>
->>
-
-writePropertyInits(properties) ::=<<
-<properties:writePropertyInit(); anchor, separator="\r\n">
->>
-
-writePropertyInit(property) ::=<<
-<property.Name> = <property.ParameterName>;
+writeSyntaxProperty(slotModel)::=<<
+public <slotModel.Name>SyntaxSlot <slotModel.Name>Syntax { get; }
 >>
 
 
+// Parameter
+
+writeParameterList(slotModels) ::=<<
+<slotModels:writeParameter(); anchor, separator=",\r\n">
+>>
+
+writeParameter(slotModel) ::=<<
+<if(slotModel.IsToken)><writeTokenParameter(slotModel)><else><writeSyntaxParameter(slotModel)><endif>
+>>
+
+writeTokenParameter(slotModel) ::=<<
+TokenSlot <slotModel.ParameterName>Token
+>>
+
+writeSyntaxParameter(slotModel) ::=<<
+<slotModel.Name>SyntaxSlot <slotModel.ParameterName>Syntax
+>>
+
+
+// Inits
+
+writePropertyInits(slotModels) ::=<<
+<slotModels:writePropertyInit(); anchor, separator="\r\n">
+>>
+
+writePropertyInit(slotModel) ::=<<
+<if(slotModel.IsToken)><writeTokenPropertyInit(slotModel)><else><writeSyntaxPropertyInit(slotModel)><endif>
+>>
+
+writeTokenPropertyInit(slotModel) ::=<<
+<slotModel.Name>Token = <slotModel.ParameterName>Token;
+>>
+
+writeSyntaxPropertyInit(slotModel) ::=<<
+<slotModel.Name>Syntax = <slotModel.ParameterName>Syntax;
+>>
+
+// Slot method 
+
+writeSlotMethod(slotModels) ::=<<
+
+public override int SlotCount => <slotModels.Count>;
+
+[CanBeNull]
+public override Slot GetSlot(int index) {
+	switch(index) {
+		<slotModels:writeSlotCase(); anchor, separator="\r\n">
+		default:
+			return null;
+	}
+}
+>>
+
+writeSlotCases(slotModels) ::=<<
+<slotModels.writeSlotCase(); anchor, separator="\r\n">
+>>
+
+writeSlotCase(slotModel) ::=<<
+case <slotModel.SlotIndex>:
+	return <slotModel.Name><if(slotModel.IsToken)>Token<else>Syntax<endif>;
+>>
