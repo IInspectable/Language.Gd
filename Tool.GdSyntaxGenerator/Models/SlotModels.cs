@@ -1,8 +1,7 @@
 ﻿using System.Linq;
 using System.Collections.Generic;
 
-namespace Tool.GdSyntaxGenerator.Models
-{
+namespace Tool.GdSyntaxGenerator.Models {
 
     class SlotModels {
 
@@ -25,7 +24,6 @@ namespace Tool.GdSyntaxGenerator.Models
             }
 
         }
-              
 
         public List<SlotModel>         Slots         { get; } = new List<SlotModel>();
         public List<AbstractSlotModel> AbstractSlots { get; } = new List<AbstractSlotModel>();

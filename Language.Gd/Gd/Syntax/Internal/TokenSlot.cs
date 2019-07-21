@@ -34,9 +34,9 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
             if (leadingTrivias != null && leadingTrivias.Any()) {
                 return new TokenWithLeadingTriviaSlot(
-                    textExtent     : textExtent,
-                    kind           : kind,
-                    leadingTrivias : leadingTrivias.ToImmutableArray());
+                    textExtent    : textExtent,
+                    kind          : kind,
+                    leadingTrivias: leadingTrivias.ToImmutableArray());
             }
 
             if (trailingTrivias != null && trailingTrivias.Any()) {

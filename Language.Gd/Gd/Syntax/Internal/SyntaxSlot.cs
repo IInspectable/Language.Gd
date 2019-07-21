@@ -1,7 +1,6 @@
 ﻿using Pharmatechnik.Language.Text;
 
-namespace Pharmatechnik.Language.Gd.Internal
-{
+namespace Pharmatechnik.Language.Gd.Internal {
 
     public abstract class SyntaxSlot: Slot {
 

@@ -2,7 +2,7 @@
 
     class Element {
 
-        public string Name         { get; set; }
+        public string Name        { get; set; }
         public string Cardinality { get; set; }
 
         public override string ToString() {

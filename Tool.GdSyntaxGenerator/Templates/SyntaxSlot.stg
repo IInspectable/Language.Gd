@@ -78,7 +78,6 @@ writeProperty(slotModel)::=<<
 >>
 
 writeTokenProperty(slotModel)::=<<
-
 public TokenSlot <slotModel.Name>Token { get; }
 >>
 

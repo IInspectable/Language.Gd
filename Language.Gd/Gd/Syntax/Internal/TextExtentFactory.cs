@@ -10,14 +10,14 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
             return CreateExtent(context?.Start, context?.Stop);
         }
-      
+
         public static TextExtent CreateExtent(IToken token) {
             return CreateExtent(token, token);
         }
 
         static TextExtent CreateExtent(IToken startToken, IToken endToken) {
 
-            if (startToken ==null || endToken ==null) {
+            if (startToken == null || endToken == null) {
                 return TextExtent.Missing;
             }
 
@@ -32,11 +32,12 @@ namespace Pharmatechnik.Language.Gd.Internal {
                 return TextExtent.Missing;
             }
 
-            return TextExtent.FromBounds( 
+            return TextExtent.FromBounds(
                 start: start,
-                end  : end
+                end: end
             );
         }
+
     }
 
 }

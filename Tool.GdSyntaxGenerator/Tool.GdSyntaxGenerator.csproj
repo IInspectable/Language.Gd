@@ -40,10 +40,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Compile Include="..\Language.Gd\Gd\Antlr\GdGrammar.cs" Link="Antlr\GdGrammar.cs" />
-  </ItemGroup>
-
-  <ItemGroup>
     <EmbeddedResource Include="Templates\Common.stg" />
     <EmbeddedResource Include="Templates\SyntaxNode.stg" />
     <EmbeddedResource Include="Templates\SyntaxSlot.stg" />

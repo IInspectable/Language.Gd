@@ -1,16 +1,15 @@
-﻿
-using Pharmatechnik.Language.Text;
+﻿using Pharmatechnik.Language.Text;
 
-namespace Tool.GdSyntaxGenerator.Models
-{
+namespace Tool.GdSyntaxGenerator.Models {
+
     class AbstractSlotModel {
 
         public AbstractSlotModel(ParserRule rule) {
 
-            RuleName=rule.Name.ToPascalcase();          
+            RuleName = rule.Name.ToPascalcase();
         }
 
-        public string RuleName { get;}
+        public string RuleName { get; }
 
     }
 

@@ -31,7 +31,7 @@ namespace Tool.GdSyntaxGenerator {
         }
 
         static void WriteModel(string[] args, TokenInfo tokenInfo, GrammarInfo grammarInfo) {
-           
+
             var targetNamespace = args[0];
             var targetDirectory = args[1];
 
@@ -40,7 +40,7 @@ namespace Tool.GdSyntaxGenerator {
 
             if (!Directory.Exists(targetDirectory)) {
                 Directory.CreateDirectory(targetDirectory);
-            }        
+            }
 
             var syntaxKindModel = new SyntaxKindEnumModel(
                 tokenInfo: tokenInfo,
@@ -50,8 +50,8 @@ namespace Tool.GdSyntaxGenerator {
             WriteSyntaxKind(targetDirectory, syntaxKindModel);
 
             var slotModels = new SlotModels(
-               grammarInfo: grammarInfo
-           );
+                grammarInfo: grammarInfo
+            );
 
             WriteSyntaxSlots(targetDirectory, slotModels);
             WriteSyntaxNodes(targetDirectory, slotModels);
@@ -107,7 +107,6 @@ namespace Tool.GdSyntaxGenerator {
         private static void WriteSyntaxSlots(string targetDirectory,
                                              SlotModels model) {
 
-            
             var context  = new CodeGeneratorContext();
             var content  = CodeGenerator.GenerateSyntaxSlot(model, context);
             var fullname = Path.Combine(targetDirectory, "SyntaxSlot.generated.cs");
@@ -117,7 +116,7 @@ namespace Tool.GdSyntaxGenerator {
 
         private static void WriteSyntaxNodes(string targetDirectory,
                                              SlotModels model) {
-        
+
             var context  = new CodeGeneratorContext();
             var content  = CodeGenerator.GenerateSyntaxNode(model, context);
             var fullname = Path.Combine(targetDirectory, "Syntax.generated.cs");

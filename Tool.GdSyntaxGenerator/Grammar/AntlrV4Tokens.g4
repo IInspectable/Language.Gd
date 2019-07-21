@@ -88,7 +88,7 @@ UNTERMINATED_STRING_LITERAL
 
 BEGIN_ARGUMENT
    : LBrack
-   { handleBeginArgument(); }
+   { HandleBeginArgument(); }
    ;
    // -------------------------
    // Actions
@@ -317,7 +317,7 @@ ARGUMENT_CHAR_LITERAL
 
 END_ARGUMENT
    : RBrack
-   { handleEndArgument(); }
+   { HandleEndArgument(); }
    ;
    // added this to return non-EOF token type here. EOF does something weird
 
@@ -369,7 +369,7 @@ ACTION_LINE_COMMENT
 
 END_ACTION
    : RBrace
-   { handleEndAction(); }
+   { HandleEndAction(); }
    ;
 
 UNTERMINATED_ACTION

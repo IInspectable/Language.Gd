@@ -8,7 +8,6 @@ namespace Tool.GdSyntaxGenerator.Models {
 
         public SyntaxKindEnumModel(TokenInfo tokenInfo, GrammarInfo grammarInfo) {
 
-
             foreach (var token in tokenInfo.Tokens) {
                 EnumMembers.Add(
                     new EnumMemberModel {

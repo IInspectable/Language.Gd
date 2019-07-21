@@ -10,8 +10,6 @@ namespace Tool.GdSyntaxGenerator {
 
         public List<LexerRule> Tokens { get; } = new List<LexerRule>();
 
-       
-
         public TokenInfo(AntlrV4Grammar.GrammarSpecContext tree) {
 
             Tokens.Add(new LexerRule {
@@ -27,15 +25,13 @@ namespace Tool.GdSyntaxGenerator {
 
         public override string VisitLexerRuleSpec([NotNull] AntlrV4Grammar.LexerRuleSpecContext context) {
 
-            if (context.FRAGMENT() == null)
-            {
-                Tokens.Add(new LexerRule
-                {
-                    Name = context.TOKEN_REF().GetText(),
+            if (context.FRAGMENT() == null) {
+                Tokens.Add(new LexerRule {
+                    Name  = context.TOKEN_REF().GetText(),
                     Index = ++_currentIndex
                 });
             }
-            
+
             return base.VisitLexerRuleSpec(context);
         }
 

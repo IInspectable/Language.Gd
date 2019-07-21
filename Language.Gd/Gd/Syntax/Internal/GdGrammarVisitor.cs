@@ -15,15 +15,13 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
         }
 
-        public override bool VisitTemplate([NotNull] GdGrammar.TemplateContext context)
-        {
-            
+        public override bool VisitTemplate([NotNull] GdGrammar.TemplateContext context) {
+
             return base.VisitTemplate(context);
         }
 
-        public override bool VisitQualifiedName([NotNull] GdGrammar.QualifiedNameContext context)
-        {
-        
+        public override bool VisitQualifiedName([NotNull] GdGrammar.QualifiedNameContext context) {
+
             return base.VisitQualifiedName(context);
         }
 
