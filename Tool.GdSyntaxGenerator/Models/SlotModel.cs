@@ -13,7 +13,7 @@ namespace Tool.GdSyntaxGenerator.Models
 
         public List<SlotMemberModel> Slots { get; } = new List<SlotMemberModel>();
         public IEnumerable<SlotMemberModel> SyntaxSlots => Slots.Where(s=>!s.IsToken);
-        public IEnumerable<SlotMemberModel> TokenSlots => Slots.Where(s => s.IsToken);
+        public IEnumerable<SlotMemberModel> TokenSlots  => Slots.Where(s => s.IsToken);
 
         public SlotModel(ParserRule rule, string baseRule): base(rule) {
 
@@ -23,20 +23,18 @@ namespace Tool.GdSyntaxGenerator.Models
 
             BaseRuleName = baseRule?.ToPascalcase();
                      
-            SyntaxKind          = $"{rule.Name.ToPascalcase()}Syntax";
+            SyntaxKind = $"{rule.Name.ToPascalcase()}Syntax";
 
-            int index=0;
+            int index = 0;
         
-                foreach (var element in rule.Alternatives.Single().Elements) {
+            foreach (var element in rule.Alternatives.Single().Elements) {
 
-                    var slotModel=new SlotMemberModel
-                    {
-                        Name= element.Name.ToPascalcase(),
-                        IsToken= element is TokenElement,
-                        SlotIndex=index++
-                    };
-                    Slots.Add(slotModel);
-                  
+                Slots.Add(new SlotMemberModel
+                {
+                    Name      = element.Name.ToPascalcase(),
+                    IsToken   = element is TokenElement,
+                    SlotIndex = index++
+                });
             }
 
         }

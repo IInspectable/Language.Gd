@@ -7,19 +7,10 @@ namespace Tool.GdSyntaxGenerator.Models
 
         public AbstractSlotModel(ParserRule rule) {
 
-            RuleName=rule.Name.ToPascalcase();
-
-            // TODO richtige Basisklasse?
-            SyntaxBaseClassName = "SyntaxNode";
-            SyntaxClassName     = $"{rule.Name.ToPascalcase()}Syntax";
-            SlotClassName       = $"{rule.Name.ToPascalcase()}SyntaxSlot";
+            RuleName=rule.Name.ToPascalcase();          
         }
 
         public string RuleName { get;}
-
-        public string SyntaxBaseClassName { get; }
-        public string SyntaxClassName     { get; }
-        public string SlotClassName       { get; }
 
     }
 

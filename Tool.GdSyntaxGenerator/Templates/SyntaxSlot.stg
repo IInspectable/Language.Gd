@@ -61,7 +61,7 @@ partial class <slot.RuleName>SyntaxSlot: SyntaxSlot {
         SyntaxTree syntaxTree,
         SyntaxNode parent) {
 
-        return new <slot.SyntaxClassName>(syntaxTree, this, parent);
+        return new <slot.RuleName>Syntax(syntaxTree, this, parent);
     }
 }
 

@@ -7,7 +7,6 @@ namespace Tool.GdSyntaxGenerator.Models
         public bool IsToken { get;set;}
         public int SlotIndex { get; set; }
 
-        public string Type          { get; set; }
         public string Name          { get; set; }
        
         public string ParameterName => Name.ToCamelcase();
