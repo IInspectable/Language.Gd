@@ -31,6 +31,7 @@ namespace Tool.GdSyntaxGenerator {
         }
 
         static void WriteModel(string[] args, TokenInfo tokenInfo, GrammarInfo grammarInfo) {
+           
             var targetNamespace = args[0];
             var targetDirectory = args[1];
 
@@ -41,9 +42,19 @@ namespace Tool.GdSyntaxGenerator {
                 Directory.CreateDirectory(targetDirectory);
             }
 
-            WriteSyntaxKind(targetDirectory, tokenInfo, grammarInfo);
-            WriteSyntaxSlots(targetDirectory, tokenInfo, grammarInfo);
-            WriteSyntaxNodes(targetDirectory, tokenInfo, grammarInfo);
+            var slotCodeModels = new SyntaxCodeModels(
+                tokenInfo: tokenInfo,
+                grammarInfo: grammarInfo
+            );
+
+            var syntaxKindModel = new SyntaxKindEnumModel(
+                tokenInfo: tokenInfo,
+                grammarInfo: grammarInfo
+            );
+
+            WriteSyntaxKind(targetDirectory, syntaxKindModel);
+            WriteSyntaxSlots(targetDirectory, slotCodeModels);
+            WriteSyntaxNodes(targetDirectory, slotCodeModels);
         }
 
         static GrammarInfo ReadGrammarInfo(string grammarPath) {
@@ -84,13 +95,7 @@ namespace Tool.GdSyntaxGenerator {
         }
 
         private static void WriteSyntaxKind(string targetDirectory,
-                                            TokenInfo tokenInfo,
-                                            GrammarInfo grammarInfo) {
-
-            var model = new SyntaxKindEnumModel(
-                tokenInfo: tokenInfo,
-                grammarInfo: grammarInfo
-            );
+                                            SyntaxKindEnumModel model) {
 
             var context  = new CodeGeneratorContext();
             var content  = CodeGenerator.GenerateSyntaxKindEnum(model, context);
@@ -100,14 +105,9 @@ namespace Tool.GdSyntaxGenerator {
         }
 
         private static void WriteSyntaxSlots(string targetDirectory,
-                                             TokenInfo tokenInfo,
-                                             GrammarInfo grammarInfo) {
+                                             SyntaxCodeModels model) {
 
-            var model = new SyntaxCodeModels(
-                tokenInfo: tokenInfo,
-                grammarInfo: grammarInfo
-            );
-
+            
             var context  = new CodeGeneratorContext();
             var content  = CodeGenerator.GenerateSyntaxSlot(model, context);
             var fullname = Path.Combine(targetDirectory, "SyntaxSlot.generated.cs");
@@ -116,14 +116,8 @@ namespace Tool.GdSyntaxGenerator {
         }
 
         private static void WriteSyntaxNodes(string targetDirectory,
-                                             TokenInfo tokenInfo,
-                                             GrammarInfo grammarInfo) {
-
-            var model = new SyntaxCodeModels(
-                tokenInfo: tokenInfo,
-                grammarInfo: grammarInfo
-            );
-
+                                             SyntaxCodeModels model) {
+        
             var context  = new CodeGeneratorContext();
             var content  = CodeGenerator.GenerateSyntaxNode(model, context);
             var fullname = Path.Combine(targetDirectory, "Syntax.generated.cs");

@@ -5,22 +5,21 @@ Begin(model, context) ::=<<
 
 using Pharmatechnik.Language.Gd.Internal;
 
-namespace Pharmatechnik.Language.Gd.Internal {
+namespace Pharmatechnik.Language.Gd {
    
-    <writeAbstractClasses(model.AbstractSlots)>
-    <writeClasses(model.Slots)>
+    <writeAbstractSyntaxClasses(model.AbstractSlots)>
+    <writeSyntaxClasses(model.Slots)>
 }
 >>
 
-writeAbstractClasses(classes) ::=<<
-<classes:writeAbstractClass(); separator="\r\n">
-  
+writeAbstractSyntaxClasses(abstractSlots) ::=<<
+<abstractSlots:writeAbstractSyntaxClass(); separator="\r\n">  
 >>
 
-writeAbstractClass(class) ::=<<
-public abstract partial class <class.SyntaxClassName>: SyntaxNode {
+writeAbstractSyntaxClass(abstractSlot) ::=<<
+public abstract partial class <abstractSlot.RuleName>Syntax: SyntaxNode {
     
-    internal <class.SyntaxClassName>(
+    internal <abstractSlot.RuleName>Syntax(
         SyntaxTree syntaxTree, 
         SyntaxSlot slot, 
         SyntaxNode parent)
@@ -35,19 +34,19 @@ public abstract partial class <class.SyntaxClassName>: SyntaxNode {
 
 >>
 
-writeClasses(classes) ::=<<
-<classes:writeClass(); separator="\r\n">
+writeSyntaxClasses(slots) ::=<<
+<slots:writeSyntaxClass(); separator="\r\n">
   
 >>
 
-writeClass(class) ::=<<
-public partial class <class.SyntaxClassName> : <class.SyntaxBaseClassName> {
+writeSyntaxClass(slot) ::=<<
+public partial class <slot.RuleName>Syntax : <if(slot.BaseRuleName)><slot.BaseRuleName>Syntax<else>SyntaxNode<endif> {
     
-    <writeSyntaxNodeFields(class.SyntaxNodes)>
+    <writeSyntaxNodeFields(slot.SyntaxSlots)>
 
-    internal <class.SyntaxClassName>(
+    internal <slot.RuleName>Syntax (
         SyntaxTree syntaxTree, 
-        <class.SlotClassName> slot, 
+        <slot.RuleName>SyntaxSlot slot, 
         SyntaxNode parent)
 
         : base(syntaxTree: syntaxTree, 
@@ -55,55 +54,35 @@ public partial class <class.SyntaxClassName> : <class.SyntaxBaseClassName> {
                parent    : parent) {
 
     }
-
-    <writeTokenProperties(class.SyntaxTokens)>
-    <writeSyntaxProperties(class.SyntaxNodes)>
-    
-    internal new <class.SlotClassName> Slot => (<class.SlotClassName>) base.Slot;
+	
+	<writeSlotProperties(slot.Slots)>
+     
+    internal new <slot.RuleName>SyntaxSlot Slot => (<slot.RuleName>SyntaxSlot) base.Slot;
 
 }
 
 >>
 
-
-writeParameterList(properties) ::=<<
-<properties:writeParameter(); anchor, separator=",\r\n">
+writeSlotProperties(slotModels) ::=<<
+<slotModels:writeSlotProperty(); anchor, separator="\r\n">
 >>
 
-writeParameter(property) ::=<<
-<property.Type> <property.ParameterName>
+writeSlotProperty(slot) ::=<<
+<if(slot.IsToken)><slot:writeTokenProperty()><else><slot:writeSyntaxProperty()><endif>
 >>
 
-writePropertyInits(properties) ::=<<
-<properties:writePropertyInit(); anchor, separator="\r\n">
+writeTokenProperty(tokenSlotModel) ::=<<
+public SyntaxToken <tokenSlotModel.Name>Token => Slot.<tokenSlotModel.Name>Token.Realize(SyntaxTree, this);
 >>
 
-writePropertyInit(property) ::=<<
-<property.Name> = <property.ParameterName>;
+writeSyntaxProperty(syntaxSlot)::=<<
+public <syntaxSlot.Name>Syntax <syntaxSlot.Name> => GetSyntaxNode(ref <syntaxSlot.FieldName>Syntax, Slot.<syntaxSlot.Name>Syntax);
 >>
 
-
-writeTokenProperties(properties) ::=<<
-<properties:writeTokenProperty(); anchor, separator="\r\n">
+writeSyntaxNodeFields(syntaxSlots) ::=<<
+<syntaxSlots:writeSyntaxNodeField(); separator="\r\n">
 >>
 
-writeTokenProperty(property)::=<<
-public SyntaxToken <property.Name> => Slot.<property.Name>.Realize(SyntaxTree, this);
->>
-
-writeSyntaxProperties(properties) ::=<<
-<properties:writeSyntaxProperty(); separator="\r\n">
->>
-
-writeSyntaxProperty(property)::=<<
-public <property.Type> <property.Name> => GetSyntaxNode(ref <property.FieldName>, Slot.<property.Name>Syntax);
->>
-
-
-writeSyntaxNodeFields(properties) ::=<<
-<properties:writeSyntaxNodeField(); separator="\r\n">
->>
-
-writeSyntaxNodeField(property)::=<<
-<property.Type> <property.FieldName>;
+writeSyntaxNodeField(syntaxSlot)::=<<
+<syntaxSlot.Name>Syntax <syntaxSlot.FieldName>Syntax;
 >>
