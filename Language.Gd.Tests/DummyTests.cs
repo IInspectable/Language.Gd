@@ -142,7 +142,7 @@ END NAMESPACE
             foreach (var file in Directory.EnumerateFiles(
                 @"c:\ws\xtplus\main", "*.gd", SearchOption.AllDirectories)) {
 
-                var txt=File.ReadAllText(file);
+                var txt    = File.ReadAllText(file);
                 var source = SourceText.From(txt);
                 var tree   = SyntaxTree.Parse(source);
                 var tokens = tree.Tokens;
@@ -151,7 +151,6 @@ END NAMESPACE
                     Assert.Warn($"{file}\r\n{tree.Diagnostics.First().Location}");
                 }
 
-               
             }
         }
 

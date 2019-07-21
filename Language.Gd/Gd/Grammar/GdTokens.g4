@@ -284,7 +284,6 @@ fragment VerbatimStringLiteral
         ;
 
 
-SkipedTokenTrivia
+Unknown
     :  .
-    -> channel(TriviaChannel)
     ;
