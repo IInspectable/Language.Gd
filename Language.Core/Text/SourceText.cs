@@ -87,7 +87,8 @@ namespace Pharmatechnik.Language.Text {
                 return TextLines[0];
             }
 
-            if (position == Length) {
+            // TODO EOF
+            if (position == Length||position == Length+1) {
                 return TextLines[TextLines.Count - 1];
             }
 

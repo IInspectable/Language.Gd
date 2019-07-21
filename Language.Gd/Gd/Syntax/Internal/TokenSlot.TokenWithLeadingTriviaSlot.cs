@@ -4,7 +4,7 @@ using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd.Internal {
 
-    public partial class TokenSlot {
+    partial class TokenSlot {
 
         private class TokenWithLeadingTriviaSlot: TokenSlot {
 

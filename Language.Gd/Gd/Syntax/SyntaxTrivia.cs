@@ -18,7 +18,8 @@ namespace Pharmatechnik.Language.Gd {
 
         public SyntaxKind Kind => _slot.Kind;
 
-        public bool IsMissing => _slot.IsMissing;
+        public bool IsMissing           => _slot.IsMissing;
+        public bool IsSkipedTokenTrivia => _slot.IsSkipedTokenTrivia;
 
         public int        ExtentStart => _slot.Start;
         public TextExtent Extent      => _slot.Extent;

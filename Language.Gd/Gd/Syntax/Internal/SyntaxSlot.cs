@@ -2,7 +2,7 @@
 
 namespace Pharmatechnik.Language.Gd.Internal {
 
-    public abstract class SyntaxSlot: Slot {
+    abstract class SyntaxSlot: Slot {
 
         protected SyntaxSlot(TextExtent textExtent, SyntaxKind kind)
             : base(textExtent, kind) {

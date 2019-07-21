@@ -15,9 +15,9 @@ namespace Pharmatechnik.Language.Gd {
 
         }
 
-        public SourceText                 SourceText  { get; }
-        public ImmutableArray<TokenSlot>  Tokens      { get; }
-        public ImmutableArray<Diagnostic> Diagnostics { get; }
+        public   SourceText                 SourceText  { get; }
+        internal ImmutableArray<TokenSlot>  Tokens      { get; }
+        public   ImmutableArray<Diagnostic> Diagnostics { get; }
 
         public static SyntaxTree Parse(SourceText sourceText) {
 
@@ -39,7 +39,10 @@ namespace Pharmatechnik.Language.Gd {
 
             var tree = parser.guiDescription();
 
-            var tokens  = TokenFactory.CreateTokens(cts);
+            var errorNodes = new ErrorNodeVisitor();
+            errorNodes.Visit(tree);
+
+            var tokens  = TokenFactory.CreateTokens(cts, errorNodes.ErrorNodes);
             var visitor = new GdGrammarVisitor(tokens);
             visitor.Visit(tree);
 
