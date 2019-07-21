@@ -1,0 +1,109 @@
+﻿delimiters "<", ">"
+
+Begin(model, context) ::=<<
+<writeFileHeader(context)>
+
+using <model.SlotNamespace>;
+
+namespace <model.SyntaxNamespace> {
+   
+    <writeAbstractClasses(model.AbstractClasses)>
+    <writeClasses(model.Classes)>
+}
+>>
+
+writeAbstractClasses(classes) ::=<<
+<classes:writeAbstractClass(); separator="\r\n">
+  
+>>
+
+writeAbstractClass(class) ::=<<
+public abstract partial class <class.SyntaxClassName>: SyntaxNode {
+    
+    internal <class.SyntaxClassName>(
+        SyntaxTree syntaxTree, 
+        SyntaxSlot slot, 
+        SyntaxNode parent)
+
+        : base(syntaxTree: syntaxTree, 
+               slot      : slot, 
+               parent    : parent) {
+
+    }
+
+}
+
+>>
+
+writeClasses(classes) ::=<<
+<classes:writeClass(); separator="\r\n">
+  
+>>
+
+writeClass(class) ::=<<
+public partial class <class.SyntaxClassName> : <class.SyntaxBaseClassName> {
+    
+    <writeSyntaxNodeFields(class.SyntaxNodes)>
+
+    internal <class.SyntaxClassName>(
+        SyntaxTree syntaxTree, 
+        <class.SlotClassName> slot, 
+        SyntaxNode parent)
+
+        : base(syntaxTree: syntaxTree, 
+               slot      : slot, 
+               parent    : parent) {
+
+    }
+
+    <writeTokenProperties(class.SyntaxTokens)>
+    <writeSyntaxProperties(class.SyntaxNodes)>
+    
+    internal new <class.SlotClassName> Slot => (<class.SlotClassName>) base.Slot;
+
+}
+
+>>
+
+
+writeParameterList(properties) ::=<<
+<properties:writeParameter(); anchor, separator=",\r\n">
+>>
+
+writeParameter(property) ::=<<
+<property.Type> <property.ParameterName>
+>>
+
+writePropertyInits(properties) ::=<<
+<properties:writePropertyInit(); anchor, separator="\r\n">
+>>
+
+writePropertyInit(property) ::=<<
+<property.Name> = <property.ParameterName>;
+>>
+
+
+writeTokenProperties(properties) ::=<<
+<properties:writeTokenProperty(); anchor, separator="\r\n">
+>>
+
+writeTokenProperty(property)::=<<
+public SyntaxToken <property.Name> => Slot.<property.Name>.Realize(SyntaxTree, this);
+>>
+
+writeSyntaxProperties(properties) ::=<<
+<properties:writeSyntaxProperty(); separator="\r\n">
+>>
+
+writeSyntaxProperty(property)::=<<
+public <property.Type> <property.Name> => GetSyntaxNode(ref <property.FieldName>, Slot.<property.Name>Syntax);
+>>
+
+
+writeSyntaxNodeFields(properties) ::=<<
+<properties:writeSyntaxNodeField(); separator="\r\n">
+>>
+
+writeSyntaxNodeField(property)::=<<
+<property.Type> <property.FieldName>;
+>>

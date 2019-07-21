@@ -1,0 +1,54 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RootNamespace>Pharmatechnik.Language</RootNamespace>
+    <AssemblyName>Pharmatechnik.Language.Gd</AssemblyName>
+    <LangVersion>default</LangVersion>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <NoWarn>1701;1702;3021</NoWarn>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Antlr4" Version="4.6.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
+    <PackageReference Include="StringTemplate4" Version="4.0.8" />
+    <PackageReference Include="System.Memory" Version="4.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Language.Core\Language.Core.csproj" />
+    <ProjectReference Include="..\Tool.GdSyntaxGenerator\Tool.GdSyntaxGenerator.csproj"  >
+      <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
+    </ProjectReference>
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Gd\Grammar\" />
+    <Folder Include="Gd\Syntax\generated\" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Antlr4 Update="Gd\Grammar\GdGrammar.g4">
+      <CustomToolNamespace>Pharmatechnik.Language.Gd.Antlr</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Update="Gd\Grammar\GdTokens.g4">
+      <CustomToolNamespace>Pharmatechnik.Language.Gd.Antlr</CustomToolNamespace>
+    </Antlr4>
+  </ItemGroup>
+
+  <Import Project="CustomBuild.targets" />
+
+</Project>

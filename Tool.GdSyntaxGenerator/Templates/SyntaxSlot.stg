@@ -1,0 +1,93 @@
+﻿delimiters "<", ">"
+
+Begin(model, context) ::=<<
+<writeFileHeader(context)>
+
+using Pharmatechnik.Language.Text;
+
+namespace <model.SlotNamespace>{
+
+    <writeAbstractClasses(model.AbstractClasses)>
+
+    <writeClasses(model.Classes)>
+}
+>>
+
+writeAbstractClasses(classes) ::=<<
+<classes:writeAbstractClass(); separator="\r\n">
+  
+>>
+
+writeAbstractClass(class) ::=<<
+abstract partial class <class.SlotClassName>: SyntaxSlot {
+    
+    protected <class.SlotClassName>(
+        TextExtent textExtent,
+        SyntaxKind kind)
+
+        : base(textExtent: textExtent, 
+               kind      : kind) {
+    }
+
+}
+
+>>
+
+
+writeClasses(classes) ::=<<
+<classes:writeClass(); separator="\r\n">
+  
+>>
+
+writeClass(class) ::=<<
+partial class <class.SlotClassName>: SyntaxSlot {
+    
+    internal <class.SlotClassName>(
+        TextExtent textExtent, 
+        <writeParameterList([class.TokenSlots, class.SyntaxSlots])>)
+
+        : base(textExtent: textExtent, 
+               kind      : SyntaxKind.<class.SyntaxKind>) {
+
+        <writePropertyInits([class.TokenSlots, class.SyntaxSlots])>
+    }
+
+    <writeProperties([class.TokenSlots, class.SyntaxSlots])>
+
+    public override SyntaxNode Realize(
+        SyntaxTree syntaxTree,
+        SyntaxNode parent) {
+
+        return new <class.SyntaxClassName>(syntaxTree, this, parent);
+    }
+}
+
+>>
+
+
+writeProperties(properties) ::=<<
+<properties:writeProperty(); separator="\r\n">
+>>
+
+writeProperty(property)::=<<
+public <property.Type> <property.Name> { get; }
+>>
+
+
+writeParameterList(properties) ::=<<
+<properties:writeParameter(); anchor, separator=",\r\n">
+>>
+
+writeParameter(property) ::=<<
+<property.Type> <property.ParameterName>
+>>
+
+writePropertyInits(properties) ::=<<
+<properties:writePropertyInit(); anchor, separator="\r\n">
+>>
+
+writePropertyInit(property) ::=<<
+<property.Name> = <property.ParameterName>;
+>>
+
+

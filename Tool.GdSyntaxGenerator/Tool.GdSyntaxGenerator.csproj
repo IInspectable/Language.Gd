@@ -1,0 +1,70 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net472</TargetFramework>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <RootNamespace>Tool.GdSyntaxGenerator</RootNamespace>
+    <AssemblyName>Tool.GdSyntaxGenerator</AssemblyName>
+    <LangVersion>default</LangVersion>
+    <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
+    <ApplicationIcon />
+    <StartupObject />
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <OutputPath>..\bin\Tools</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <NoWarn>1701;1702;3021</NoWarn>
+  </PropertyGroup>
+
+
+  <ItemGroup>
+    <None Remove="Templates\Common.stg" />
+    <None Remove="Templates\SyntaxKindEnum.stg" />
+    <None Remove="Templates\SyntaxNode.stg" />
+    <None Remove="Templates\SyntaxSlot.stg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Antlr4 Include="..\Language.Gd\Gd\Grammar\GdGrammar.g4" Link="Grammar\GdGrammar.g4">
+      <CustomToolNamespace>Pharmatechnik.Language.Gd.Antlr</CustomToolNamespace>
+    </Antlr4>
+    <Antlr4 Include="..\Language.Gd\Gd\Grammar\GdTokens.g4" Link="Grammar\GdTokens.g4">
+      <CustomToolNamespace>Pharmatechnik.Language.Gd.Antlr</CustomToolNamespace>
+    </Antlr4>
+   
+    
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\Language.Gd\Gd\Antlr\GdGrammar.cs" Link="Antlr\GdGrammar.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <EmbeddedResource Include="Templates\Common.stg" />
+    <EmbeddedResource Include="Templates\SyntaxNode.stg" />
+    <EmbeddedResource Include="Templates\SyntaxSlot.stg" />
+    <EmbeddedResource Include="Templates\SyntaxKindEnum.stg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Antlr4" Version="4.6.6">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+    <PackageReference Include="Antlr4.Runtime" Version="4.6.6" />
+    <PackageReference Include="StringTemplate4" Version="4.0.8" />
+    <PackageReference Include="System.Memory" Version="4.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Language.Core\Language.Core.csproj" />
+  </ItemGroup>
+
+ 
+  <Import Project="CustomBuild.targets" />
+
+</Project>

@@ -1,0 +1,33 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+
+  <Import Project="..\_build\GlobalBuild.targets" />
+
+  <PropertyGroup>
+    <ToolPath>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)..\bin\Tools))\</ToolPath>
+  </PropertyGroup>
+
+  <Target Name="GenerateSyntax"
+          BeforeTargets="PreBuildEvent" DependsOnTargets="ResolveProjectReferences">
+
+    <PropertyGroup>
+      <GenerateSyntaxTool>Tool.GdSyntaxGenerator.exe</GenerateSyntaxTool>
+      <GenerateSyntaxToolPath>$([System.IO.Path]::GetFullPath($(ToolPath)$(GenerateSyntaxTool)))</GenerateSyntaxToolPath>
+      <TargetNamespace>$(RootNamespace).Gd</TargetNamespace>
+      <TargetDirectory>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)))\Gd\Syntax\generated</TargetDirectory>
+    </PropertyGroup>
+
+    <Error Text="GenerateSyntax tool not found: $(GenerateSyntaxToolPath)"
+           Condition="!Exists($(GenerateSyntaxToolPath))" />
+
+    <Exec WorkingDirectory="$(ToolPath)"
+          Command="$(GenerateSyntaxToolPath) $(TargetNamespace) $(TargetDirectory)" />
+
+    <ItemGroup>
+      <Compile Include="$(TargetDirectory)\**\*.cs" />
+      <FileWrites Include="$(TargetDirectory)\**\*.cs" />
+    </ItemGroup>
+
+  </Target>
+</Project>

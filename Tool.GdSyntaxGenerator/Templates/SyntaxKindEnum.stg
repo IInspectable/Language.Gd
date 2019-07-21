@@ -1,0 +1,20 @@
+﻿delimiters "<", ">"
+
+Begin(model, context) ::=<<
+<writeFileHeader(context)>
+
+namespace <model.Namespace> {
+
+    public enum SyntaxKind {
+        <writeEnumMembers(model.Members)>
+    }
+}
+>>
+
+writeEnumMembers(members) ::=<<
+<members:writeEnumMember(); separator="\r\n">
+>>
+
+writeEnumMember(member) ::=<<
+<member.Name> = <member.Value>,
+>>
