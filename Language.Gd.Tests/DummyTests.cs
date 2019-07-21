@@ -129,7 +129,7 @@ END NAMESPACE
         [Test]
         public void SimpleSyntaxTest() {
 
-            var source = SourceText.From("1212 NAMESPACE");
+            var source = SourceText.From(TestGd);
             var tree   = SyntaxTree.Parse(source);
 
             var tokens = tree.Tokens;
