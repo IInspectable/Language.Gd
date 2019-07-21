@@ -4,12 +4,13 @@ using System.Collections.Generic;
 namespace Tool.GdSyntaxGenerator.Models
 {
 
-    class SyntaxCodeModels {
+    class SlotModels {
 
-        public SyntaxCodeModels(TokenInfo tokenInfo,
-                                GrammarInfo grammarInfo) {
+        public SlotModels(GrammarInfo grammarInfo) {
 
-            Dictionary<string, string> baseRules = new Dictionary<string, string>();
+            // Wenn eine Regel aus mehr als einer Alternative besteht, dann wird diese zur Basisklasse
+            // für die konkreten Syntaxen
+            var baseRules = new Dictionary<string, string>();
             foreach (var parserRule in grammarInfo.Rules.Where(rule => rule.Alternatives.Count > 1)) {
                 AbstractSlots.Add(new AbstractSlotModel(parserRule));
                 foreach (var alternative in parserRule.Alternatives) {
@@ -17,6 +18,7 @@ namespace Tool.GdSyntaxGenerator.Models
                 }
             }
 
+            // Aus Regeln mir genau einer "Alternative" werden zu konkreten Syntaxen
             foreach (var parserRule in grammarInfo.Rules.Where(rule => rule.Alternatives.Count == 1)) {
                 baseRules.TryGetValue(parserRule.Name, out var baseRule);
                 Slots.Add(new SlotModel(parserRule, baseRule));

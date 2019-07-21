@@ -38,7 +38,7 @@ namespace Tool.GdSyntaxGenerator {
 
         static readonly ThreadLocal<TemplateGroup> SyntaxSlotTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.SyntaxSlotTemplate));
 
-        public static string GenerateSyntaxSlot(SyntaxCodeModels models, CodeGeneratorContext context) {
+        public static string GenerateSyntaxSlot(SlotModels models, CodeGeneratorContext context) {
 
             var template = GetTemplate(SyntaxSlotTemplateGroup.Value, models, context);
             var content  = template.Render();
@@ -48,7 +48,7 @@ namespace Tool.GdSyntaxGenerator {
 
         static readonly ThreadLocal<TemplateGroup> SyntaxNodeTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.SyntaxNodeTemplate));
 
-        public static string GenerateSyntaxNode(SyntaxCodeModels models, CodeGeneratorContext context) {
+        public static string GenerateSyntaxNode(SlotModels models, CodeGeneratorContext context) {
 
             var template = GetTemplate(SyntaxNodeTemplateGroup.Value, models, context);
             var content  = template.Render();

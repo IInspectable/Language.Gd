@@ -76,7 +76,7 @@ public SyntaxToken <tokenSlotModel.Name>Token => Slot.<tokenSlotModel.Name>Token
 >>
 
 writeSyntaxProperty(syntaxSlot)::=<<
-public <syntaxSlot.Name>Syntax <syntaxSlot.Name> => GetSyntaxNode(ref <syntaxSlot.FieldName>Syntax, Slot.<syntaxSlot.Name>Syntax);
+public <syntaxPropertyType(syntaxSlot)> <syntaxSlot.Name><syntaxSlot:pl()> => GetSyntaxNode(ref <syntaxSlot.FieldName><syntaxSlot:pl()>, Slot.<syntaxSlot.Name><syntaxSlot:pl()>);
 >>
 
 writeSyntaxNodeFields(syntaxSlots) ::=<<
@@ -84,5 +84,13 @@ writeSyntaxNodeFields(syntaxSlots) ::=<<
 >>
 
 writeSyntaxNodeField(syntaxSlot)::=<<
-<syntaxSlot.Name>Syntax <syntaxSlot.FieldName>Syntax;
+<syntaxPropertyType(syntaxSlot)> <syntaxSlot.FieldName><syntaxSlot:pl()>;
+>>
+
+syntaxPropertyType(syntaxSlot)::=<<
+<if(syntaxSlot.IsToN)>SyntaxList\<<syntaxSlot.Name>Syntax><else><syntaxSlot.Name>Syntax<endif>
+>>
+
+pl(slotModel)::=<<
+<if(slotModel.IsToN)>s<endif>
 >>

@@ -8,6 +8,21 @@ using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd {
 
+    public struct SyntaxList<T> where T : SyntaxNode
+    {
+        private readonly SyntaxNode _parent;
+        private readonly SyntaxListSlot<SyntaxSlot> _slot;
+
+        // TODO 
+        internal SyntaxList(SyntaxNode parent, SyntaxListSlot<SyntaxSlot> slot) 
+          
+        {
+            _parent = parent;
+            _slot = slot;
+        }
+
+    }
+
     public abstract class SyntaxNode {
 
         protected SyntaxNode(SyntaxTree syntaxTree, SyntaxSlot slot, SyntaxNode parent) {
@@ -27,7 +42,15 @@ namespace Pharmatechnik.Language.Gd {
 
         internal SyntaxSlot Slot { get; }
 
-        protected SyntaxNode GetSyntaxNode(ref SyntaxNode field, SyntaxSlot slot) {
+        internal SyntaxList<T> GetSyntaxNode<T, TSlot>(ref SyntaxList<T> field, SyntaxListSlot<TSlot> slots) 
+            where T : SyntaxNode where TSlot: SyntaxSlot
+        
+            { // TODO Implement GetSyntaxNode
+            return default;
+            }
+
+
+            protected SyntaxNode GetSyntaxNode(ref SyntaxNode field, SyntaxSlot slot) {
             var result = field;
             if (result == null) {
                 Interlocked.CompareExchange(ref field, slot.Realize(SyntaxTree, this), null);

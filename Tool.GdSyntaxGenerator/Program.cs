@@ -40,12 +40,7 @@ namespace Tool.GdSyntaxGenerator {
 
             if (!Directory.Exists(targetDirectory)) {
                 Directory.CreateDirectory(targetDirectory);
-            }
-
-            var slotCodeModels = new SyntaxCodeModels(
-                tokenInfo: tokenInfo,
-                grammarInfo: grammarInfo
-            );
+            }        
 
             var syntaxKindModel = new SyntaxKindEnumModel(
                 tokenInfo: tokenInfo,
@@ -53,8 +48,13 @@ namespace Tool.GdSyntaxGenerator {
             );
 
             WriteSyntaxKind(targetDirectory, syntaxKindModel);
-            WriteSyntaxSlots(targetDirectory, slotCodeModels);
-            WriteSyntaxNodes(targetDirectory, slotCodeModels);
+
+            var slotModels = new SlotModels(
+               grammarInfo: grammarInfo
+           );
+
+            WriteSyntaxSlots(targetDirectory, slotModels);
+            WriteSyntaxNodes(targetDirectory, slotModels);
         }
 
         static GrammarInfo ReadGrammarInfo(string grammarPath) {
@@ -105,7 +105,7 @@ namespace Tool.GdSyntaxGenerator {
         }
 
         private static void WriteSyntaxSlots(string targetDirectory,
-                                             SyntaxCodeModels model) {
+                                             SlotModels model) {
 
             
             var context  = new CodeGeneratorContext();
@@ -116,7 +116,7 @@ namespace Tool.GdSyntaxGenerator {
         }
 
         private static void WriteSyntaxNodes(string targetDirectory,
-                                             SyntaxCodeModels model) {
+                                             SlotModels model) {
         
             var context  = new CodeGeneratorContext();
             var content  = CodeGenerator.GenerateSyntaxNode(model, context);

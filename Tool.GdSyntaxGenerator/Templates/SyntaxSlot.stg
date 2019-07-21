@@ -78,13 +78,21 @@ writeProperty(slotModel)::=<<
 >>
 
 writeTokenProperty(slotModel)::=<<
+
 public TokenSlot <slotModel.Name>Token { get; }
 >>
 
 writeSyntaxProperty(slotModel)::=<<
-public <slotModel.Name>SyntaxSlot <slotModel.Name>Syntax { get; }
+public <syntaxPropertyType(slotModel)> <slotModel.Name><slotModel:pl()> { get; }
 >>
 
+syntaxPropertyType(slotModel)::=<<
+<if(slotModel.IsToN)>SyntaxListSlot\<<slotModel.Name>SyntaxSlot><else><slotModel.Name>SyntaxSlot<endif>
+>>
+
+pl(slotModel)::=<<
+<if(slotModel.IsToN)>s<endif>
+>>
 
 // Parameter
 
@@ -101,7 +109,7 @@ TokenSlot <slotModel.ParameterName>Token
 >>
 
 writeSyntaxParameter(slotModel) ::=<<
-<slotModel.Name>SyntaxSlot <slotModel.ParameterName>Syntax
+<syntaxPropertyType(slotModel)> <slotModel.ParameterName><slotModel:pl()>
 >>
 
 
@@ -120,7 +128,7 @@ writeTokenPropertyInit(slotModel) ::=<<
 >>
 
 writeSyntaxPropertyInit(slotModel) ::=<<
-<slotModel.Name>Syntax = <slotModel.ParameterName>Syntax;
+<slotModel.Name><slotModel:pl()> = <slotModel.ParameterName><slotModel:pl()>;
 >>
 
 // Slot method 
@@ -145,5 +153,5 @@ writeSlotCases(slotModels) ::=<<
 
 writeSlotCase(slotModel) ::=<<
 case <slotModel.SlotIndex>:
-	return <slotModel.Name><if(slotModel.IsToken)>Token<else>Syntax<endif>;
+	return <slotModel.Name><if(slotModel.IsToken)>Token<else><slotModel:pl()><endif>;
 >>

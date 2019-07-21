@@ -113,7 +113,7 @@ namespace Tool.GdSyntaxGenerator {
 
             if (_currentElement != null) {
                 var suffix = context.GetText();
-                _currentElement.Cardinalität = suffix;
+                _currentElement.Cardinality = suffix;
             } else {
                 throw new Exception($"kann Kardinalität nicht setzen: {context.GetText()}");
             }
