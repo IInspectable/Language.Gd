@@ -139,8 +139,12 @@ END NAMESPACE
 
         [Test]
         public void AllGds() {
+
+            var count = 0;
             foreach (var file in Directory.EnumerateFiles(
                 @"c:\ws\xtplus\main", "*.gd", SearchOption.AllDirectories)) {
+
+                count++;
 
                 var txt    = File.ReadAllText(file);
                 var source = SourceText.From(txt);
@@ -152,6 +156,8 @@ END NAMESPACE
                 }
 
             }
+
+            Assert.Warn($"{count} files processed.");
         }
 
         void EnsureContinousTokens(ImmutableArray<TokenSlot> tokens) {
