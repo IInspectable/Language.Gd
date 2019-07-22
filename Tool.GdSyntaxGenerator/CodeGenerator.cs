@@ -56,6 +56,16 @@ namespace Tool.GdSyntaxGenerator {
             return content;
         }
 
+        static readonly ThreadLocal<TemplateGroup> SyntaxSlotBuilderGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.SyntaxSlotBuilderTemplate));
+
+        public static string GenerateSyntaxSlotBuilder(SlotModels models, CodeGeneratorContext context) {
+
+            var template = GetTemplate(SyntaxSlotBuilderGroup.Value, models, context);
+            var content  = template.Render();
+
+            return content;
+        }
+
         static TemplateGroup LoadTemplateGroup(string resourceName) {
 
             var commonTemplate = new TemplateGroupString(Resources.CommonTemplate);

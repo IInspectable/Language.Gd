@@ -32,6 +32,14 @@ namespace Tool.GdSyntaxGenerator {
 
         static void WriteModel(string[] args, TokenInfo tokenInfo, GrammarInfo grammarInfo) {
 
+            var syntaxKindModel = new SyntaxKindEnumModel(
+                tokenInfo: tokenInfo,
+                grammarInfo: grammarInfo
+            );
+            var slotModels = new SlotModels(
+                grammarInfo: grammarInfo
+            );
+
             var targetNamespace = args[0];
             var targetDirectory = args[1];
 
@@ -42,19 +50,11 @@ namespace Tool.GdSyntaxGenerator {
                 Directory.CreateDirectory(targetDirectory);
             }
 
-            var syntaxKindModel = new SyntaxKindEnumModel(
-                tokenInfo: tokenInfo,
-                grammarInfo: grammarInfo
-            );
-
             WriteSyntaxKind(targetDirectory, syntaxKindModel);
-
-            var slotModels = new SlotModels(
-                grammarInfo: grammarInfo
-            );
 
             WriteSyntaxSlots(targetDirectory, slotModels);
             WriteSyntaxNodes(targetDirectory, slotModels);
+            WriteSyntaxSlotBuilder(targetDirectory, slotModels);
         }
 
         static GrammarInfo ReadGrammarInfo(string grammarPath) {
@@ -120,6 +120,16 @@ namespace Tool.GdSyntaxGenerator {
             var context  = new CodeGeneratorContext();
             var content  = CodeGenerator.GenerateSyntaxNode(model, context);
             var fullname = Path.Combine(targetDirectory, "Syntax.generated.cs");
+
+            File.WriteAllText(fullname, content, Encoding.UTF8);
+        }
+
+        private static void WriteSyntaxSlotBuilder(string targetDirectory,
+                                                   SlotModels model) {
+
+            var context  = new CodeGeneratorContext();
+            var content  = CodeGenerator.GenerateSyntaxSlotBuilder(model, context);
+            var fullname = Path.Combine(targetDirectory, "SyntaxSlotBuilder.generated.cs");
 
             File.WriteAllText(fullname, content, Encoding.UTF8);
         }

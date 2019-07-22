@@ -43,9 +43,10 @@ namespace Pharmatechnik.Language.Gd {
             errorNodes.Visit(tree);
 
             var tokens  = TokenFactory.CreateTokens(cts, errorNodes.ErrorNodes);
-            var visitor = new GdGrammarVisitor(tokens);
-            visitor.Visit(tree);
+            var visitor = new GdSyntaxSlotBuilder(tokens);
+            var slot=visitor.Visit(tree);
 
+            //slot.Realize(this, null);
             // SyntaxTree, etc
 
             return new SyntaxTree(sourceText, tokens, diagnostics.ToImmutableArray());

@@ -41,7 +41,7 @@ writeSlots(slots) ::=<<
 >>
 
 writeSlot(slot) ::=<<
-partial class <slot.RuleName>SyntaxSlot: SyntaxSlot {
+partial class <slot.RuleName>SyntaxSlot: <if(slot.BaseRuleName)><slot.BaseRuleName>SyntaxSlot <else>SyntaxSlot <endif> {
     
     internal <slot.RuleName>SyntaxSlot(
         TextExtent textExtent, 

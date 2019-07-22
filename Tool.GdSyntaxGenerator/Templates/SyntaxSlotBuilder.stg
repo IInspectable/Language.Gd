@@ -1,0 +1,91 @@
+﻿delimiters "<", ">"
+
+Begin(model, context) ::=<<
+<writeFileHeader(context)>
+
+using System.Linq;
+using System.Collections.Immutable;
+
+using Antlr4.Runtime;
+using Antlr4.Runtime.Misc;
+
+using Pharmatechnik.Language.Text;
+using Pharmatechnik.Language.Gd.Internal;
+
+namespace Pharmatechnik.Language.Gd.Antlr {
+   
+    partial class GdSyntaxSlotBuilder: GdGrammarBaseVisitor\<SyntaxSlot> {
+
+		<writeVisitMethods(model.Slots)>
+	}
+}
+>>
+
+writeVisitMethods(syntaxSlots) ::=<<
+<syntaxSlots:writeVisitMethod(); separator="\r\n">
+>>
+
+writeVisitMethod(syntaxSlot) ::=<<
+public override SyntaxSlot Visit<syntaxSlot.RuleName>([NotNull] GdGrammar.<syntaxSlot.RuleName>Context context) {
+	return new <syntaxSlot.RuleName>SyntaxSlot(
+		GetExtent(context),
+		<writeParameterList(syntaxSlot.Slots)>
+	);
+}
+
+>>
+
+writeParameterList(slots) ::=<<
+<slots:writeParameter(); separator=",\r\n">
+>>
+
+writeParameter(slot) ::=<<
+<if(slot.IsToken)><slot:writeTokenParameter()><else><slot:writeSyntaxParameter()><endif>
+>>
+
+writeTokenParameter(tokenSlot) ::=<<
+GetTokenSlot(context.<tokenSlot.Name><if(tokenSlot.IsLabeled)><else>().Symbol<endif>)
+>>
+
+writeSyntaxParameter(syntaxSlot) ::=<%
+<if(syntaxSlot.IsOptional)>
+<writeOptionalParameter(syntaxSlot)>
+<elseif(syntaxSlot.IsRequired)>
+<writeRequiredParameter(syntaxSlot)>
+<elseif(syntaxSlot.IsOneOrMore)>
+<writeOneOrMoreParameter(syntaxSlot)>
+<elseif(syntaxSlot.IsZeroOrMore)>
+<writeZeroOrMoreParameter(syntaxSlot)>
+<else>
+!!<syntaxSlot.ParameterName>: Unsupported cardinality!!
+<endif>
+
+%>
+
+writeOptionalParameter(syntaxSlot) ::=<<
+context.<syntaxSlot.ParameterName>()
+       .Optional(Visit<syntaxSlot.Name>)
+       .OfType\<<syntaxSlot.Name>SyntaxSlot>()
+>>
+
+writeRequiredParameter(syntaxSlot) ::=<<
+context.<syntaxSlot.ParameterName>()
+       .Required(Visit<syntaxSlot.Name>)
+       .OfType\<<syntaxSlot.Name>SyntaxSlot>()
+>>
+
+writeOneOrMoreParameter(syntaxSlot) ::=<<
+context.<syntaxSlot.ParameterName>()
+       .OneOrMore(Visit<syntaxSlot.Name>)
+       .OfType\<<syntaxSlot.Name>SyntaxSlot>()
+>>
+
+writeZeroOrMoreParameter(syntaxSlot) ::=<<
+context.<syntaxSlot.ParameterName>()
+       .ZeroOrMore(Visit<syntaxSlot.Name>)
+       .OfType\<<syntaxSlot.Name>SyntaxSlot>()
+>>
+
+pl(slotModel)::=<<
+<if(slotModel.IsToN)>s<endif>
+>>

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace Tool.GdSyntaxGenerator.Models {
 
+    // TODO: Eigentlich sind die Slots hier die Rules und AbstractRules
     class SlotModels {
 
         public SlotModels(GrammarInfo grammarInfo) {

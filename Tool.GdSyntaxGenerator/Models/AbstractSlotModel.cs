@@ -6,10 +6,12 @@ namespace Tool.GdSyntaxGenerator.Models {
 
         public AbstractSlotModel(ParserRule rule) {
 
-            RuleName = rule.Name.ToPascalcase();
+            RawRuleName = rule.Name;
+            RuleName    = rule.Name.ToPascalcase();
         }
 
-        public string RuleName { get; }
+        public string RuleName    { get; }
+        public string RawRuleName { get; }
 
     }
 

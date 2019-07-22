@@ -18,7 +18,6 @@ guiDescription
         EOF
     ;
 
-
 usingDeclaration 
     :   usingDeclarationBegin 
             qualifiedName 
@@ -186,7 +185,7 @@ hotkeysSectionEnd
 	   
 
 hotkeyDeclaration
-    :   Hotkey Identifier modifierOption* hotkeyAssignement CallName=Identifier CallType=Identifier?
+    :   Hotkey HotKeyName=Identifier modifierOption* hotkeyAssignement CallName=Identifier CallType=Identifier?
     ;
 
 hotkeyAssignement
@@ -274,7 +273,7 @@ controlSection
             
 
 controlSectionBegin
-    : Control ControlType=Identifier Identifier template?
+    : Control ControlType=Identifier ControlName=Identifier template?
     ;
 
 controlSectionEnd
@@ -519,7 +518,7 @@ falseValue
 
 
 propertyAddAssign
-    :   lvalueExpression PlusEquals Identifier CallType=Identifier?
+    :   lvalueExpression PlusEquals CallName=Identifier CallType=Identifier?
     ;
 
 

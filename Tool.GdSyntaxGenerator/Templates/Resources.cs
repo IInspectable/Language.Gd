@@ -9,10 +9,11 @@ namespace Tool.GdSyntaxGenerator.Templates {
     static class Resources {
 
         // ReSharper disable InconsistentNaming
-        public static readonly string CommonTemplate         = LoadText("Common.stg");
-        public static readonly string SyntaxKindEnumTemplate = LoadText("SyntaxKindEnum.stg");
-        public static readonly string SyntaxSlotTemplate     = LoadText("SyntaxSlot.stg");
-        public static readonly string SyntaxNodeTemplate     = LoadText("SyntaxNode.stg");
+        public static readonly string CommonTemplate            = LoadText("Common.stg");
+        public static readonly string SyntaxKindEnumTemplate    = LoadText("SyntaxKindEnum.stg");
+        public static readonly string SyntaxSlotTemplate        = LoadText("SyntaxSlot.stg");
+        public static readonly string SyntaxNodeTemplate        = LoadText("SyntaxNode.stg");
+        public static readonly string SyntaxSlotBuilderTemplate = LoadText("SyntaxSlotBuilder.stg");
 
         // ReSharper restore InconsistentNaming
 

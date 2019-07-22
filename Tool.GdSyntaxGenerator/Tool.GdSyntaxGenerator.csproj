@@ -26,6 +26,7 @@
     <None Remove="Templates\SyntaxKindEnum.stg" />
     <None Remove="Templates\SyntaxNode.stg" />
     <None Remove="Templates\SyntaxSlot.stg" />
+    <None Remove="Templates\SyntaxSlotBuilder.stg" />
   </ItemGroup>
 
   <ItemGroup>
@@ -41,6 +42,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Templates\Common.stg" />
+    <EmbeddedResource Include="Templates\SyntaxSlotBuilder.stg" />
     <EmbeddedResource Include="Templates\SyntaxNode.stg" />
     <EmbeddedResource Include="Templates\SyntaxSlot.stg" />
     <EmbeddedResource Include="Templates\SyntaxKindEnum.stg" />

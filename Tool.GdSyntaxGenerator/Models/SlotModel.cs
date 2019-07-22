@@ -21,9 +21,14 @@ namespace Tool.GdSyntaxGenerator.Models {
 
             foreach (var element in rule.Alternatives.Single().Elements) {
 
+                var name = element.Name.ToPascalcase();
+                if (name == "EOF") {
+                    name = "Eof";
+                }
                 Slots.Add(new SlotMemberModel {
-                    Name    = element.Name.ToPascalcase(),
-                    IsToken = element is TokenElement,
+                    Name      = name,
+                    IsToken   = element is TokenElement,
+                    IsLabeled = element.IsLabeled,
                     // TODO Falls token, dann wollen wir hier immer eine 0..1 
                     Cardinality = element.Cardinality,
                     SlotIndex   = index++

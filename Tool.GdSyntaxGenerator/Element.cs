@@ -4,6 +4,7 @@
 
         public string Name        { get; set; }
         public string Cardinality { get; set; }
+        public bool   IsLabeled   { get; set; }
 
         public override string ToString() {
             return $"{Name}{Cardinality}";
