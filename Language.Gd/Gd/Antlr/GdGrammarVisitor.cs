@@ -63,11 +63,16 @@ namespace Pharmatechnik.Language.Gd.Antlr {
             return TextExtentFactory.CreateExtent(context);
         }
 
-        // TODO Perf Optimierung
+        // TODO Perf Optimierung /OptinalTokens
         TokenSlot GetTokenSlot(IToken terminalNode) {
             // TODO Missing Tokens klären...
-            if (terminalNode.StartIndex == -1 || terminalNode.StartIndex == -1) {
-                return TokenSlot.Create(TextExtent.Missing, (SyntaxKind) terminalNode.Type);
+            if (terminalNode==null||terminalNode.StartIndex == -1 || terminalNode.StartIndex == -1) {
+
+                var type = SyntaxKind.MinusAlt;
+                if (terminalNode != null) {
+                    type = (SyntaxKind) terminalNode.Type;
+                }
+                return TokenSlot.Create(TextExtent.Missing,  type);
             }
             return _tokens.First(t => t.Start == terminalNode.StartIndex);
         }
