@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Threading;
 
 using Pharmatechnik.Language.Gd.Antlr;
 using Pharmatechnik.Language.Gd.Internal;
@@ -8,13 +9,32 @@ namespace Pharmatechnik.Language.Gd {
 
     public class SyntaxTree {
 
-        SyntaxTree(SourceText sourceText, ImmutableArray<TokenSlot> tokens, ImmutableArray<Diagnostic> diagnostics) {
+        readonly SyntaxSlot _rootSlot;
+
+        SyntaxTree(SourceText sourceText, 
+                   SyntaxSlot rootSlot,
+                   ImmutableArray<TokenSlot> tokens, 
+                   ImmutableArray<Diagnostic> diagnostics) {
             SourceText  = sourceText;
             Tokens      = tokens;
             Diagnostics = diagnostics;
+            _rootSlot = rootSlot;
 
         }
 
+        SyntaxNode _root;
+        public SyntaxNode Root {
+            get {
+                var root = _root;
+                if (root == null) {
+                    Interlocked.CompareExchange(ref _root, _rootSlot.Realize(this, null), null);
+                    root = _root;
+                }
+
+                return root;
+            }
+        }
+        
         public   SourceText                 SourceText  { get; }
         internal ImmutableArray<TokenSlot>  Tokens      { get; }
         public   ImmutableArray<Diagnostic> Diagnostics { get; }
@@ -49,7 +69,7 @@ namespace Pharmatechnik.Language.Gd {
             //slot.Realize(this, null);
             // SyntaxTree, etc
 
-            return new SyntaxTree(sourceText, tokens, diagnostics.ToImmutableArray());
+            return new SyntaxTree(sourceText, slot, tokens, diagnostics.ToImmutableArray());
         }
 
     }
