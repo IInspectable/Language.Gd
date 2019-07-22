@@ -43,8 +43,9 @@ writeParameter(slot) ::=<<
 <if(slot.IsToken)><slot:writeTokenParameter()><else><slot:writeSyntaxParameter()><endif>
 >>
 
+// TODO Optionale Tokens!!
 writeTokenParameter(tokenSlot) ::=<<
-GetTokenSlot(context.<tokenSlot.Name><if(tokenSlot.IsLabeled)><else>().Symbol<endif>)
+GetTokenSlot(context.<tokenSlot.Name><if(tokenSlot.IsLabeled)><else>()?.Symbol<endif>)
 >>
 
 writeSyntaxParameter(syntaxSlot) ::=<%
