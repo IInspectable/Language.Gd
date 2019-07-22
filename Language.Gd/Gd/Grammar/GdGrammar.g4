@@ -273,11 +273,11 @@ controlSection
             
 
 controlSectionBegin
-    : Control ControlType=Identifier ControlName=Identifier template?
+    : ControlKeyword=Control ControlType=Identifier ControlName=Identifier template?
     ;
 
 controlSectionEnd
-    : End Control Identifier?
+    : EndKeyword=End ControlKeyword=Control ControlName=Identifier?
     ;
 
 barManagerSection
