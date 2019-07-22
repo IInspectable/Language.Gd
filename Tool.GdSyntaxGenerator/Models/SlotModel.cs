@@ -25,10 +25,17 @@ namespace Tool.GdSyntaxGenerator.Models {
                 if (name == "EOF") {
                     name = "Eof";
                 }
+
+                var syntaxKind = element.SyntaxKind;
+                if (syntaxKind == "EOF") {
+                    syntaxKind = "Eof";
+                }
+
                 Slots.Add(new SlotMemberModel {
-                    Name      = name,
-                    IsToken   = element is TokenElement,
-                    IsLabeled = element.IsLabeled,
+                    Name       = name,
+                    IsToken    = element is TokenElement,
+                    IsLabeled  = element.IsLabeled,
+                    SyntaxKind = syntaxKind,
                     // TODO Falls token, dann wollen wir hier immer eine 0..1 
                     Cardinality = element.Cardinality,
                     SlotIndex   = index++

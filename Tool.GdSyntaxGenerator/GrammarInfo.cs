@@ -85,8 +85,9 @@ namespace Tool.GdSyntaxGenerator {
 
             if (_currentAlternative != null) {
                 _currentElement = new RuleElement {
-                    Name      = _labeledElementName ?? context.RULE_REF().GetText(),
-                    IsLabeled = _labeledElementName != null
+                    SyntaxKind = $"{context.RULE_REF().GetText()}Syntax",
+                    Name       = _labeledElementName ?? context.RULE_REF().GetText(),
+                    IsLabeled  = _labeledElementName != null
                 };
 
                 _currentAlternative.Elements.Add(_currentElement);
@@ -99,8 +100,9 @@ namespace Tool.GdSyntaxGenerator {
 
             if (_currentAlternative != null) {
                 _currentElement = new TokenElement {
-                    Name = _labeledElementName ?? context.TOKEN_REF().GetText(),
-                    IsLabeled = _labeledElementName != null
+                    Name       = _labeledElementName ?? context.TOKEN_REF().GetText(),
+                    SyntaxKind = $"{context.TOKEN_REF().GetText()}",
+                    IsLabeled  = _labeledElementName != null
                 };
 
                 _currentAlternative.Elements.Add(_currentElement);

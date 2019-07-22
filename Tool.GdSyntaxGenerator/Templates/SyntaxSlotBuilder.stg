@@ -2,14 +2,7 @@
 
 Begin(model, context) ::=<<
 <writeFileHeader(context)>
-
-using System.Linq;
-using System.Collections.Immutable;
-
-using Antlr4.Runtime;
 using Antlr4.Runtime.Misc;
-
-using Pharmatechnik.Language.Text;
 using Pharmatechnik.Language.Gd.Internal;
 
 namespace Pharmatechnik.Language.Gd.Antlr {
@@ -45,7 +38,7 @@ writeParameter(slot) ::=<<
 
 // TODO Optionale Tokens!!
 writeTokenParameter(tokenSlot) ::=<<
-GetTokenSlot(context.<tokenSlot.Name><if(tokenSlot.IsLabeled)><else>()?.Symbol<endif>)
+GetTokenSlot(context.<tokenSlot.Name><if(tokenSlot.IsLabeled)><else>()?.Symbol<endif>, SyntaxKind.<tokenSlot.SyntaxKind>)
 >>
 
 writeSyntaxParameter(syntaxSlot) ::=<%

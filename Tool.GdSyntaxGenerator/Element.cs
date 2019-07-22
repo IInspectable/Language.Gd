@@ -3,6 +3,7 @@
     class Element {
 
         public string Name        { get; set; }
+        public string SyntaxKind  { get; set; }
         public string Cardinality { get; set; }
         public bool   IsLabeled   { get; set; }
 

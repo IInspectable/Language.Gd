@@ -24,17 +24,17 @@ namespace Pharmatechnik.Language.Gd.Antlr {
         }
 
         // TODO Perf Optimierung /OptinalTokens
-        TokenSlot GetTokenSlot([CanBeNull] IToken terminalNode) {
+        TokenSlot GetTokenSlot([CanBeNull] IToken terminalNode, SyntaxKind syntaxKind) {
             // TODO Missing Tokens klären...
-            if (terminalNode == null || terminalNode.StartIndex == -1 || terminalNode.StartIndex == -1) {
 
-                var type = SyntaxKind.MinusAlt;
-                if (terminalNode != null) {
-                    type = (SyntaxKind) terminalNode.Type;
-                }
-
-                return TokenSlot.Create(TextExtent.Missing, type);
+            if (terminalNode == null) {
+                return TokenSlot.Create(TextExtent.Missing, syntaxKind);
             }
+
+            //if (terminalNode.StartIndex == -1 || terminalNode.StartIndex == -1) {
+
+            //    return TokenSlot.Create(TextExtent.Missing, syntaxKind);
+            //}
 
             return _tokens.First(t => t.Start == terminalNode.StartIndex);
         }
