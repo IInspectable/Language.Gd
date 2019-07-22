@@ -31,11 +31,6 @@ namespace Pharmatechnik.Language.Gd.Antlr {
                 return TokenSlot.Create(TextExtent.Missing, syntaxKind);
             }
 
-            //if (terminalNode.StartIndex == -1 || terminalNode.StartIndex == -1) {
-
-            //    return TokenSlot.Create(TextExtent.Missing, syntaxKind);
-            //}
-
             return _tokens.First(t => t.Start == terminalNode.StartIndex);
         }
 
