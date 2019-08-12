@@ -140,9 +140,15 @@ END NAMESPACE
         [Test]
         public void AllGds() {
 
+            var testDir = @"c:\ws\xtplus\main";
+            if (!Directory.Exists(testDir)) {
+                Assert.Warn($"Test directory '{testDir}' does not exist.");
+                return;
+            }
+
             var count = 0;
             foreach (var file in Directory.EnumerateFiles(
-                @"c:\ws\xtplus\main", "*.gd", SearchOption.AllDirectories)) {
+                testDir, "*.gd", SearchOption.AllDirectories)) {
 
                 count++;
 
