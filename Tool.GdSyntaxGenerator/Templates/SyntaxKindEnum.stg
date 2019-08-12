@@ -3,7 +3,7 @@
 Begin(model, context) ::=<<
 <writeFileHeader(context)>
 
-namespace Pharmatechnik.Language.Gd {
+namespace <model.Namespace> {
 
     public enum SyntaxKind {
         <writeEnumMembers(model.EnumMembers)>

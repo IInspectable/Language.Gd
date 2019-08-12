@@ -13,38 +13,42 @@ namespace Tool.GdSyntaxGenerator {
 
         public static void Main(string[] args) {
 
-            // TODO Pfade als Parameter
-            const string grammarPath = @"C:\ws\git\Language.Gd\Language.Gd\Gd\Grammar\GdGrammar.g4";
-            const string tokenPath   = @"C:\ws\git\Language.Gd\Language.Gd\Gd\Grammar\GdTokens.g4";
+            var targetDirectory = Path.GetTempPath();
+            if (args.Length > 0) {
+                targetDirectory = args[0];
+            }
 
-            var tokenInfo = ReadTokenInfo(tokenPath);
+            var baseNamespace = "Unspecified";
+            if (args.Length > 1) {
+                baseNamespace = args[1];
+            }
+
+            var tokenInfo = ReadTokenInfo(Resources.GdTokens);
             foreach (var token in tokenInfo.Tokens) {
                 Console.WriteLine($"{token.Index}:{token.Name}");
             }
 
-            var grammarInfo = ReadGrammarInfo(grammarPath);
+            var grammarInfo = ReadGrammarInfo(Resources.GdGrammar);
             foreach (var rule in grammarInfo.Rules) {
                 Console.WriteLine();
                 Console.WriteLine(rule);
             }
 
-            WriteModel(args, tokenInfo, grammarInfo);
+            WriteGeneratedFiles(targetDirectory, baseNamespace, tokenInfo, grammarInfo);
         }
 
-        static void WriteModel(string[] args, TokenInfo tokenInfo, GrammarInfo grammarInfo) {
+        static void WriteGeneratedFiles(string targetDirectory, string baseNamespace, TokenInfo tokenInfo, GrammarInfo grammarInfo) {
 
             var syntaxKindModel = new SyntaxKindEnumModel(
+                @namespace: baseNamespace,
                 tokenInfo: tokenInfo,
                 grammarInfo: grammarInfo
             );
             var slotModels = new SlotModels(
+                baseNamespace: baseNamespace,
                 grammarInfo: grammarInfo
             );
 
-            var targetNamespace = args[0];
-            var targetDirectory = args[1];
-
-            Console.WriteLine(targetNamespace);
             Console.WriteLine(targetDirectory);
 
             if (!Directory.Exists(targetDirectory)) {
@@ -52,17 +56,14 @@ namespace Tool.GdSyntaxGenerator {
             }
 
             WriteSyntaxKind(targetDirectory, syntaxKindModel);
-
             WriteSyntaxSlots(targetDirectory, slotModels);
             WriteSyntaxNodes(targetDirectory, slotModels);
             WriteSyntaxSlotBuilder(targetDirectory, slotModels);
         }
 
-        static GrammarInfo ReadGrammarInfo(string grammarPath) {
+        static GrammarInfo ReadGrammarInfo(string grammarSpec) {
 
-            string input = File.ReadAllText(grammarPath);
-
-            ICharStream stream = new AntlrInputStream(input);
+            ICharStream stream = new AntlrInputStream(grammarSpec);
             var         lexer  = new AntlrV4Tokens(stream);
 
             // Setup Parser
@@ -77,11 +78,9 @@ namespace Tool.GdSyntaxGenerator {
 
         }
 
-        static TokenInfo ReadTokenInfo(string tokenPath) {
+        static TokenInfo ReadTokenInfo(string tokenSpec) {
 
-            var input = File.ReadAllText(tokenPath);
-
-            ICharStream stream = new AntlrInputStream(input);
+            ICharStream stream = new AntlrInputStream(tokenSpec);
             var         lexer  = new AntlrV4Tokens(stream);
 
             // Setup Parser

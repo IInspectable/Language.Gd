@@ -5,7 +5,7 @@ Begin(model, context) ::=<<
 
 using Pharmatechnik.Language.Gd.Internal;
 
-namespace Pharmatechnik.Language.Gd {
+namespace <model.Namespace> {
    
     <writeAbstractSyntaxClasses(model.AbstractSlots)>
     <writeSyntaxClasses(model.Slots)>

@@ -6,7 +6,7 @@ Begin(model, context) ::=<<
 using JetBrains.Annotations;
 using Pharmatechnik.Language.Text;
 
-namespace Pharmatechnik.Language.Gd.Internal {
+namespace <model.Namespace>.Internal {
 
     <writeAbstractSlots(model.AbstractSlots)>
 

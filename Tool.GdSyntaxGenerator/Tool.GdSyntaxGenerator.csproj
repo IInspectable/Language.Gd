@@ -30,14 +30,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <Antlr4 Include="..\Language.Gd\Gd\Grammar\GdGrammar.g4" Link="Grammar\GdGrammar.g4">
-      <CustomToolNamespace>Pharmatechnik.Language.Gd.Antlr</CustomToolNamespace>
-    </Antlr4>
-    <Antlr4 Include="..\Language.Gd\Gd\Grammar\GdTokens.g4" Link="Grammar\GdTokens.g4">
-      <CustomToolNamespace>Pharmatechnik.Language.Gd.Antlr</CustomToolNamespace>
-    </Antlr4>
-   
-    
+    <EmbeddedResource Include="..\Language.Gd\Gd\Grammar\GdGrammar.g4" Link="Grammar\GdGrammar.g4"/>
+    <EmbeddedResource Include="..\Language.Gd\Gd\Grammar\GdTokens.g4" Link="Grammar\GdTokens.g4"/>
   </ItemGroup>
 
   <ItemGroup>

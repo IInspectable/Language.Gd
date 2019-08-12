@@ -8,7 +8,7 @@ namespace Tool.GdSyntaxGenerator.Models {
 
     class SlotModel: AbstractSlotModel {
 
-        public SlotModel(ParserRule rule, string baseRule): base(rule) {
+        public SlotModel(ParserRule rule, string baseRule, string baseNamespace): base(rule: rule, baseNamespace: baseNamespace) {
 
             if (rule.Alternatives.Count != 1) {
                 throw new ArgumentException();

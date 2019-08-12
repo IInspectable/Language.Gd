@@ -5,7 +5,7 @@ Begin(model, context) ::=<<
 using Antlr4.Runtime.Misc;
 using Pharmatechnik.Language.Gd.Internal;
 
-namespace Pharmatechnik.Language.Gd.Antlr {
+namespace <model.Namespace>.Antlr {
    
     partial class GdSyntaxSlotBuilder: GdGrammarBaseVisitor\<SyntaxSlot> {
 

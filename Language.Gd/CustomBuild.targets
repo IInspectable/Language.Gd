@@ -14,7 +14,7 @@
     <PropertyGroup>
       <GenerateSyntaxTool>Tool.GdSyntaxGenerator.exe</GenerateSyntaxTool>
       <GenerateSyntaxToolPath>$([System.IO.Path]::GetFullPath($(ToolPath)$(GenerateSyntaxTool)))</GenerateSyntaxToolPath>
-      <TargetNamespace>$(RootNamespace).Gd</TargetNamespace>
+      <TargetBaseNamespace>$(RootNamespace).Gd</TargetBaseNamespace>
       <TargetDirectory>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)))\Gd\Syntax\generated</TargetDirectory>
     </PropertyGroup>
 
@@ -22,7 +22,7 @@
            Condition="!Exists($(GenerateSyntaxToolPath))" />
 
     <Exec WorkingDirectory="$(ToolPath)"
-          Command="$(GenerateSyntaxToolPath) $(TargetNamespace) $(TargetDirectory)" />
+          Command="$(GenerateSyntaxToolPath) $(TargetDirectory) $(TargetBaseNamespace)" />
 
     <ItemGroup>
       <Compile Include="$(TargetDirectory)\**\*.cs" />
