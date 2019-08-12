@@ -21,7 +21,7 @@ writeVisitMethods(syntaxSlots) ::=<<
 writeVisitMethod(syntaxSlot) ::=<<
 public override SyntaxSlot Visit<syntaxSlot.RuleName>([NotNull] GdGrammar.<syntaxSlot.RuleName>Context context) {
 	return new <syntaxSlot.RuleName>SyntaxSlot(
-		GetExtent(context),
+		textExtent: GetExtent(context),
 		<writeParameterList(syntaxSlot.Slots)>
 	);
 }
@@ -33,7 +33,7 @@ writeParameterList(slots) ::=<<
 >>
 
 writeParameter(slot) ::=<<
-<if(slot.IsToken)><slot:writeTokenParameter()><else><slot:writeSyntaxParameter()><endif>
+<if(slot.IsToken)><slot.ParameterName>Token: <slot:writeTokenParameter()><else><slot.ParameterName><slot:pl()>: <slot:writeSyntaxParameter()><endif>
 >>
 
 // TODO Optionale Tokens!!
