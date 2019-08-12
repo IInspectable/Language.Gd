@@ -24,6 +24,7 @@ namespace Tool.GdSyntaxGenerator {
 
             var grammarInfo = ReadGrammarInfo(grammarPath);
             foreach (var rule in grammarInfo.Rules) {
+                Console.WriteLine();
                 Console.WriteLine(rule);
             }
 

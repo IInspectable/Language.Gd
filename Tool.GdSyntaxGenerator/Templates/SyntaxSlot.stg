@@ -146,10 +146,6 @@ public override Slot GetSlot(int index) {
 }
 >>
 
-writeSlotCases(slotModels) ::=<<
-<slotModels.writeSlotCase(); anchor, separator="\r\n">
->>
-
 writeSlotCase(slotModel) ::=<<
 case <slotModel.SlotIndex>:
 	return <slotModel.Name><if(slotModel.IsToken)>Token<else><slotModel:pl()><endif>;
