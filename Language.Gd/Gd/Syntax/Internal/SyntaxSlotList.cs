@@ -4,11 +4,11 @@ using System.Collections.Immutable;
 
 namespace Pharmatechnik.Language.Gd.Internal {
 
-    class SyntaxListSlot<T>: Slot where T : SyntaxSlot {
+    class SyntaxSlotList<T>: Slot where T : SyntaxSlot {
 
         private readonly ImmutableArray<T> _slots;
 
-        internal SyntaxListSlot(TextExtent textExtent, ImmutableArray<T> slots)
+        internal SyntaxSlotList(TextExtent textExtent, ImmutableArray<T> slots)
             : base(textExtent, SyntaxKind.SyntaxList) {
             _slots = slots;
         }

@@ -27,7 +27,7 @@ namespace Pharmatechnik.Language.Gd {
 
         internal SyntaxSlot Slot { get; }
 
-        private protected SyntaxList<T> GetSyntaxNode<T, TSlot>(ref SyntaxList<T> field, SyntaxListSlot<TSlot> slots)
+        private protected SyntaxList<T> GetSyntaxNode<T, TSlot>(ref SyntaxList<T> field, SyntaxSlotList<TSlot> slots)
             where T : SyntaxNode
             where TSlot : SyntaxSlot {
             // TODO Implement GetSyntaxNode

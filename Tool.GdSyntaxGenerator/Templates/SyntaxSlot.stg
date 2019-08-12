@@ -86,7 +86,7 @@ public <syntaxPropertyType(slotModel)> <slotModel.Name><slotModel:pl()> { get; }
 >>
 
 syntaxPropertyType(slotModel)::=<<
-<if(slotModel.IsToN)>SyntaxListSlot\<<slotModel.Name>SyntaxSlot><else><slotModel.Name>SyntaxSlot<endif>
+<if(slotModel.IsToN)>SyntaxSlotList\<<slotModel.Name>SyntaxSlot><else><slotModel.Name>SyntaxSlot<endif>
 >>
 
 pl(slotModel)::=<<

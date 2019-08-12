@@ -64,14 +64,15 @@ namespace Pharmatechnik.Language.Gd.Antlr {
         }
 
         [NotNull]
-        public static SyntaxListSlot<TSlot> OfType<TSlot>(this IEnumerable<RequiredSlot> requiredSlots)
+        public static SyntaxSlotList<TSlot> OfType<TSlot>(this IEnumerable<RequiredSlot> requiredSlots)
             where TSlot : SyntaxSlot {
 
             // TODO extent
-            return new SyntaxListSlot<TSlot>(
-                TextExtent.Empty, requiredSlots.Select(rs => rs.Slot)
-                                               .Cast<TSlot>()
-                                               .ToImmutableArray());
+            return new SyntaxSlotList<TSlot>(
+                TextExtent.Empty,
+                requiredSlots.Select(rs => rs.Slot)
+                             .Cast<TSlot>()
+                             .ToImmutableArray());
         }
 
         internal struct OptionalSlot {
