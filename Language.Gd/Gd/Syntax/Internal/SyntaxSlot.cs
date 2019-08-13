@@ -1,16 +1,15 @@
-﻿using Pharmatechnik.Language.Text;
-
-namespace Pharmatechnik.Language.Gd.Internal {
+﻿namespace Pharmatechnik.Language.Gd.Internal {
 
     abstract class SyntaxSlot: Slot {
 
-        protected SyntaxSlot(TextExtent textExtent, SyntaxKind kind)
-            : base(textExtent, kind) {
+        protected SyntaxSlot(SyntaxKind kind)
+            : base(kind) {
         }
 
         public abstract SyntaxNode Realize(
             SyntaxTree syntaxTree,
-            SyntaxNode parent);
+            SyntaxNode parent,
+            int position);
 
     }
 

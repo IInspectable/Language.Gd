@@ -1,15 +1,13 @@
 ﻿using System.Collections.Immutable;
 
-using Pharmatechnik.Language.Text;
-
 namespace Pharmatechnik.Language.Gd.Internal {
 
     partial class TokenSlot {
 
         private class TokenWithTrailingTriviaSlot: TokenSlot {
 
-            public TokenWithTrailingTriviaSlot(TextExtent textExtent, SyntaxKind kind, ImmutableArray<TriviaSlot> trailingTrivias)
-                : base(textExtent, kind) {
+            public TokenWithTrailingTriviaSlot(int fullLength, SyntaxKind kind, ImmutableArray<TriviaSlot> trailingTrivias)
+                : base(fullLength, kind) {
                 TrailingTrivias = trailingTrivias;
             }
 

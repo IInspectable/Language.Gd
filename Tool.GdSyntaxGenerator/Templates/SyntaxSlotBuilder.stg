@@ -21,7 +21,6 @@ writeVisitMethods(syntaxSlots) ::=<<
 writeVisitMethod(syntaxSlot) ::=<<
 public override SyntaxSlot Visit<syntaxSlot.RuleName>([NotNull] GdGrammar.<syntaxSlot.RuleName>Context context) {
 	return new <syntaxSlot.RuleName>SyntaxSlot(
-		textExtent: GetExtent(context),
 		<writeParameterList(syntaxSlot.Slots)>
 	);
 }

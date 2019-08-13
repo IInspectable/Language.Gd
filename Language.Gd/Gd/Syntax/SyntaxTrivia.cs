@@ -7,7 +7,8 @@ namespace Pharmatechnik.Language.Gd {
 
         private readonly TriviaSlot _slot;
 
-        internal SyntaxTrivia(SyntaxTree syntaxTree, SyntaxToken token, TriviaSlot slot) {
+        internal SyntaxTrivia(SyntaxTree syntaxTree, SyntaxToken token, TriviaSlot slot, int position) {
+            Position   = position;
             SyntaxTree = syntaxTree;
             Token      = token;
             _slot      = slot;
@@ -21,9 +22,15 @@ namespace Pharmatechnik.Language.Gd {
         public bool IsMissing           => _slot.IsMissing;
         public bool IsSkipedTokenTrivia => _slot.IsSkipedTokenTrivia;
 
-        public int        ExtentStart => _slot.Start;
-        public TextExtent Extent      => _slot.Extent;
-        public int        ExtentEnd   => _slot.End;
+        internal int Position { get; }
+
+        public int Start      => Position + _slot.GetLeadingTriviaWidth();
+        public int Length     => _slot.Length;
+        public int FullLength => _slot.FullLength;
+        public int End        => Position + _slot.FullLength;
+
+        public TextExtent FullExtent => new TextExtent(start: Position, length: FullLength);
+        public TextExtent Extent     => new TextExtent(start: Start,    length: Length);
 
         public string Text => _slot.ToString();
 

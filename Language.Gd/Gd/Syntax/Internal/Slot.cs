@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 
-using Pharmatechnik.Language.Text;
-
 namespace Pharmatechnik.Language.Gd.Internal {
 
     [Flags]
@@ -16,30 +14,94 @@ namespace Pharmatechnik.Language.Gd.Internal {
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(), nq}")]
     abstract class Slot {
 
+        private int _fullLength;
+
         private string GetDebuggerDisplay() {
-            return Extent + " " + Kind;
+            return GetType().Name + " " + Kind;
         }
 
-        protected Slot(TextExtent textExtent, SyntaxKind kind, SlotFlags slotFlags = SlotFlags.None) {
-            Start  = textExtent.Start;
-            Length = textExtent.Length;
-            Kind   = kind;
-            Flags  = slotFlags;
+        protected Slot(int fullLength, SyntaxKind kind, SlotFlags slotFlags = SlotFlags.None) {
+            _fullLength = fullLength;
+            Kind        = kind;
+            Flags       = slotFlags;
+        }
+
+        protected Slot(SyntaxKind kind, SlotFlags slotFlags = SlotFlags.None) {
+            _fullLength = 0;
+            Kind        = kind;
+            Flags       = slotFlags;
         }
 
         public override string ToString() {
             return GetDebuggerDisplay();
         }
 
-        public bool IsMissing           => Extent.IsMissing;
+        public bool IsMissing           => FullLength == 0;
         public bool IsSkipedTokenTrivia => IsFlagPresent(SlotFlags.IsSkipedTokenTrivia);
 
-        public SlotFlags  Flags  { get; }
-        public TextExtent Extent => new TextExtent(Start, Length);
-        public int        Start  { get; }
-        public int        End    => Start + Length;
-        public int        Length { get; }
-        public SyntaxKind Kind   { get; }
+        protected TSlot AdjustLength<TSlot>(TSlot slot) where TSlot : Slot {
+            _fullLength += slot?.FullLength ?? 0;
+            return slot;
+        }
+
+        //  public abstract int Length
+        // TODO Extent weg, Statt dessen Length und FullLength
+        public int FullLength => _fullLength;
+        public int Length     => FullLength - GetLeadingTriviaWidth() - GetTrailingTriviaWidth();
+
+        public virtual int GetLeadingTriviaWidth() {
+            return FullLength != 0 ? GetFirstTerminal().GetLeadingTriviaWidth() : 0;
+        }
+
+        public virtual int GetTrailingTriviaWidth() {
+            return FullLength != 0 ? GetLastTerminal().GetTrailingTriviaWidth() : 0;
+        }
+
+        internal Slot GetFirstTerminal() {
+            Slot node = this;
+
+            do {
+                Slot firstChild = null;
+                for (int i = 0, n = node.SlotCount; i < n; i++) {
+                    var child = node.GetSlot(i);
+                    if (child != null) {
+                        firstChild = child;
+                        break;
+                    }
+                }
+
+                node = firstChild;
+            } while (node?.SlotCount > 0);
+
+            return node;
+        }
+
+        internal Slot GetLastTerminal() {
+            Slot node = this;
+
+            do {
+                Slot lastChild = null;
+                for (int i = node.SlotCount - 1; i >= 0; i--) {
+                    var child = node.GetSlot(i);
+                    if (child != null) {
+                        lastChild = child;
+                        break;
+                    }
+                }
+
+                node = lastChild;
+            } while (node?.SlotCount > 0);
+
+            return node;
+        }
+
+        public SlotFlags Flags { get; }
+
+        //public TextExtent Extent => new TextExtent(Start, Length);
+        //public int        Start  { get; }
+        //public int        End    => Start + Length;
+        //public int        Length { get; }
+        public SyntaxKind Kind { get; }
 
         public virtual int SlotCount => 0;
 

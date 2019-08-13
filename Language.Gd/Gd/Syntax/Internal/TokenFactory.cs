@@ -11,10 +11,10 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
     class TokenFactory {
 
-        public static ImmutableArray<TokenSlot> CreateTokens(GdCommonTokenStream tokenstream, List<IErrorNode> errorNodes) {
+        public static ImmutableDictionary<int, TokenSlot> CreateTokens(GdCommonTokenStream tokenstream, List<IErrorNode> errorNodes) {
 
             var rawTokens     = tokenstream.AllTokens;
-            var tokens        = ImmutableArray.CreateBuilder<TokenSlot>(rawTokens.Count);
+            var tokens        = ImmutableDictionary.CreateBuilder<int, TokenSlot>();
             var skippedTokens = new List<IToken>(errorNodes.Select(n => n.Symbol));
 
             var tokenBuilder = new TokenBuilder();
@@ -29,21 +29,21 @@ namespace Pharmatechnik.Language.Gd.Internal {
                     rawToken.Channel == GdTokens.Hidden        ||
                     isSkipedTokenTrivia) {
 
-                    var trivia = TriviaSlot.Create(extent, kind, isSkipedTokenTrivia);
+                    var trivia = TriviaSlot.Create(extent.Length, kind, isSkipedTokenTrivia);
                     tokenBuilder.AddTrivia(trivia);
                 } else {
 
-                    tokenBuilder.AddToken(extent, kind, out var completedToken);
-                    if (completedToken != null) {
-                        tokens.Add(completedToken);
+                    tokenBuilder.AddToken(extent, kind, out var completedTokenInfo);
+                    if (completedTokenInfo.Token != null) {
+                        tokens.Add(completedTokenInfo.Start, completedTokenInfo.Token);
                     }
                 }
 
             }
 
-            var lastToken = tokenBuilder.TryCompleteToken();
-            if (lastToken != null) {
-                tokens.Add(lastToken);
+            var lastTokenInfo = tokenBuilder.TryCompleteToken();
+            if (lastTokenInfo.Token != null) {
+                tokens.Add(lastTokenInfo.Start, lastTokenInfo.Token);
             }
 
             return tokens.ToImmutable();

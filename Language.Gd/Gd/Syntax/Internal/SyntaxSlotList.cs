@@ -1,6 +1,4 @@
-﻿using Pharmatechnik.Language.Text;
-
-using System.Collections.Immutable;
+﻿using System.Collections.Immutable;
 
 namespace Pharmatechnik.Language.Gd.Internal {
 
@@ -8,9 +6,12 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
         private readonly ImmutableArray<T> _slots;
 
-        internal SyntaxSlotList(TextExtent textExtent, ImmutableArray<T> slots)
-            : base(textExtent, SyntaxKind.SyntaxList) {
+        internal SyntaxSlotList(ImmutableArray<T> slots)
+            : base(SyntaxKind.SyntaxList) {
             _slots = slots;
+            foreach (var slot in slots) {
+                AdjustLength(slot);
+            }
         }
 
         public override int SlotCount => _slots.Length;

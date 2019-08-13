@@ -5,6 +5,7 @@ namespace Tool.GdSyntaxGenerator.Models {
     class SlotMemberModel {
 
         public bool   IsToken      { get; set; }
+        public bool   IsSyntaxNode => !IsToken;
         public int    SlotIndex    { get; set; }
         public string Name         { get; set; }
         public string SyntaxKind   { get; set; }

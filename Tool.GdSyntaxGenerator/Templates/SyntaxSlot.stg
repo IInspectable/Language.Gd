@@ -4,7 +4,6 @@ Begin(model, context) ::=<<
 <writeFileHeader(context)>
 
 using JetBrains.Annotations;
-using Pharmatechnik.Language.Text;
 
 namespace <model.Namespace>.Internal {
 
@@ -22,12 +21,8 @@ writeAbstractSlots(abstractSlots) ::=<<
 writeAbstractSlot(abstractSlot) ::=<<
 abstract partial class <abstractSlot.RuleName>SyntaxSlot: SyntaxSlot {
     
-    protected <abstractSlot.RuleName>SyntaxSlot(
-        TextExtent textExtent,
-        SyntaxKind kind)
-
-        : base(textExtent: textExtent, 
-               kind      : kind) {
+    protected <abstractSlot.RuleName>SyntaxSlot(SyntaxKind kind)
+        : base(kind: kind) {
     }
 
 }
@@ -44,11 +39,8 @@ writeSlot(slot) ::=<<
 partial class <slot.RuleName>SyntaxSlot: <if(slot.BaseRuleName)><slot.BaseRuleName>SyntaxSlot <else>SyntaxSlot <endif> {
     
     internal <slot.RuleName>SyntaxSlot(
-        TextExtent textExtent, 
         <writeParameterList(slot.Slots)>)
-
-        : base(textExtent: textExtent, 
-               kind      : SyntaxKind.<slot.SyntaxKind>) {
+        : base(SyntaxKind.<slot.SyntaxKind>) {
 
         <writePropertyInits(slot.Slots)>
     }
@@ -59,9 +51,10 @@ partial class <slot.RuleName>SyntaxSlot: <if(slot.BaseRuleName)><slot.BaseRuleNa
 
     public override SyntaxNode Realize(
         SyntaxTree syntaxTree,
-        SyntaxNode parent) {
+        SyntaxNode parent,
+		int position) {
 
-        return new <slot.RuleName>Syntax(syntaxTree, this, parent);
+        return new <slot.RuleName>Syntax(syntaxTree, this, parent, position);
     }
 }
 
@@ -123,11 +116,11 @@ writePropertyInit(slotModel) ::=<<
 >>
 
 writeTokenPropertyInit(slotModel) ::=<<
-<slotModel.Name>Token = <slotModel.ParameterName>Token;
+<slotModel.Name>Token = AdjustLength(<slotModel.ParameterName>Token);
 >>
 
 writeSyntaxPropertyInit(slotModel) ::=<<
-<slotModel.Name><slotModel:pl()> = <slotModel.ParameterName><slotModel:pl()>;
+<slotModel.Name><slotModel:pl()> = AdjustLength(<slotModel.ParameterName><slotModel:pl()>);
 >>
 
 // Slot method 
@@ -150,3 +143,4 @@ writeSlotCase(slotModel) ::=<<
 case <slotModel.SlotIndex>:
 	return <slotModel.Name><if(slotModel.IsToken)>Token<else><slotModel:pl()><endif>;
 >>
+

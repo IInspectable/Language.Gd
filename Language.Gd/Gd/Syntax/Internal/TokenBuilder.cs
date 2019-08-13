@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using JetBrains.Annotations;
-
 using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd.Internal {
@@ -26,9 +24,9 @@ namespace Pharmatechnik.Language.Gd.Internal {
             }
         }
 
-        public void AddToken(TextExtent textExtent, SyntaxKind syntaxKind, out TokenSlot completedToken) {
+        public void AddToken(TextExtent textExtent, SyntaxKind syntaxKind, out (int Start, TokenSlot Token) completedTokenInfo) {
 
-            completedToken = null;
+            completedTokenInfo = (-1, null);
 
             if (HasToken) {
 
@@ -41,7 +39,7 @@ namespace Pharmatechnik.Language.Gd.Internal {
                     }
                 }
 
-                completedToken = TryCompleteToken();
+                completedTokenInfo = TryCompleteToken();
 
                 if (_pendingTrivias.Any()) {
                     _leadingTrivias.AddRange(_pendingTrivias);
@@ -55,18 +53,18 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
         }
 
-        [CanBeNull]
-        public TokenSlot TryCompleteToken() {
+        public (int Start, TokenSlot Token) TryCompleteToken() {
 
             if (_tokenExtent == null || _tokenKind == null) {
-                return null;
+                return (Start: 0, Token: null);
             }
 
-            var tokenSlot = TokenSlot.Create(_tokenExtent.Value, _tokenKind.Value, _leadingTrivias, _trailingTrivias);
+            var start     = _tokenExtent.Value.Start;
+            var tokenSlot = TokenSlot.Create(_tokenExtent.Value.Length, _tokenKind.Value, _leadingTrivias, _trailingTrivias);
 
             Clear();
 
-            return tokenSlot;
+            return (Start: start, Token: tokenSlot);
         }
 
         private void Clear() {

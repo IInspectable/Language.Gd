@@ -8,7 +8,6 @@ using Antlr4.Runtime;
 using JetBrains.Annotations;
 
 using Pharmatechnik.Language.Gd.Internal;
-using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd.Antlr {
 
@@ -67,9 +66,7 @@ namespace Pharmatechnik.Language.Gd.Antlr {
         public static SyntaxSlotList<TSlot> OfType<TSlot>(this IEnumerable<RequiredSlot> requiredSlots)
             where TSlot : SyntaxSlot {
 
-            // TODO extent
             return new SyntaxSlotList<TSlot>(
-                TextExtent.Empty,
                 requiredSlots.Select(rs => rs.Slot)
                              .Cast<TSlot>()
                              .ToImmutableArray());

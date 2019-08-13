@@ -5,12 +5,7 @@ using Pharmatechnik.Language.Text;
 namespace Pharmatechnik.Language.Gd.Internal {
 
     static class TextExtentFactory {
-
-        public static TextExtent CreateExtent(ParserRuleContext context) {
-
-            return CreateExtent(context?.Start, context?.Stop);
-        }
-
+        
         public static TextExtent CreateExtent(IToken token) {
             return CreateExtent(token, token);
         }

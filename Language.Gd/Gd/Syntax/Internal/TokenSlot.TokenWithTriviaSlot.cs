@@ -1,18 +1,14 @@
 ﻿using System.Collections.Immutable;
 
-using JetBrains.Annotations;
-
-using Pharmatechnik.Language.Text;
-
 namespace Pharmatechnik.Language.Gd.Internal {
 
     partial class TokenSlot {
 
         class TokenWithTriviaSlot: TokenSlot {
 
-            public TokenWithTriviaSlot(TextExtent textExtent, SyntaxKind kind,
+            public TokenWithTriviaSlot(int fullLength, SyntaxKind kind,
                                        ImmutableArray<TriviaSlot> leadingTrivias, ImmutableArray<TriviaSlot> trailingTrivias)
-                : base(textExtent, kind) {
+                : base(fullLength, kind) {
                 LeadingTrivias  = leadingTrivias;
                 TrailingTrivias = trailingTrivias;
             }

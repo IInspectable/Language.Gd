@@ -3,6 +3,7 @@
 Begin(model, context) ::=<<
 <writeFileHeader(context)>
 
+using JetBrains.Annotations;
 using Pharmatechnik.Language.Gd.Internal;
 
 namespace <model.Namespace> {
@@ -22,11 +23,13 @@ public abstract partial class <abstractSlot.RuleName>Syntax: SyntaxNode {
     internal <abstractSlot.RuleName>Syntax(
         SyntaxTree syntaxTree, 
         SyntaxSlot slot, 
-        SyntaxNode parent)
+        SyntaxNode parent,
+		int position)
 
         : base(syntaxTree: syntaxTree, 
                slot      : slot, 
-               parent    : parent) {
+               parent    : parent,
+			   position  : position) {
 
     }
 
@@ -47,16 +50,18 @@ public partial class <slot.RuleName>Syntax : <if(slot.BaseRuleName)><slot.BaseRu
     internal <slot.RuleName>Syntax (
         SyntaxTree syntaxTree, 
         <slot.RuleName>SyntaxSlot slot, 
-        SyntaxNode parent)
+        SyntaxNode parent,
+		int position)
 
         : base(syntaxTree: syntaxTree, 
                slot      : slot, 
-               parent    : parent) {
+               parent    : parent,
+			   position  : position) {
 
     }
 	
 	<writeSlotProperties(slot.Slots)>
-     
+	     
     internal new <slot.RuleName>SyntaxSlot Slot => (<slot.RuleName>SyntaxSlot) base.Slot;
 
 }
@@ -76,7 +81,7 @@ public SyntaxToken <tokenSlotModel.Name>Token => Slot.<tokenSlotModel.Name>Token
 >>
 
 writeSyntaxProperty(syntaxSlot)::=<<
-public <syntaxPropertyType(syntaxSlot)> <syntaxSlot.Name><syntaxSlot:pl()> => GetSyntaxNode(ref <syntaxSlot.FieldName><syntaxSlot:pl()>, Slot.<syntaxSlot.Name><syntaxSlot:pl()>);
+public <syntaxPropertyType(syntaxSlot)> <syntaxSlot.Name><syntaxSlot:pl()> => GetSyntaxNode(ref <syntaxSlot.FieldName><syntaxSlot:pl()>, Slot.<syntaxSlot.Name><syntaxSlot:pl()>, index: <syntaxSlot.SlotIndex>);
 >>
 
 writeSyntaxNodeFields(syntaxSlots) ::=<<
@@ -93,4 +98,25 @@ syntaxPropertyType(syntaxSlot)::=<<
 
 pl(slotModel)::=<<
 <if(slotModel.IsToN)>s<endif>
+>>
+
+// GetCachedSlot method 
+
+writeGetCachedSlotMethod(slotModels) ::=<<
+
+[CanBeNull]
+public override SyntaxNode GetCachedSlot(int index) {
+	switch(index) {
+		<slotModels:writeGetCachedSlotCase(); anchor, separator="\r\n">
+		default:
+			return null;
+	}
+}
+>>
+
+writeGetCachedSlotCase(slotModel) ::=<<
+<if(slotModel.IsSyntaxNode)>
+case <slotModel.SlotIndex>:
+	return <slotModel.Name><slotModel:pl()>;
+<endif>
 >>

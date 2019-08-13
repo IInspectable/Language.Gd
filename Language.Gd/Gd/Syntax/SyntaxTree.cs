@@ -11,33 +11,34 @@ namespace Pharmatechnik.Language.Gd {
 
         readonly SyntaxSlot _rootSlot;
 
-        SyntaxTree(SourceText sourceText, 
+        SyntaxTree(SourceText sourceText,
                    SyntaxSlot rootSlot,
-                   ImmutableArray<TokenSlot> tokens, 
+                   ImmutableDictionary<int, TokenSlot> tokens,
                    ImmutableArray<Diagnostic> diagnostics) {
             SourceText  = sourceText;
             Tokens      = tokens;
             Diagnostics = diagnostics;
-            _rootSlot = rootSlot;
+            _rootSlot   = rootSlot;
 
         }
 
         SyntaxNode _root;
+
         public SyntaxNode Root {
             get {
                 var root = _root;
                 if (root == null) {
-                    Interlocked.CompareExchange(ref _root, _rootSlot.Realize(this, null), null);
+                    Interlocked.CompareExchange(ref _root, _rootSlot.Realize(this, null, position: 0), null);
                     root = _root;
                 }
 
                 return root;
             }
         }
-        
-        public   SourceText                 SourceText  { get; }
-        internal ImmutableArray<TokenSlot>  Tokens      { get; }
-        public   ImmutableArray<Diagnostic> Diagnostics { get; }
+
+        public   SourceText                          SourceText  { get; }
+        internal ImmutableDictionary<int, TokenSlot> Tokens      { get; }
+        public   ImmutableArray<Diagnostic>          Diagnostics { get; }
 
         public static SyntaxTree Parse(SourceText sourceText) {
 
@@ -64,7 +65,7 @@ namespace Pharmatechnik.Language.Gd {
 
             var tokens  = TokenFactory.CreateTokens(cts, errorNodes.ErrorNodes);
             var visitor = new GdSyntaxSlotBuilder(tokens);
-            var slot=visitor.Visit(tree);
+            var slot    = visitor.Visit(tree);
 
             //slot.Realize(this, null);
             // SyntaxTree, etc

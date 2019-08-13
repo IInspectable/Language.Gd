@@ -8,6 +8,7 @@ namespace Pharmatechnik.Language.Gd {
         private readonly TokenSlot _slot;
 
         internal SyntaxToken(SyntaxTree syntaxTree, SyntaxNode parent, TokenSlot slot) {
+            Start = 0; // TODO Start
             SyntaxTree = syntaxTree;
             Parent     = parent;
             _slot      = slot;
@@ -21,9 +22,10 @@ namespace Pharmatechnik.Language.Gd {
 
         public bool IsMissing => _slot.IsMissing;
 
-        public int        ExtentStart => _slot.Start;
-        public TextExtent Extent      => _slot.Extent;
-        public int        ExtentEnd   => _slot.End;
+        // TODO
+        public int Start { get; }
+        //public TextExtent Extent      => _slot.Extent;
+        //public int        ExtentEnd   => _slot.End;
 
         public string Text => _slot.ToString();
 
