@@ -25,8 +25,9 @@
           Command="$(GenerateSyntaxToolPath) $(TargetDirectory) $(TargetBaseNamespace)" />
 
     <ItemGroup>
-      <!--<Compile Include="$(TargetDirectory)\**\*.cs" />-->
-      <!--<FileWrites Include="$(TargetDirectory)\**\*.cs" />-->
+      <Compile Remove="$(TargetDirectory)\**\*.cs" />
+      <Compile Include="$(TargetDirectory)\**\*.cs" />
+      <FileWrites Include="$(TargetDirectory)\**\*.cs" />
     </ItemGroup>
 
   </Target>
