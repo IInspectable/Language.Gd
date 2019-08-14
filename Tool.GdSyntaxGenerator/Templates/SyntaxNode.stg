@@ -61,6 +61,8 @@ public partial class <slot.RuleName>Syntax : <if(slot.BaseRuleName)><slot.BaseRu
     }
 	
 	<writeSlotProperties(slot.Slots)>
+
+	<writeGetCachedSlotMethod(slot.Slots)>
 	     
     internal new <slot.RuleName>SyntaxSlot Slot => (<slot.RuleName>SyntaxSlot) base.Slot;
 
@@ -81,7 +83,15 @@ public SyntaxToken <tokenSlotModel.Name>Token => Slot.<tokenSlotModel.Name>Token
 >>
 
 writeSyntaxProperty(syntaxSlot)::=<<
-public <syntaxPropertyType(syntaxSlot)> <syntaxSlot.Name><syntaxSlot:pl()> => GetSyntaxNode(ref <syntaxSlot.FieldName><syntaxSlot:pl()>, Slot.<syntaxSlot.Name><syntaxSlot:pl()>, index: <syntaxSlot.SlotIndex>);
+<if(syntaxSlot.IsToN)><syntaxSlot:writeSyntaxPropertyToN()><else><syntaxSlot:writeSyntaxPropertyTo1()><endif>
+>>
+
+writeSyntaxPropertyTo1(syntaxSlot)::=<<
+public <syntaxSlot.Name>Syntax <syntaxSlot.Name> => GetSyntaxNode(ref <syntaxSlot.FieldName>, Slot.<syntaxSlot.Name><syntaxSlot:pl()>, index: <syntaxSlot.SlotIndex>);
+>>
+
+writeSyntaxPropertyToN(syntaxSlot)::=<<
+public SyntaxList\<<syntaxSlot.Name>Syntax> <syntaxSlot.Name><syntaxSlot:pl()> => GetSyntaxNode\<<syntaxSlot.Name>Syntax, <syntaxSlot.Name>SyntaxSlot>(ref <syntaxSlot.FieldName><syntaxSlot:pl()>, Slot.<syntaxSlot.Name><syntaxSlot:pl()>, index: <syntaxSlot.SlotIndex>);
 >>
 
 writeSyntaxNodeFields(syntaxSlots) ::=<<
@@ -89,11 +99,11 @@ writeSyntaxNodeFields(syntaxSlots) ::=<<
 >>
 
 writeSyntaxNodeField(syntaxSlot)::=<<
-<syntaxPropertyType(syntaxSlot)> <syntaxSlot.FieldName><syntaxSlot:pl()>;
+<syntaxFieldType(syntaxSlot)> <syntaxSlot.FieldName><syntaxSlot:pl()>;
 >>
 
-syntaxPropertyType(syntaxSlot)::=<<
-<if(syntaxSlot.IsToN)>SyntaxList\<<syntaxSlot.Name>Syntax><else><syntaxSlot.Name>Syntax<endif>
+syntaxFieldType(syntaxSlot)::=<<
+<if(syntaxSlot.IsToN)>SyntaxListNode<else><syntaxSlot.Name>Syntax<endif>
 >>
 
 pl(slotModel)::=<<
@@ -107,7 +117,7 @@ writeGetCachedSlotMethod(slotModels) ::=<<
 [CanBeNull]
 public override SyntaxNode GetCachedSlot(int index) {
 	switch(index) {
-		<slotModels:writeGetCachedSlotCase(); anchor, separator="\r\n">
+		<slotModels:writeGetCachedSlotCase(); anchor>
 		default:
 			return null;
 	}
@@ -117,6 +127,5 @@ public override SyntaxNode GetCachedSlot(int index) {
 writeGetCachedSlotCase(slotModel) ::=<<
 <if(slotModel.IsSyntaxNode)>
 case <slotModel.SlotIndex>:
-	return <slotModel.Name><slotModel:pl()>;
-<endif>
+	return <slotModel.FieldName><slotModel:pl()>;<endif>
 >>

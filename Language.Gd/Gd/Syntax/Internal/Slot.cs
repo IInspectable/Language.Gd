@@ -50,14 +50,14 @@ namespace Pharmatechnik.Language.Gd.Internal {
         public int Length     => FullLength - GetLeadingTriviaWidth() - GetTrailingTriviaWidth();
 
         public virtual int GetLeadingTriviaWidth() {
-            return FullLength != 0 ? GetFirstTerminal().GetLeadingTriviaWidth() : 0;
+            return FullLength != 0 ? GetFirstToken().GetLeadingTriviaWidth() : 0;
         }
 
         public virtual int GetTrailingTriviaWidth() {
-            return FullLength != 0 ? GetLastTerminal().GetTrailingTriviaWidth() : 0;
+            return FullLength != 0 ? GetLastToken().GetTrailingTriviaWidth() : 0;
         }
 
-        internal Slot GetFirstTerminal() {
+        internal Slot GetFirstToken() {
             Slot node = this;
 
             do {
@@ -76,7 +76,7 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return node;
         }
 
-        internal Slot GetLastTerminal() {
+        internal Slot GetLastToken() {
             Slot node = this;
 
             do {
@@ -97,10 +97,6 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
         public SlotFlags Flags { get; }
 
-        //public TextExtent Extent => new TextExtent(Start, Length);
-        //public int        Start  { get; }
-        //public int        End    => Start + Length;
-        //public int        Length { get; }
         public SyntaxKind Kind { get; }
 
         public virtual int SlotCount => 0;
@@ -110,7 +106,7 @@ namespace Pharmatechnik.Language.Gd.Internal {
         bool IsFlagPresent(SlotFlags flag) {
             return (Flags & flag) == flag;
         }
-
+        
     }
 
 }

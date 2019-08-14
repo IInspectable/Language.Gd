@@ -2,7 +2,14 @@
 
 namespace Pharmatechnik.Language.Gd.Internal {
 
-    class SyntaxSlotList<T>: Slot where T : SyntaxSlot {
+    abstract class SyntaxSlotList: SyntaxSlot {
+
+        protected SyntaxSlotList(SyntaxKind kind): base(kind) {
+        }
+
+    }
+
+    class SyntaxSlotList<T>: SyntaxSlotList where T : SyntaxSlot {
 
         private readonly ImmutableArray<T> _slots;
 
@@ -20,6 +27,10 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return _slots[index];
         }
 
+        public override SyntaxNode Realize(SyntaxTree syntaxTree, SyntaxNode parent, int position) {
+            return new SyntaxListNode(syntaxTree, this, parent, position);
+        }
+        
     }
 
 }
