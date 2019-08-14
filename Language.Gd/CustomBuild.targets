@@ -9,7 +9,7 @@
   </PropertyGroup>
 
   <Target Name="GenerateSyntax"
-          BeforeTargets="PreBuildEvent" DependsOnTargets="ResolveProjectReferences">
+          BeforeTargets="BeforeBuild" DependsOnTargets="ResolveProjectReferences">
 
     <PropertyGroup>
       <GenerateSyntaxTool>Tool.GdSyntaxGenerator.exe</GenerateSyntaxTool>
@@ -25,9 +25,8 @@
           Command="$(GenerateSyntaxToolPath) $(TargetDirectory) $(TargetBaseNamespace)" />
 
     <ItemGroup>
-      <Compile Remove="$(TargetDirectory)\**\*.cs" />
-      <Compile Include="$(TargetDirectory)\**\*.cs" />
-      <FileWrites Include="$(TargetDirectory)\**\*.cs" />
+      <Compile Update="$(TargetDirectory)\**\*.cs" />
+      <FileWrites Update="$(TargetDirectory)\**\*.cs" />
     </ItemGroup>
 
   </Target>
