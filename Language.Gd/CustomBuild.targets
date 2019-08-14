@@ -11,23 +11,26 @@
   <Target Name="GenerateSyntax"
           BeforeTargets="BeforeBuild" DependsOnTargets="ResolveProjectReferences">
 
+
     <PropertyGroup>
       <GenerateSyntaxTool>Tool.GdSyntaxGenerator.exe</GenerateSyntaxTool>
       <GenerateSyntaxToolPath>$([System.IO.Path]::GetFullPath($(ToolPath)$(GenerateSyntaxTool)))</GenerateSyntaxToolPath>
-      <TargetBaseNamespace>$(RootNamespace).Gd</TargetBaseNamespace>
-      <TargetDirectory>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)))\Gd\Syntax\generated</TargetDirectory>
+      <GenerateTargetBaseNamespace>$(RootNamespace).Gd</GenerateTargetBaseNamespace>
+      <GenerateTargetDirectory>$([System.IO.Path]::GetFullPath($(MSBuildThisFileDirectory)))\Gd\Syntax\generated</GenerateTargetDirectory>
     </PropertyGroup>
 
     <Error Text="GenerateSyntax tool not found: $(GenerateSyntaxToolPath)"
            Condition="!Exists($(GenerateSyntaxToolPath))" />
 
     <Exec WorkingDirectory="$(ToolPath)"
-          Command="$(GenerateSyntaxToolPath) $(TargetDirectory) $(TargetBaseNamespace)" />
+          Command="$(GenerateSyntaxToolPath) $(GenerateTargetDirectory) $(GenerateTargetBaseNamespace)" />
+
 
     <ItemGroup>
-      <Compile Update="$(TargetDirectory)\**\*.cs" />
-      <FileWrites Update="$(TargetDirectory)\**\*.cs" />
+      <Compile Include="$(GenerateTargetDirectory)\**\*.cs" Exclude="@(Compile)" />
+      <FileWrites Include="$(GenerateTargetDirectory)\**\*.cs" Exclude="@(FileWrites)" />
     </ItemGroup>
-
   </Target>
+
+
 </Project>
