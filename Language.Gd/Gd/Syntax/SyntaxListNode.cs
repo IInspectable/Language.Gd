@@ -8,7 +8,7 @@ namespace Pharmatechnik.Language.Gd {
         }
 
         // TODO GetCachedSlot
-        public override SyntaxNode GetCachedSlot(int index) {
+        public override SyntaxNode GetCachedSyntaxNode(int index) {
             throw new System.NotImplementedException();
         }
 

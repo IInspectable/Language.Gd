@@ -16,6 +16,7 @@ namespace Pharmatechnik.Language.Gd {
     public abstract class SyntaxNode {
 
         private protected SyntaxNode(SyntaxTree syntaxTree, SyntaxSlot slot, SyntaxNode parent, int position) {
+
             SyntaxTree = syntaxTree ?? throw new ArgumentNullException(nameof(syntaxTree));
             Slot       = slot       ?? throw new ArgumentNullException(nameof(slot));
             Parent     = parent;
@@ -144,7 +145,7 @@ namespace Pharmatechnik.Language.Gd {
             return result;
         }
 
-        public abstract SyntaxNode GetCachedSlot(int index);
+        public abstract SyntaxNode GetCachedSyntaxNode(int index);
 
         internal virtual int GetChildPosition(int index) {
             int offset = 0;
@@ -152,12 +153,13 @@ namespace Pharmatechnik.Language.Gd {
             while (index > 0) {
                 index--;
 
-                // TODO GetChildPosition PerfOpt
-                //var prevSibling = this.GetCachedSlot(index);
-                //if (prevSibling != null)
-                //{
-                //    return prevSibling.EndPosition + offset;
-                //}
+                // Wenn es den Knoten bereits gibt, kann direkt dessen EndPosition
+                // verwendet werden, und es muss nicht weiter bis zum ersten Slot
+                // durchiteriert werden.
+                var prevSibling = GetCachedSyntaxNode(index);
+                if (prevSibling != null) {
+                    return prevSibling.EndPosition + offset;
+                }
 
                 var slotChild = slot.GetSlot(index);
                 if (slotChild != null) {

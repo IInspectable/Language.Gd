@@ -62,7 +62,7 @@ public partial class <slot.RuleName>Syntax : <if(slot.BaseRuleName)><slot.BaseRu
 	
 	<writeSlotProperties(slot.Slots)>
 
-	<writeGetCachedSlotMethod(slot.Slots)>
+	<writeGetCachedSyntaxNodeMethod(slot.Slots)>
 	     
     internal new <slot.RuleName>SyntaxSlot Slot => (<slot.RuleName>SyntaxSlot) base.Slot;
 
@@ -112,19 +112,19 @@ pl(slotModel)::=<<
 
 // GetCachedSlot method 
 
-writeGetCachedSlotMethod(slotModels) ::=<<
+writeGetCachedSyntaxNodeMethod(slotModels) ::=<<
 
 [CanBeNull]
-public override SyntaxNode GetCachedSlot(int index) {
+public override SyntaxNode GetCachedSyntaxNode(int index) {
 	switch(index) {
-		<slotModels:writeGetCachedSlotCase(); anchor>
+		<slotModels:writeGetCachedSyntaxNodeCase(); anchor>
 		default:
 			return null;
 	}
 }
 >>
 
-writeGetCachedSlotCase(slotModel) ::=<<
+writeGetCachedSyntaxNodeCase(slotModel) ::=<<
 <if(slotModel.IsSyntaxNode)>
 case <slotModel.SlotIndex>:
 	return <slotModel.FieldName><slotModel:pl()>;<endif>
