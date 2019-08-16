@@ -24,6 +24,7 @@ namespace Pharmatechnik.Language.Gd {
 
         // TODO
         public int Start { get; }
+       
         //public TextExtent Extent      => _slot.Extent;
         //public int        ExtentEnd   => _slot.End;
 
@@ -31,6 +32,11 @@ namespace Pharmatechnik.Language.Gd {
 
         public bool HasLeadingTrivia   => _slot.LeadingTrivias.Length  > 0;
         public bool HasTrailingTrivias => _slot.TrailingTrivias.Length > 0;
+
+        //public override string ToString()
+        //{
+        //    return SyntaxTree.SourceText.Substring(_slot.Extent);
+        //}
 
     }
 

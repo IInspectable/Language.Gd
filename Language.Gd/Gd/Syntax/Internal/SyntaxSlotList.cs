@@ -30,7 +30,7 @@ namespace Pharmatechnik.Language.Gd.Internal {
         public override SyntaxNode Realize(SyntaxTree syntaxTree, SyntaxNode parent, int position) {
             return new SyntaxListNode(syntaxTree, this, parent, position);
         }
-        
+
     }
 
 }

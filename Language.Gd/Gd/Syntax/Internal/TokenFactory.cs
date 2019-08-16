@@ -26,7 +26,7 @@ namespace Pharmatechnik.Language.Gd.Internal {
                 var isSkipedTokenTrivia = skippedTokens.Contains(rawToken);
 
                 if (rawToken.Channel == GdTokens.TriviaChannel ||
-                    rawToken.Channel == GdTokens.Hidden        ||
+                    rawToken.Channel == Lexer.Hidden        ||
                     isSkipedTokenTrivia) {
 
                     var trivia = TriviaSlot.Create(extent.Length, kind, isSkipedTokenTrivia);

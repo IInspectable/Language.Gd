@@ -49,6 +49,15 @@ namespace Pharmatechnik.Language.Gd.Internal {
                 kind: kind);
         }
 
+        // TODO TokenSlot Trivias..
+        public override int GetLeadingTriviaWidth() {
+            return LeadingTrivias.Sum(l => l.FullLength);
+        }
+
+        public override int GetTrailingTriviaWidth() {
+            return TrailingTrivias.Sum(l => l.FullLength);
+        }
+
     }
 
 }

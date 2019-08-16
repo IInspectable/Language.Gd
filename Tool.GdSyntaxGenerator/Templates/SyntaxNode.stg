@@ -62,6 +62,8 @@ public partial class <slot.RuleName>Syntax : <if(slot.BaseRuleName)><slot.BaseRu
 	
 	<writeSlotProperties(slot.Slots)>
 
+	<writeGetSyntaxNodeMethod(slot.Slots)>
+
 	<writeGetCachedSyntaxNodeMethod(slot.Slots)>
 	     
     internal new <slot.RuleName>SyntaxSlot Slot => (<slot.RuleName>SyntaxSlot) base.Slot;
@@ -87,11 +89,11 @@ writeSyntaxProperty(syntaxSlot)::=<<
 >>
 
 writeSyntaxPropertyTo1(syntaxSlot)::=<<
-public <syntaxSlot.Name>Syntax <syntaxSlot.Name> => GetSyntaxNode(ref <syntaxSlot.FieldName>, Slot.<syntaxSlot.Name><syntaxSlot:pl()>, index: <syntaxSlot.SlotIndex>);
+public <syntaxSlot.Name>Syntax <syntaxSlot.Name> => (<syntaxSlot.Name>Syntax) GetSyntaxNode(<syntaxSlot.SlotIndex>);
 >>
 
 writeSyntaxPropertyToN(syntaxSlot)::=<<
-public SyntaxList\<<syntaxSlot.Name>Syntax> <syntaxSlot.Name><syntaxSlot:pl()> => GetSyntaxNode\<<syntaxSlot.Name>Syntax, <syntaxSlot.Name>SyntaxSlot>(ref <syntaxSlot.FieldName><syntaxSlot:pl()>, Slot.<syntaxSlot.Name><syntaxSlot:pl()>, index: <syntaxSlot.SlotIndex>);
+public SyntaxList\<<syntaxSlot.Name>Syntax> <syntaxSlot.Name><syntaxSlot:pl()> => SyntaxList\<<syntaxSlot.Name>Syntax>.CreateList(GetSyntaxNode(<syntaxSlot.SlotIndex>));
 >>
 
 writeSyntaxNodeFields(syntaxSlots) ::=<<
@@ -110,12 +112,12 @@ pl(slotModel)::=<<
 <if(slotModel.IsToN)>s<endif>
 >>
 
-// GetCachedSlot method 
+// GetCachedSyntaxNodeMethod
 
 writeGetCachedSyntaxNodeMethod(slotModels) ::=<<
 
 [CanBeNull]
-public override SyntaxNode GetCachedSyntaxNode(int index) {
+internal override SyntaxNode GetCachedSyntaxNode(int index) {
 	switch(index) {
 		<slotModels:writeGetCachedSyntaxNodeCase(); anchor>
 		default:
@@ -128,4 +130,24 @@ writeGetCachedSyntaxNodeCase(slotModel) ::=<<
 <if(slotModel.IsSyntaxNode)>
 case <slotModel.SlotIndex>:
 	return <slotModel.FieldName><slotModel:pl()>;<endif>
+>>
+
+// GetSyntaxNodeMethod
+
+writeGetSyntaxNodeMethod(slotModels) ::=<<
+
+[CanBeNull]
+internal override SyntaxNode GetSyntaxNode(int index) {
+	switch(index) {
+		<slotModels:writeGetSyntaxNodeCase(); anchor>
+		default:
+			return null;
+	}
+}
+>>
+
+writeGetSyntaxNodeCase(slotModel) ::=<<
+<if(slotModel.IsSyntaxNode)>
+case <slotModel.SlotIndex>:
+	return GetSyntaxNode(ref <slotModel.FieldName><slotModel:pl()>, Slot.<slotModel.Name><slotModel:pl()>, index: <slotModel.SlotIndex>);<endif>
 >>

@@ -132,6 +132,9 @@ END NAMESPACE
             var source = SourceText.From(TestGd);
             var tree   = SyntaxTree.Parse(source);
 
+
+            var gds = tree.Root as GuiDescriptionSyntax;
+            var e=gds?.NamespaceDeclaration.Extent;
             var tokens = tree.Tokens;
             EnsureContinousTokens(tokens);
             Assert.That(tree.Diagnostics.Length, Is.EqualTo(0));

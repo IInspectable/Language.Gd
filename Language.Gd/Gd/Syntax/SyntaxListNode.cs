@@ -2,14 +2,22 @@
 
 namespace Pharmatechnik.Language.Gd {
 
-    class SyntaxListNode: SyntaxNode  {
+    // TODO Perf Opt für 1,2,3 Elemente => GD-Analyse
+    class SyntaxListNode: SyntaxNode {
+
+        readonly SyntaxNode[] _children;
 
         internal SyntaxListNode(SyntaxTree syntaxTree, SyntaxSlotList slotList, SyntaxNode parent, int position): base(syntaxTree, slotList, parent, position) {
+            _children = new SyntaxNode[slotList.SlotCount];
         }
 
-        // TODO GetCachedSlot
-        public override SyntaxNode GetCachedSyntaxNode(int index) {
-            throw new System.NotImplementedException();
+        internal override SyntaxNode GetCachedSyntaxNode(int index) {
+            return _children[index];
+        }
+
+        internal override SyntaxNode GetSyntaxNode(int index) {
+            return GetSyntaxNodeElement(ref _children[index], index: 0);
+
         }
 
     }
