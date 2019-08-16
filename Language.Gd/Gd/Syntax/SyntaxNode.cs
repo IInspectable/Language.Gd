@@ -97,7 +97,18 @@ namespace Pharmatechnik.Language.Gd {
 
         internal SyntaxSlot Slot { get; }
 
+        private protected SyntaxToken GetSyntaxToken(TokenSlot slot, int index) {
+
+            return slot.Realize(SyntaxTree, this, GetChildPosition(index));
+
+        }
+
+        [CanBeNull]
         private protected SyntaxListNode GetSyntaxNode(ref SyntaxListNode field, SyntaxSlotList slot, int index) {
+           
+            if (slot == null) {
+                return null;
+            }
 
             var result = field;
             if (result == null) {
@@ -108,7 +119,13 @@ namespace Pharmatechnik.Language.Gd {
             return result;
         }
 
+        [CanBeNull]
         private protected TNode GetSyntaxNode<TNode>(ref TNode field, SyntaxSlot slot, int index) where TNode : SyntaxNode {
+           
+            if (slot == null) {
+                return null;
+            }
+
             var result = field;
             if (result == null) {
                 Interlocked.CompareExchange(ref field, (TNode) slot.Realize(SyntaxTree, this, GetChildPosition(index)), null);

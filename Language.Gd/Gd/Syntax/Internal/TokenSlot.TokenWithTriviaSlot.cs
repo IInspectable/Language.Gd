@@ -6,11 +6,19 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
         class TokenWithTriviaSlot: TokenSlot {
 
-            public TokenWithTriviaSlot(int fullLength, SyntaxKind kind,
+            public TokenWithTriviaSlot(int length, SyntaxKind kind,
                                        ImmutableArray<TriviaSlot> leadingTrivias, ImmutableArray<TriviaSlot> trailingTrivias)
-                : base(fullLength, kind) {
+                : base(length, kind) {
                 LeadingTrivias  = leadingTrivias;
                 TrailingTrivias = trailingTrivias;
+
+                foreach (var t in leadingTrivias) {
+                    AdjustLength(t);
+                }
+
+                foreach (var t in trailingTrivias) {
+                    AdjustLength(t);
+                }
             }
 
             public override ImmutableArray<TriviaSlot> LeadingTrivias  { get; }

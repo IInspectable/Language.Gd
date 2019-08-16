@@ -21,7 +21,7 @@ namespace Pharmatechnik.Language.Gd.Antlr {
 
             var extent = TextExtentFactory.CreateExtent(terminalNode);
             if (extent.IsMissing) {
-                return TokenSlot.Create(fullLength: 0, kind: syntaxKind);
+                return TokenSlot.Create(length: 0, kind: syntaxKind);
             }
 
             return _tokens[extent.Start];

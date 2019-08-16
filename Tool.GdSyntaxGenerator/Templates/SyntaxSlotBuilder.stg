@@ -2,7 +2,7 @@
 
 Begin(model, context) ::=<<
 <writeFileHeader(context)>
-using Antlr4.Runtime.Misc;
+using JetBrains.Annotations;
 using Pharmatechnik.Language.Gd.Internal;
 
 namespace <model.Namespace>.Antlr {
@@ -19,7 +19,7 @@ writeVisitMethods(syntaxSlots) ::=<<
 >>
 
 writeVisitMethod(syntaxSlot) ::=<<
-public override SyntaxSlot Visit<syntaxSlot.RuleName>([NotNull] GdGrammar.<syntaxSlot.RuleName>Context context) {
+public override SyntaxSlot Visit<syntaxSlot.RuleName>([CanBeNull] GdGrammar.<syntaxSlot.RuleName>Context context) {
 	return new <syntaxSlot.RuleName>SyntaxSlot(
 		<writeParameterList(syntaxSlot.Slots)>
 	);
@@ -37,7 +37,7 @@ writeParameter(slot) ::=<<
 
 // TODO Optionale Tokens!!
 writeTokenParameter(tokenSlot) ::=<<
-GetTokenSlot(context.<tokenSlot.Name><if(tokenSlot.IsLabeled)><else>()?.Symbol<endif>, SyntaxKind.<tokenSlot.SyntaxKind>)
+GetTokenSlot(context?.<tokenSlot.Name><if(tokenSlot.IsLabeled)><else>()?.Symbol<endif>, SyntaxKind.<tokenSlot.SyntaxKind>)
 >>
 
 writeSyntaxParameter(syntaxSlot) ::=<%
@@ -56,25 +56,25 @@ writeSyntaxParameter(syntaxSlot) ::=<%
 %>
 
 writeOptionalParameter(syntaxSlot) ::=<<
-context.<syntaxSlot.ParameterName>()
+context?.<syntaxSlot.ParameterName>()
        .Optional(Visit<syntaxSlot.Name>)
        .OfType\<<syntaxSlot.Name>SyntaxSlot>()
 >>
 
 writeRequiredParameter(syntaxSlot) ::=<<
-context.<syntaxSlot.ParameterName>()
+context?.<syntaxSlot.ParameterName>()
        .Required(Visit<syntaxSlot.Name>)
        .OfType\<<syntaxSlot.Name>SyntaxSlot>()
 >>
 
 writeOneOrMoreParameter(syntaxSlot) ::=<<
-context.<syntaxSlot.ParameterName>()
+context?.<syntaxSlot.ParameterName>()
        .OneOrMore(Visit<syntaxSlot.Name>)
        .OfType\<<syntaxSlot.Name>SyntaxSlot>()
 >>
 
 writeZeroOrMoreParameter(syntaxSlot) ::=<<
-context.<syntaxSlot.ParameterName>()
+context?.<syntaxSlot.ParameterName>()
        .ZeroOrMore(Visit<syntaxSlot.Name>)
        .OfType\<<syntaxSlot.Name>SyntaxSlot>()
 >>

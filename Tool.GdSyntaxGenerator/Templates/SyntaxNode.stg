@@ -65,7 +65,8 @@ public partial class <slot.RuleName>Syntax : <if(slot.BaseRuleName)><slot.BaseRu
 	<writeGetSyntaxNodeMethod(slot.Slots)>
 
 	<writeGetCachedSyntaxNodeMethod(slot.Slots)>
-	     
+	    
+	[NotNull]
     internal new <slot.RuleName>SyntaxSlot Slot => (<slot.RuleName>SyntaxSlot) base.Slot;
 
 }
@@ -80,8 +81,8 @@ writeSlotProperty(slot) ::=<<
 <if(slot.IsToken)><slot:writeTokenProperty()><else><slot:writeSyntaxProperty()><endif>
 >>
 
-writeTokenProperty(tokenSlotModel) ::=<<
-public SyntaxToken <tokenSlotModel.Name>Token => Slot.<tokenSlotModel.Name>Token.Realize(SyntaxTree, this);
+writeTokenProperty(tokenSlot) ::=<<
+public SyntaxToken <tokenSlot.Name>Token => GetSyntaxToken(Slot.<tokenSlot.Name>Token, <tokenSlot.SlotIndex>);
 >>
 
 writeSyntaxProperty(syntaxSlot)::=<<

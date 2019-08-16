@@ -5,38 +5,55 @@ namespace Pharmatechnik.Language.Gd {
 
     public readonly struct SyntaxToken {
 
-        private readonly TokenSlot _slot;
-
-        internal SyntaxToken(SyntaxTree syntaxTree, SyntaxNode parent, TokenSlot slot) {
-            Start = 0; // TODO Start
+        internal SyntaxToken(SyntaxTree syntaxTree, TokenSlot slot, SyntaxNode parent, int position) {
+            Position   = position;
             SyntaxTree = syntaxTree;
             Parent     = parent;
-            _slot      = slot;
+            Slot       = slot;
 
         }
+
+        internal TokenSlot Slot { get; }
 
         public SyntaxTree SyntaxTree { get; }
         public SyntaxNode Parent     { get; }
 
-        public SyntaxKind Kind => _slot.Kind;
+        public SyntaxKind Kind => Slot.Kind;
 
-        public bool IsMissing => _slot.IsMissing;
+        public bool IsMissing => Slot.IsMissing;
 
         // TODO
-        public int Start { get; }
-       
+        internal int Position { get; }
+
         //public TextExtent Extent      => _slot.Extent;
         //public int        ExtentEnd   => _slot.End;
 
-        public string Text => _slot.ToString();
+        public string Text => SyntaxTree.SourceText.Substring(Extent);
 
-        public bool HasLeadingTrivia   => _slot.LeadingTrivias.Length  > 0;
-        public bool HasTrailingTrivias => _slot.TrailingTrivias.Length > 0;
+        public bool HasLeadingTrivia   => Slot.LeadingTrivias.Length  > 0;
+        public bool HasTrailingTrivias => Slot.TrailingTrivias.Length > 0;
 
-        //public override string ToString()
-        //{
-        //    return SyntaxTree.SourceText.Substring(_slot.Extent);
-        //}
+        public TextExtent Extent {
+            get {
+                // Start with the full span.
+                var start  = Position;
+                var length = Slot.FullLength;
+
+                // adjust for preceding trivia (avoid calling this twice, do not call Green.Width)
+                var precedingWidth = Slot.GetLeadingTriviaWidth();
+                start  += precedingWidth;
+                length -= precedingWidth;
+
+                // adjust for following trivia width
+                length -= Slot.GetTrailingTriviaWidth();
+
+                return new TextExtent(start, length);
+            }
+        }
+
+        public override string ToString() {
+            return $"{Kind}: {SyntaxTree.SourceText.Substring(Extent)}" ;
+        }
 
     }
 

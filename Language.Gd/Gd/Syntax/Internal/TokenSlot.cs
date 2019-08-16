@@ -13,18 +13,19 @@ namespace Pharmatechnik.Language.Gd.Internal {
         public virtual ImmutableArray<TriviaSlot> LeadingTrivias  => ImmutableArray<TriviaSlot>.Empty;
         public virtual ImmutableArray<TriviaSlot> TrailingTrivias => ImmutableArray<TriviaSlot>.Empty;
 
-        internal SyntaxToken Realize(SyntaxTree syntaxTree, SyntaxNode parent) {
-            return new SyntaxToken(syntaxTree, parent, this);
+        internal SyntaxToken Realize(SyntaxTree syntaxTree, SyntaxNode parent, int position) {
+            return new SyntaxToken(syntaxTree, this, parent, position);
         }
 
-        public static TokenSlot Create(int fullLength, SyntaxKind kind,
+        public static TokenSlot Create(int length, SyntaxKind kind,
                                        IReadOnlyList<TriviaSlot> leadingTrivias = null,
                                        IReadOnlyList<TriviaSlot> trailingTrivias = null) {
 
             if (leadingTrivias  != null && leadingTrivias.Any() &&
                 trailingTrivias != null && trailingTrivias.Any()) {
+
                 return new TokenWithTriviaSlot(
-                    fullLength: fullLength,
+                    length: length,
                     kind: kind,
                     leadingTrivias: leadingTrivias.ToImmutableArray(),
                     trailingTrivias: trailingTrivias.ToImmutableArray());
@@ -32,20 +33,20 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
             if (leadingTrivias != null && leadingTrivias.Any()) {
                 return new TokenWithLeadingTriviaSlot(
-                    fullLength: fullLength,
+                    length: length,
                     kind: kind,
                     leadingTrivias: leadingTrivias.ToImmutableArray());
             }
 
             if (trailingTrivias != null && trailingTrivias.Any()) {
                 return new TokenWithTrailingTriviaSlot(
-                    fullLength: fullLength,
+                    length: length,
                     kind: kind,
                     trailingTrivias: trailingTrivias.ToImmutableArray());
             }
 
             return new TokenSlot(
-                fullLength: fullLength,
+                fullLength: length,
                 kind: kind);
         }
 
