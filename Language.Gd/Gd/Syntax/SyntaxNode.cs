@@ -104,8 +104,8 @@ namespace Pharmatechnik.Language.Gd {
         }
 
         [CanBeNull]
-        private protected SyntaxListNode GetSyntaxNode(ref SyntaxListNode field, SyntaxSlotList slot, int index) {
-           
+        private protected SyntaxListNode GetSyntaxNode(ref SyntaxListNode field, [CanBeNull] SyntaxSlotList slot, int index) {
+
             if (slot == null) {
                 return null;
             }
@@ -120,8 +120,8 @@ namespace Pharmatechnik.Language.Gd {
         }
 
         [CanBeNull]
-        private protected TNode GetSyntaxNode<TNode>(ref TNode field, SyntaxSlot slot, int index) where TNode : SyntaxNode {
-           
+        private protected TNode GetSyntaxNode<TNode>(ref TNode field, [CanBeNull] SyntaxSlot slot, int index) where TNode : SyntaxNode {
+
             if (slot == null) {
                 return null;
             }
