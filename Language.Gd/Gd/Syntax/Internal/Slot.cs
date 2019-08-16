@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
 
+using Pharmatechnik.Language.Text;
+
 namespace Pharmatechnik.Language.Gd.Internal {
 
     [Flags]
@@ -106,7 +108,23 @@ namespace Pharmatechnik.Language.Gd.Internal {
         bool IsFlagPresent(SlotFlags flag) {
             return (Flags & flag) == flag;
         }
-        
+
+        public TextExtent GetExtent(int position) {
+            // Start with the full span.
+            var start  = position;
+            var length = FullLength;
+
+            // adjust for preceding trivia (avoid calling this twice, do not call Green.Width)
+            var precedingWidth = GetLeadingTriviaWidth();
+            start  += precedingWidth;
+            length -= precedingWidth;
+
+            // adjust for following trivia width
+            length -= GetTrailingTriviaWidth();
+
+            return new TextExtent(start, length);
+        }
+
     }
 
 }

@@ -24,32 +24,31 @@ namespace Pharmatechnik.Language.Gd {
 
         }
 
-        public TextExtent FullExtent => TextExtent.FromBounds(start: Position, end: EndPosition);
+        internal SyntaxSlot Slot { get; }
 
-        public TextExtent Extent {
-            get {
-                // Start with the full span.
-                var start  = Position;
-                var length = Slot.FullLength;
+        public SyntaxTree SyntaxTree { get; }
 
-                // adjust for preceding trivia (avoid calling this twice, do not call Green.Width)
-                var precedingWidth = Slot.GetLeadingTriviaWidth();
-                start  += precedingWidth;
-                length -= precedingWidth;
+        public bool IsMissing => Slot.IsMissing;
 
-                // adjust for following trivia width
-                length -= Slot.GetTrailingTriviaWidth();
+        [CanBeNull]
+        public SyntaxNode Parent { get; }
 
-                return new TextExtent(start, length);
-            }
-        }
+        public SyntaxKind Kind => Slot.Kind;
 
-        internal int  Position    { get; }
-        internal int  EndPosition => Position + Slot.FullLength;
-        internal bool IsList      => Slot.Kind == SyntaxKind.SyntaxList;
-        internal int  SlotCount   => Slot.SlotCount;
+        public int        ExtentStart => Position + Slot.GetLeadingTriviaWidth();
+        public TextExtent Extent      => Slot.GetExtent(Position);
+        public TextExtent FullExtent  => TextExtent.FromBounds(start: Position, end: EndPosition);
 
-        public int SpanStart => Position + Slot.GetLeadingTriviaWidth();
+        internal int Position    { get; }
+        internal int EndPosition => Position + Slot.FullLength;
+
+        internal int Length     => Slot.Length;
+        internal int FullLength => Slot.FullLength;
+
+        internal bool IsList    => Slot.Kind == SyntaxKind.SyntaxList;
+        internal int  SlotCount => Slot.SlotCount;
+
+        // TODO Descendants Childs etc...
 
         /// <summary>
         /// Determines if the specified node is a descendant of this node.
@@ -70,32 +69,6 @@ namespace Pharmatechnik.Language.Gd {
 
             return false;
         }
-
-        /// <summary>
-        /// The width of the node in characters, not including leading and trailing trivia.
-        /// </summary>
-        /// <remarks>
-        /// The Width property returns the same value as Extent.Length, but is somewhat more efficient.
-        /// </remarks>
-        internal int Width => Slot.Length;
-
-        /// <summary>
-        /// The complete width of the node in characters, including leading and trailing trivia.
-        /// </summary>
-        /// <remarks>The FullWidth property returns the same value as Extent.Length, but is
-        /// somewhat more efficient.</remarks>
-        internal int FullWidth => Slot.FullLength;
-
-        public SyntaxTree SyntaxTree { get; }
-
-        public bool IsMissing => Slot.IsMissing;
-
-        [CanBeNull]
-        public SyntaxNode Parent { get; }
-
-        public SyntaxKind Kind => Slot.Kind;
-
-        internal SyntaxSlot Slot { get; }
 
         private protected SyntaxToken GetSyntaxToken(TokenSlot slot, int index) {
 
@@ -135,7 +108,7 @@ namespace Pharmatechnik.Language.Gd {
             return result;
         }
 
-        internal SyntaxNode GetSyntaxNodeElement(ref SyntaxNode element, int index) {
+        private protected SyntaxNode GetSyntaxNodeElement(ref SyntaxNode element, int index) {
             Debug.Assert(IsList);
 
             var result = element;

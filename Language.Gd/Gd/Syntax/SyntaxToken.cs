@@ -1,5 +1,9 @@
-﻿using Pharmatechnik.Language.Gd.Internal;
+﻿#region Using Directives
+
+using Pharmatechnik.Language.Gd.Internal;
 using Pharmatechnik.Language.Text;
+
+#endregion
 
 namespace Pharmatechnik.Language.Gd {
 
@@ -22,37 +26,24 @@ namespace Pharmatechnik.Language.Gd {
 
         public bool IsMissing => Slot.IsMissing;
 
-        // TODO
-        internal int Position { get; }
-
-        //public TextExtent Extent      => _slot.Extent;
-        //public int        ExtentEnd   => _slot.End;
-
+        // TODO Leading / Trailing Trivias
         public string Text => SyntaxTree.SourceText.Substring(Extent);
 
         public bool HasLeadingTrivia   => Slot.LeadingTrivias.Length  > 0;
         public bool HasTrailingTrivias => Slot.TrailingTrivias.Length > 0;
 
-        public TextExtent Extent {
-            get {
-                // Start with the full span.
-                var start  = Position;
-                var length = Slot.FullLength;
+        public int        ExtentStart => Position + Slot.GetLeadingTriviaWidth();
+        public TextExtent Extent      => Slot.GetExtent(Position);
+        public TextExtent FullExtent  => TextExtent.FromBounds(start: Position, end: EndPosition);
 
-                // adjust for preceding trivia (avoid calling this twice, do not call Green.Width)
-                var precedingWidth = Slot.GetLeadingTriviaWidth();
-                start  += precedingWidth;
-                length -= precedingWidth;
+        internal int Position    { get; }
+        internal int EndPosition => Position + Slot.FullLength;
 
-                // adjust for following trivia width
-                length -= Slot.GetTrailingTriviaWidth();
-
-                return new TextExtent(start, length);
-            }
-        }
+        internal int Length     => Slot.Length;
+        internal int FullLength => Slot.FullLength;
 
         public override string ToString() {
-            return $"{Kind}: {SyntaxTree.SourceText.Substring(Extent)}" ;
+            return $"{Kind}: {SyntaxTree.SourceText.Substring(Extent)}";
         }
 
     }
