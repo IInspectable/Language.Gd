@@ -31,7 +31,7 @@ namespace Pharmatechnik.Language.Gd {
             _tokenSlot    = tokenSlot;
         }
 
-        public bool IsNode    => _tokenSlot == null;
+        public bool IsNode    => _tokenSlot == null && _nodeOrParent!=null;
         public bool IsToken   => _tokenSlot != null;
         public bool IsMissing => _tokenSlot?.IsMissing ?? _nodeOrParent?.IsMissing ?? false;
 

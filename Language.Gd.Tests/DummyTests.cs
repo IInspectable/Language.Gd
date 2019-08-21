@@ -1,10 +1,8 @@
-﻿using System.Collections.Immutable;
-using System.IO;
+﻿using System.IO;
 using System.Linq;
 
 using NUnit.Framework;
 
-using Pharmatechnik.Language.Gd.Internal;
 using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd.Tests {
@@ -132,11 +130,30 @@ END NAMESPACE
             var source = SourceText.From(TestGd);
             var tree   = SyntaxTree.Parse(source);
 
-            var gds = tree.Root as GuiDescriptionSyntax;
-
-            EnsureContinousTokens(0, gds);
-
             Assert.That(tree.Diagnostics.Length, Is.EqualTo(0));
+
+            var gds = (GuiDescriptionSyntax) tree.Root;
+
+            EnsureContinousNodes(0, gds);
+            EnsureContinousTokens(tree.Root);
+
+            // NAMESPACE
+            var namespaceToken = gds.FindToken(0);
+            Assert.That(namespaceToken.Kind,      Is.EqualTo(SyntaxKind.Namespace));
+            Assert.That(namespaceToken.IsKeyword, Is.True);
+
+            // ns
+            var nsToken = gds.FindToken(namespaceToken.EndPosition);
+            Assert.That(nsToken.Kind, Is.EqualTo(SyntaxKind.Identifier));
+
+            // DIALOG
+            var dialogToken = gds.FindToken(nsToken.EndPosition);
+            Assert.That(dialogToken.Kind,      Is.EqualTo(SyntaxKind.Dialog));
+            Assert.That(dialogToken.IsKeyword, Is.True);
+
+            var eofToken = gds.FindToken(source.Length);
+            Assert.That(eofToken.Kind, Is.EqualTo(SyntaxKind.Eof));
+
         }
 
         [Test]
@@ -157,7 +174,10 @@ END NAMESPACE
                 var txt    = File.ReadAllText(file);
                 var source = SourceText.From(txt);
                 var tree   = SyntaxTree.Parse(source);
-                EnsureContinousTokens(0, tree.Root);
+                
+                EnsureContinousNodes(0, tree.Root);
+                EnsureContinousTokens(tree.Root);
+
                 if (tree.Diagnostics.Length > 0) {
                     Assert.Warn($"{file}\r\n{tree.Diagnostics.First().Location}");
                 }
@@ -167,7 +187,7 @@ END NAMESPACE
             Assert.Warn($"{count} files processed.");
         }
 
-        void EnsureContinousTokens(int pos, SyntaxNode rootNode) {
+        void EnsureContinousNodes(int pos, SyntaxNode rootNode) {
 
             var lastEnd = pos;
 
@@ -176,31 +196,24 @@ END NAMESPACE
             foreach (var nodeOrToken in rootNode.ChildNodesAndTokens()) {
 
                 if (nodeOrToken.IsNode) {
-                    EnsureContinousTokens(lastEnd, nodeOrToken.AsNode());
+                    EnsureContinousNodes(lastEnd, nodeOrToken.AsNode());
                 }
 
                 Assert.That(nodeOrToken.Position, Is.EqualTo(lastEnd));
 
                 lastEnd = nodeOrToken.EndPosition;
 
-                // TODO Enable Tests
-                //foreach (var trivia in token.LeadingTrivias) {
-                //    var start=trivia.K
-                //    Assert.That(trivia.Start, Is.EqualTo(lastEnd));
-                //    lastEnd = trivia.End;
-                //}
-
-                //Assert.That(token.Start, Is.EqualTo(lastEnd));
-                //lastEnd = token.End;
-
-                //foreach (var trivia in token.TrailingTrivias) {
-                //    Assert.That(trivia.Start, Is.EqualTo(lastEnd));
-                //    lastEnd = trivia.End;
-                //}
             }
 
-            //    Assert.That(tokens.Last().Value.Kind, Is.EqualTo(SyntaxKind.Eof));
+        }
 
+        void EnsureContinousTokens(SyntaxNode rootNode) {
+            var lastEnd = rootNode.Position;
+            var tokens  = rootNode.DescendantTokens().ToList();
+            foreach (var token in tokens) {
+                Assert.That(token.Position, Is.EqualTo(lastEnd));
+                lastEnd = token.EndPosition;
+            }
         }
 
     }

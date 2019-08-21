@@ -10,6 +10,8 @@ channels {
     #pragma warning disable 0108
 }
 
+// Keywords
+
 Using             : 'USING';
 Namespace         : 'NAMESPACE';
 Form              : 'FORM';
@@ -39,47 +41,16 @@ Hotkey            : 'HOTKEY';
 SharedControl     : 'SHAREDCONTROL';
 ContextMenu       : 'CONTEXTMENU';
 
-
-NewLineTrivia
-    : NL
-    -> channel(TriviaChannel)
-    ;
-
-
-WhitespaceTrivia
-    : WS+
-    -> channel(TriviaChannel)
-    ;
+// Hotkey Modifier
+PlusCtrl          : '+CTRL';
+MinusCtrl         : '-CTRL';
+PlusAlt           : '+ALT';
+MinusAlt          : '-ALT';
+PlusShift         : '+SHIFT';
+MinusShift        : '-SHIFT';
 
 
-SingleLineCommentTrivia
-    : '//' .*? (NL | EOF)
-    -> channel(TriviaChannel)
-    ;
-
-
-MultiLineCommentTrivia
-    : '/*' .*? '*/'
-    -> channel(TriviaChannel)
-    ;
-
-
-Identifier
-    : IdentifierStartCharacter IdentifierPartCharacter*
-    ;
-
-Character
-    : '\'' Char '\''
-    ;
-
-String
-    :   RegularStringLiteral
-    |   VerbatimStringLiteral
-    ;
-
-Integer
-    : ('+'|'-')? DecimalDigit+
-    ;
+// Punctuation
 
 OpenBrace
     :   '{'
@@ -150,28 +121,47 @@ MinusEquals
     : '-='
     ;
 
-PlusCtrl
-    : '+CTRL'
+// 
+
+NewLineTrivia
+    : NL
+    -> channel(TriviaChannel)
     ;
 
-MinusCtrl
-    : '-CTRL'
+
+WhitespaceTrivia
+    : WS+
+    -> channel(TriviaChannel)
     ;
 
-PlusAlt
-    : '+ALT'
+
+SingleLineCommentTrivia
+    : '//' .*? (NL | EOF)
+    -> channel(TriviaChannel)
     ;
 
-MinusAlt
-    : '-ALT'
+
+MultiLineCommentTrivia
+    : '/*' .*? '*/'
+    -> channel(TriviaChannel)
     ;
 
-PlusShift
-    : '+SHIFT'
+
+Identifier
+    : IdentifierStartCharacter IdentifierPartCharacter*
     ;
 
-MinusShift
-    : '-SHIFT'
+Character
+    : '\'' Char '\''
+    ;
+
+String
+    :   RegularStringLiteral
+    |   VerbatimStringLiteral
+    ;
+
+Integer
+    : ('+'|'-')? DecimalDigit+
     ;
 
 //------------------
@@ -282,7 +272,6 @@ fragment VerbatimStringLiteral
         )*
         '"'
         ;
-
 
 Unknown
     :  .

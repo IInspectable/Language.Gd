@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 using Pharmatechnik.Language.Gd.Internal;
 
@@ -34,6 +35,26 @@ namespace Pharmatechnik.Language.Gd {
 
         public int Count { get; }
 
+        public bool Any() {
+            return Count != 0;
+        }
+
+        public SyntaxNodeOrToken First() {
+            if (Any()) {
+                return this[0];
+            }
+
+            throw new InvalidOperationException();
+        }
+
+        public SyntaxNodeOrToken Last() {
+            if (Any()) {
+                return this[Count - 1];
+            }
+
+            throw new InvalidOperationException();
+        }
+
         public Enumerator GetEnumerator() {
             if (Node == null) {
                 return default;
@@ -66,8 +87,8 @@ namespace Pharmatechnik.Language.Gd {
 
         static SyntaxNodeOrToken ItemInternal(SyntaxNode node, int index) {
 
-            var idx       = index;
             var slotIndex = 0;
+            var lstIndex  = index;
             var position  = node.Position;
 
             Slot childSlot;
@@ -77,11 +98,11 @@ namespace Pharmatechnik.Language.Gd {
                 if (childSlot != null) {
 
                     int currentOccupancy = Occupancy(childSlot);
-                    if (idx < currentOccupancy) {
+                    if (lstIndex < currentOccupancy) {
                         break;
                     }
 
-                    idx      -= currentOccupancy;
+                    lstIndex -= currentOccupancy;
                     position += childSlot.FullLength;
                 }
 
@@ -99,16 +120,59 @@ namespace Pharmatechnik.Language.Gd {
                 return default;
             }
 
-            // Liste von Knoten => ToN
-            if (syntaxNode.IsList) {
-                var slotMember = syntaxNode.GetSyntaxNode(idx);
-                return slotMember;
+            // Ein einzelner Knoten
+            if (!syntaxNode.IsList) {
+                return syntaxNode;
+            }
 
+            // Liste von Knoten => ToN
+            var slotMember = syntaxNode.GetSyntaxNode(lstIndex);
+            return slotMember;
+        }
+
+        internal static SyntaxNodeOrToken ChildThatContainsPosition(SyntaxNode node, int targetPosition) {
+            Debug.Assert(node.FullExtent.Contains(targetPosition));
+            Debug.Assert(!node.Slot.IsList);
+
+            int slotIndex;
+            var position = node.Position;
+
+            Slot childSlot;
+            for (slotIndex = 0;; slotIndex++) {
+
+                childSlot = node.Slot.GetSlot(slotIndex);
+
+                if (childSlot != null) {
+                    var endPosition = position + childSlot.FullLength;
+                    if (targetPosition < endPosition) {
+                        break;
+                    }
+
+                    position = endPosition;
+                }
+            }
+
+            // Ein einzelnes Token
+            if (childSlot is TokenSlot tokenSlot) {
+                return new SyntaxNodeOrToken(node, tokenSlot, position);
+            }
+
+            var syntaxNode = node.GetSyntaxNode(slotIndex);
+            if (syntaxNode == null) {
+                // Kann das sein!?
+                return default;
             }
 
             // Ein einzelner Knoten
-            return syntaxNode;
+            if (!syntaxNode.IsList) {
+                return syntaxNode;
+            }
 
+            // Liste von Knoten => ToN
+            slotIndex = syntaxNode.Slot.FindSlotIndexContainingOffset(targetPosition - position);
+            var slotMember = syntaxNode.GetSyntaxNode(slotIndex);
+
+            return slotMember;
         }
 
         public struct Enumerator {

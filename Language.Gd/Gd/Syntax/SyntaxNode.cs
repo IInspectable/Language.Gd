@@ -1,7 +1,9 @@
 ﻿#region Using Directives
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading;
 
 using JetBrains.Annotations;
@@ -50,7 +52,142 @@ namespace Pharmatechnik.Language.Gd {
 
         // TODO Descendants Childs etc...
 
+        public SyntaxToken FindToken(int position) {
+
+            if (TryGetEofAt(out var eof)) {
+                return eof;
+            }
+
+            var child = ChildThatContainsPosition(position);
+            if (child.IsToken) {
+                return child.AsToken();
+            }
+
+            return child.AsNode().FindTokenImpl(position);
+
+            bool TryGetEofAt(out SyntaxToken eofToken) {
+
+                if (position == EndPosition) {
+                    if (this is GuiDescriptionSyntax guiDescriptionSyntax) {
+                        eofToken = guiDescriptionSyntax.EofToken;
+                        Debug.Assert(eof.EndPosition == position);
+                        return true;
+                    }
+                }
+
+                eofToken = default;
+                return false;
+            }
+        }
+
+        private SyntaxToken FindTokenImpl(int position) {
+
+            var child = ChildThatContainsPosition(position);
+            if (child.IsToken) {
+                return child.AsToken();
+            }
+
+            return child.AsNode().FindToken(position);
+        }
+
+        public IEnumerable<SyntaxToken> DescendantTokens() {
+            return DescendantTokensImpl();
+        }
+
+        IEnumerable<SyntaxToken> DescendantTokensImpl() {
+
+            foreach (var child in ChildNodesAndTokens()) {
+
+                if (child.IsToken) {
+                    yield return child.AsToken();
+                }
+
+                if (child.IsNode) {
+                    foreach (var token in child.AsNode().DescendantTokens()) {
+                        yield return token;
+                    }
+                }
+
+            }
+        }
+
+        public IEnumerable<SyntaxNode> ChildNodes() {
+            foreach (var nodeOrToken in ChildNodesAndTokens()) {
+                if (nodeOrToken.IsNode) {
+                    yield return nodeOrToken.AsNode();
+                }
+            }
+        }
+
+        public IEnumerable<SyntaxNode> DescendantNodes() {
+            return DescendantNodesImpl(FullExtent, includeSelf: false);
+        }
+
+        public IEnumerable<SyntaxNode> DescendantNodes(TextExtent extent) {
+            return DescendantNodesImpl(extent, includeSelf: false);
+        }
+
+        public IEnumerable<SyntaxNode> DescendantNodesAndSelf() {
+            return DescendantNodesImpl(FullExtent, includeSelf: true);
+        }
+
+        public IEnumerable<SyntaxNode> DescendantNodesAndSelf(TextExtent extent) {
+            return DescendantNodesImpl(extent, includeSelf: true);
+        }
+
+        IEnumerable<SyntaxNode> DescendantNodesImpl(TextExtent extent, bool includeSelf) {
+
+            if (includeSelf && IsInExtent(FullExtent)) {
+                yield return this;
+            }
+
+            foreach (var child in ChildNodesAndTokens()) {
+
+                if (child.IsNode) {
+                    foreach (var node in child.AsNode().DescendantNodesAndSelf()) {
+                        if (IsInExtent(node.FullExtent)) {
+                            yield return node;
+                        }
+
+                    }
+                }
+
+            }
+
+            bool IsInExtent(TextExtent childExtent) {
+                return extent.OverlapsWith(childExtent)
+                       // special case for zero-width tokens (OverlapsWith never returns true for these)
+                    || childExtent.Length == 0 && extent.IntersectsWith(childExtent);
+            }
+        }
+
         public ChildNodesAndTokenList ChildNodesAndTokens() => new ChildNodesAndTokenList(this);
+
+        public virtual SyntaxNodeOrToken ChildThatContainsPosition(int position) {
+            if (!FullExtent.Contains(position)) {
+                throw new ArgumentOutOfRangeException(nameof(position));
+            }
+
+            SyntaxNodeOrToken childNodeOrToken = ChildNodesAndTokenList.ChildThatContainsPosition(this, position);
+            Debug.Assert(childNodeOrToken.FullExtent.Contains(position), "ChildThatContainsPosition's return value does not contain the requested position.");
+            return childNodeOrToken;
+        }
+
+        /// <summary>
+        /// Gets a list of ancestor nodes
+        /// </summary>
+        public IEnumerable<SyntaxNode> Ancestors() {
+            return Parent?.AncestorsAndSelf() ?? Enumerable.Empty<SyntaxNode>();
+        }
+
+        /// <summary>
+        /// Gets a list of ancestor nodes (including this node) 
+        /// </summary>
+        public IEnumerable<SyntaxNode> AncestorsAndSelf() {
+            for (var node = this; node != null; node = node.Parent) {
+                yield return node;
+            }
+        }
 
         /// <summary>
         /// Determines if the specified node is a descendant of this node.

@@ -127,6 +127,25 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return new TextExtent(start, length);
         }
 
+        public virtual int FindSlotIndexContainingOffset(int offset) {
+            Debug.Assert(0 <= offset && offset < FullLength);
+
+            int i;
+            int accumulatedWidth = 0;
+            for (i = 0;; i++) {
+                Debug.Assert(i < SlotCount);
+                var child = GetSlot(i);
+                if (child != null) {
+                    accumulatedWidth += child.FullLength;
+                    if (offset < accumulatedWidth) {
+                        break;
+                    }
+                }
+            }
+
+            return i;
+        }
+
     }
 
 }

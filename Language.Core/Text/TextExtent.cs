@@ -55,6 +55,10 @@ namespace Pharmatechnik.Language.Text {
             return other.Start >= Start && other.End <= End;
         }
 
+        public bool Contains(int position) {
+            return position - Start < Length;
+        }
+
         /// <summary>
         /// Determines whether <paramref name="extent"/> intersects this extent. Two extents are considered to 
         /// intersect if they have positions in common or the end of one extent 
@@ -62,6 +66,14 @@ namespace Pharmatechnik.Language.Text {
         /// </summary>       
         public bool IntersectsWith(TextExtent extent) {
             return extent.Start <= End && extent.End >= Start;
+        }
+
+        public bool OverlapsWith(TextExtent span)
+        {
+            int overlapStart = Math.Max(Start, span.Start);
+            int overlapEnd   = Math.Min(this.End, span.End);
+
+            return overlapStart < overlapEnd;
         }
 
         /// <summary>

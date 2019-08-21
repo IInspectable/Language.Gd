@@ -1,9 +1,13 @@
-﻿using System.Collections.Immutable;
+﻿#region Using Directives
+
 using System.Threading;
+using System.Collections.Immutable;
 
 using Pharmatechnik.Language.Gd.Antlr;
 using Pharmatechnik.Language.Gd.Internal;
 using Pharmatechnik.Language.Text;
+
+#endregion
 
 namespace Pharmatechnik.Language.Gd {
 
@@ -13,32 +17,29 @@ namespace Pharmatechnik.Language.Gd {
 
         SyntaxTree(SourceText sourceText,
                    SyntaxSlot rootSlot,
-                   ImmutableDictionary<int, TokenSlot> tokens,
                    ImmutableArray<Diagnostic> diagnostics) {
             SourceText  = sourceText;
-            Tokens      = tokens;
             Diagnostics = diagnostics;
             _rootSlot   = rootSlot;
 
         }
 
-        SyntaxNode _root;
+        SyntaxNode _rootNode;
 
         public SyntaxNode Root {
             get {
-                var root = _root;
+                var root = _rootNode;
                 if (root == null) {
-                    Interlocked.CompareExchange(ref _root, _rootSlot.Realize(this, null, position: 0), null);
-                    root = _root;
+                    Interlocked.CompareExchange(ref _rootNode, _rootSlot.Realize(this, null, position: 0), null);
+                    root = _rootNode;
                 }
 
                 return root;
             }
         }
 
-        public   SourceText                          SourceText  { get; }
-        internal ImmutableDictionary<int, TokenSlot> Tokens      { get; }
-        public   ImmutableArray<Diagnostic>          Diagnostics { get; }
+        public SourceText                 SourceText  { get; }
+        public ImmutableArray<Diagnostic> Diagnostics { get; }
 
         public static SyntaxTree Parse(SourceText sourceText) {
 
@@ -67,10 +68,7 @@ namespace Pharmatechnik.Language.Gd {
             var visitor = new GdSyntaxSlotBuilder(tokens);
             var slot    = visitor.Visit(tree);
 
-            //slot.Realize(this, null);
-            // SyntaxTree, etc
-
-            return new SyntaxTree(sourceText, slot, tokens, diagnostics.ToImmutableArray());
+            return new SyntaxTree(sourceText, slot, diagnostics.ToImmutableArray());
         }
 
     }

@@ -25,6 +25,7 @@ namespace Pharmatechnik.Language.Gd {
         public SyntaxKind Kind => Slot.Kind;
 
         public bool IsMissing => Slot.IsMissing;
+        public bool IsKeyword => SyntaxFacts.IsKeyword(Kind);
 
         // TODO Leading / Trailing Trivias
         public string Text => SyntaxTree.SourceText.Substring(Extent);
