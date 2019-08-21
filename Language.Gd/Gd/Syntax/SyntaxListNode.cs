@@ -16,7 +16,7 @@ namespace Pharmatechnik.Language.Gd {
         }
 
         internal override SyntaxNode GetSyntaxNode(int index) {
-            return GetSyntaxNodeElement(ref _children[index], index: 0);
+            return GetSyntaxNodeElement(ref _children[index], index: index);
 
         }
 

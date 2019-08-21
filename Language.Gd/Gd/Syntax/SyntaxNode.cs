@@ -45,10 +45,12 @@ namespace Pharmatechnik.Language.Gd {
         internal int Length     => Slot.Length;
         internal int FullLength => Slot.FullLength;
 
-        internal bool IsList    => Slot.Kind == SyntaxKind.SyntaxList;
+        internal bool IsList    => Slot.IsList;
         internal int  SlotCount => Slot.SlotCount;
 
         // TODO Descendants Childs etc...
+
+        public ChildNodesAndTokenList ChildNodesAndTokens() => new ChildNodesAndTokenList(this);
 
         /// <summary>
         /// Determines if the specified node is a descendant of this node.

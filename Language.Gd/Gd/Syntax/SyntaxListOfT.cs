@@ -76,7 +76,6 @@ namespace Pharmatechnik.Language.Gd {
         }
 
         IEnumerator<TSyntax> IEnumerable<TSyntax>.GetEnumerator() {
-
             return new EnumeratorImpl(this);
         }
 

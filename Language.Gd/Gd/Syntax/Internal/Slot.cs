@@ -101,6 +101,8 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
         public SyntaxKind Kind { get; }
 
+        public bool IsList => Kind == SyntaxKind.SyntaxList;
+
         public virtual int SlotCount => 0;
 
         public virtual Slot GetSlot(int index) => null;

@@ -10,6 +10,12 @@ namespace Tool.GdSyntaxGenerator.Models {
             
             Namespace = @namespace;
 
+            EnumMembers.Add(
+                new EnumMemberModel {
+                    Name  = "None",
+                    Value = 0
+                });
+
             foreach (var token in tokenInfo.Tokens) {
                 EnumMembers.Add(
                     new EnumMemberModel {

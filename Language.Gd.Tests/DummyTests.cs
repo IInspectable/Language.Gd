@@ -132,11 +132,10 @@ END NAMESPACE
             var source = SourceText.From(TestGd);
             var tree   = SyntaxTree.Parse(source);
 
-
             var gds = tree.Root as GuiDescriptionSyntax;
-            var e=gds?.NamespaceDeclaration.Extent;
-            var tokens = tree.Tokens;
-            EnsureContinousTokens(tokens);
+
+            EnsureContinousTokens(0, gds);
+
             Assert.That(tree.Diagnostics.Length, Is.EqualTo(0));
         }
 
@@ -158,8 +157,7 @@ END NAMESPACE
                 var txt    = File.ReadAllText(file);
                 var source = SourceText.From(txt);
                 var tree   = SyntaxTree.Parse(source);
-                var tokens = tree.Tokens;
-                EnsureContinousTokens(tokens);
+                EnsureContinousTokens(0, tree.Root);
                 if (tree.Diagnostics.Length > 0) {
                     Assert.Warn($"{file}\r\n{tree.Diagnostics.First().Location}");
                 }
@@ -169,11 +167,21 @@ END NAMESPACE
             Assert.Warn($"{count} files processed.");
         }
 
-        void EnsureContinousTokens(ImmutableDictionary<int, TokenSlot> tokens) {
+        void EnsureContinousTokens(int pos, SyntaxNode rootNode) {
 
-            var lastEnd = 0;
+            var lastEnd = pos;
 
-            foreach (var token in tokens) {
+            Assert.That(rootNode.Position, Is.EqualTo(pos));
+
+            foreach (var nodeOrToken in rootNode.ChildNodesAndTokens()) {
+
+                if (nodeOrToken.IsNode) {
+                    EnsureContinousTokens(lastEnd, nodeOrToken.AsNode());
+                }
+
+                Assert.That(nodeOrToken.Position, Is.EqualTo(lastEnd));
+
+                lastEnd = nodeOrToken.EndPosition;
 
                 // TODO Enable Tests
                 //foreach (var trivia in token.LeadingTrivias) {
@@ -191,7 +199,7 @@ END NAMESPACE
                 //}
             }
 
-            Assert.That(tokens.Last().Value.Kind, Is.EqualTo(SyntaxKind.Eof));
+            //    Assert.That(tokens.Last().Value.Kind, Is.EqualTo(SyntaxKind.Eof));
 
         }
 
