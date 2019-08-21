@@ -27,7 +27,7 @@ namespace Pharmatechnik.Language.Gd.Antlr {
             Func<TContext, SyntaxSlot> slotVisit)
             where TContext : ParserRuleContext {
 
-            return new RequiredSlot(slotVisit(context));
+            return context == null ? new RequiredSlot(null) : new RequiredSlot(slotVisit(context));
         }
 
         public static IEnumerable<RequiredSlot> OneOrMore<TContext>(
