@@ -1,4 +1,5 @@
 ﻿using System.Collections.Immutable;
+using System.Linq;
 
 using Antlr4.Runtime;
 
@@ -19,8 +20,17 @@ namespace Pharmatechnik.Language.Gd.Antlr {
 
         TokenSlot GetTokenSlot([CanBeNull] IToken terminalNode, SyntaxKind syntaxKind) {
 
+            
             var extent = TextExtentFactory.CreateExtent(terminalNode);
             if (extent.IsMissing) {
+                // Auch wenn die GuiDeclarationSyntax nicht geparst werden kann,
+                // muss dennoch immer das Eof Token angehängt werden.
+                if (syntaxKind == SyntaxKind.Eof) {
+                    var eofToken= _tokens.Values.Last();
+                    if (eofToken.Kind == SyntaxKind.Eof) {
+                        return eofToken;
+                    }
+                }
                 return TokenSlot.Create(length: 0, kind: syntaxKind);
             }
 

@@ -168,6 +168,26 @@ END NAMESPACE
         }
 
         [Test]
+        public void ParseInvalidGd() {
+
+            var text = "? @Foo DIALOG";
+            var source = SourceText.From(text);
+            var tree   = SyntaxTree.Parse(source);
+
+            Assert.That(tree.Root.Kind, Is.EqualTo(SyntaxKind.GuiDescriptionSyntax));
+            var tokens = tree.Root.DescendantTokens().ToList();
+
+            Assert.That(tokens.Count, Is.EqualTo(1)); // Nur Eof
+            var eof = tokens.Last();
+
+            // Der ganze "Mist" hängt als "Leading Trivia" am Eof Token
+            Assert.That(eof.Kind, Is.EqualTo(SyntaxKind.Eof));
+            Assert.That(eof.Position, Is.EqualTo(0));
+            Assert.That(eof.FullLength, Is.EqualTo(text.Length));
+
+        }
+
+        [Test]
         public void AllGds() {
 
             var testDir = @"c:\ws\xtplus\main";
