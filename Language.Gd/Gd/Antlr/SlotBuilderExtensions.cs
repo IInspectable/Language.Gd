@@ -1,4 +1,6 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
@@ -9,28 +11,30 @@ using JetBrains.Annotations;
 
 using Pharmatechnik.Language.Gd.Internal;
 
+#endregion
+
 namespace Pharmatechnik.Language.Gd.Antlr {
 
     static class SyntaxSlotBuilderExtensions {
 
-        public static OptionalSlot Optional<TContext, TSlot>(
+        public static SyntaxSlot Optional<TContext, TSlot>(
             this TContext context,
             Func<TContext, TSlot> slotVisit)
             where TSlot : SyntaxSlot
             where TContext : ParserRuleContext {
 
-            return context == null ? new OptionalSlot(null) : new OptionalSlot(slotVisit(context));
+            return context == null ? null : slotVisit(context);
         }
 
-        public static RequiredSlot Required<TContext>(
+        public static SyntaxSlot Required<TContext>(
             this TContext context,
             Func<TContext, SyntaxSlot> slotVisit)
             where TContext : ParserRuleContext {
 
-            return context == null ? new RequiredSlot(null) : new RequiredSlot(slotVisit(context));
+            return context == null ? null : slotVisit(context);
         }
 
-        public static IEnumerable<RequiredSlot> OneOrMore<TContext>(
+        public static IEnumerable<SyntaxSlot> OneOrMore<TContext>(
             this IEnumerable<TContext> contexts,
             Func<TContext, SyntaxSlot> slotVisit)
             where TContext : ParserRuleContext {
@@ -39,63 +43,31 @@ namespace Pharmatechnik.Language.Gd.Antlr {
             return ZeroOrMore(contexts, slotVisit);
         }
 
-        public static IEnumerable<RequiredSlot> ZeroOrMore<TContext>(
+        public static IEnumerable<SyntaxSlot> ZeroOrMore<TContext>(
             this IEnumerable<TContext> contexts,
             Func<TContext, SyntaxSlot> slotVisit)
             where TContext : ParserRuleContext {
 
-            return contexts.Select(slotVisit)
-                           .Select(slot => new RequiredSlot(slot));
+            return contexts.Select(slotVisit);
 
-        }
-
-        [CanBeNull]
-        public static TSlot OfType<TSlot>(this OptionalSlot optional)
-            where TSlot : SyntaxSlot {
-
-            return optional.Slot as TSlot;
         }
 
         // Nur nicht null, wenn keine Syntaxfehler...
         [CanBeNull]
-        public static TSlot OfType<TSlot>(this RequiredSlot required)
+        public static TSlot OfType<TSlot>(this SyntaxSlot slot)
             where TSlot : SyntaxSlot {
 
-            return required.Slot as TSlot;
+            return slot as TSlot;
         }
 
         [NotNull]
-        public static SyntaxSlotList<TSlot> OfType<TSlot>(this IEnumerable<RequiredSlot> requiredSlots)
+        public static SyntaxSlotList<TSlot> OfType<TSlot>(this IEnumerable<SyntaxSlot> requiredSlots)
             where TSlot : SyntaxSlot {
 
             return new SyntaxSlotList<TSlot>(
-                requiredSlots.Select(rs => rs.Slot)
-                             .Where(slot => slot != null)
+                requiredSlots.Where(slot => slot != null)
                              .Cast<TSlot>()
                              .ToImmutableArray());
-        }
-
-        // TODO OptionalSlot haben eigentlich keinen Sinn, da nur bei korrekter Syntax gültig
-        internal struct OptionalSlot {
-
-            public OptionalSlot([CanBeNull] SyntaxSlot slot) {
-                Slot = slot;
-            }
-
-            [CanBeNull]
-            public SyntaxSlot Slot { get; }
-
-        }
-
-        internal struct RequiredSlot {
-
-            public RequiredSlot([CanBeNull] SyntaxSlot slot) {
-                Slot = slot;
-            }
-
-            [CanBeNull]
-            public SyntaxSlot Slot { get; }
-
         }
 
     }
