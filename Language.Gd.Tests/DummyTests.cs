@@ -209,8 +209,7 @@ END NAMESPACE
 
         void EnsureContinousTokens(SyntaxNode rootNode) {
             var lastEnd = rootNode.Position;
-            var tokens  = rootNode.DescendantTokens().ToList();
-            foreach (var token in tokens) {
+            foreach (var token in rootNode.DescendantTokens()) {
                 Assert.That(token.Position, Is.EqualTo(lastEnd));
                 lastEnd = token.EndPosition;
             }
