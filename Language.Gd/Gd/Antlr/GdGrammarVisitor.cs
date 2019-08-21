@@ -20,17 +20,17 @@ namespace Pharmatechnik.Language.Gd.Antlr {
 
         TokenSlot GetTokenSlot([CanBeNull] IToken terminalNode, SyntaxKind syntaxKind) {
 
-            
             var extent = TextExtentFactory.CreateExtent(terminalNode);
-            if (extent.IsMissing) {
+            if (extent.IsMissing || !_tokens.ContainsKey(extent.Start)) {
                 // Auch wenn die GuiDeclarationSyntax nicht geparst werden kann,
                 // muss dennoch immer das Eof Token angehängt werden.
                 if (syntaxKind == SyntaxKind.Eof) {
-                    var eofToken= _tokens.Values.Last();
+                    var eofToken = _tokens.Values.Last();
                     if (eofToken.Kind == SyntaxKind.Eof) {
                         return eofToken;
                     }
                 }
+
                 return TokenSlot.Create(length: 0, kind: syntaxKind);
             }
 

@@ -26,7 +26,7 @@ namespace Pharmatechnik.Language.Gd.Antlr {
             this TContext context,
             Func<TContext, SyntaxSlot> slotVisit)
             where TContext : ParserRuleContext {
-            // TODO Error Handling wenn doch null?
+
             return new RequiredSlot(slotVisit(context));
         }
 
@@ -34,32 +34,34 @@ namespace Pharmatechnik.Language.Gd.Antlr {
             this IEnumerable<TContext> contexts,
             Func<TContext, SyntaxSlot> slotVisit)
             where TContext : ParserRuleContext {
-            // TODO Error Handling wenn nicht mindestens 1 Element?
-            return ZeroOrMore(contexts, slotVisit);
 
+            // Kann immer auch kein Element haben, wenn Syntax/Semantik Fehler im Code
+            return ZeroOrMore(contexts, slotVisit);
         }
 
         public static IEnumerable<RequiredSlot> ZeroOrMore<TContext>(
             this IEnumerable<TContext> contexts,
             Func<TContext, SyntaxSlot> slotVisit)
             where TContext : ParserRuleContext {
-            // TODO Error Handling wenn doch null?
+
             return contexts.Select(slotVisit)
                            .Select(slot => new RequiredSlot(slot));
 
         }
 
+        [CanBeNull]
         public static TSlot OfType<TSlot>(this OptionalSlot optional)
             where TSlot : SyntaxSlot {
 
             return optional.Slot as TSlot;
         }
 
-        [NotNull]
+        // Nur nicht null, wenn keine Syntaxfehler...
+        [CanBeNull]
         public static TSlot OfType<TSlot>(this RequiredSlot required)
             where TSlot : SyntaxSlot {
 
-            return (TSlot) required.Slot;
+            return required.Slot as TSlot;
         }
 
         [NotNull]
@@ -68,10 +70,12 @@ namespace Pharmatechnik.Language.Gd.Antlr {
 
             return new SyntaxSlotList<TSlot>(
                 requiredSlots.Select(rs => rs.Slot)
+                             .Where(slot => slot != null)
                              .Cast<TSlot>()
                              .ToImmutableArray());
         }
 
+        // TODO OptionalSlot haben eigentlich keinen Sinn, da nur bei korrekter Syntax gültig
         internal struct OptionalSlot {
 
             public OptionalSlot([CanBeNull] SyntaxSlot slot) {
@@ -85,11 +89,11 @@ namespace Pharmatechnik.Language.Gd.Antlr {
 
         internal struct RequiredSlot {
 
-            public RequiredSlot([NotNull] SyntaxSlot slot) {
+            public RequiredSlot([CanBeNull] SyntaxSlot slot) {
                 Slot = slot;
             }
 
-            [NotNull]
+            [CanBeNull]
             public SyntaxSlot Slot { get; }
 
         }
