@@ -154,6 +154,17 @@ END NAMESPACE
             var eofToken = gds.FindToken(source.Length);
             Assert.That(eofToken.Kind, Is.EqualTo(SyntaxKind.Eof));
 
+            // Token Equalitiy
+            var tl1 = gds.DescendantTokens().ToList();
+            var tl2 = gds.DescendantTokens().ToList();
+
+            for (int i = 0; i < tl1.Count; i++) {
+
+                var t1 = tl1[i];
+                var t2 = tl2[i];
+                Assert.That(t1, Is.EqualTo(t2));
+            }
+
         }
 
         [Test]
@@ -174,7 +185,7 @@ END NAMESPACE
                 var txt    = File.ReadAllText(file);
                 var source = SourceText.From(txt);
                 var tree   = SyntaxTree.Parse(source);
-                
+
                 EnsureContinousNodes(0, tree.Root);
                 EnsureContinousTokens(tree.Root);
 

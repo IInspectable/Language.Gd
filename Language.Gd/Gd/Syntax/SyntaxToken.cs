@@ -1,5 +1,7 @@
 ﻿#region Using Directives
 
+using System;
+
 using Pharmatechnik.Language.Gd.Internal;
 using Pharmatechnik.Language.Text;
 
@@ -7,7 +9,7 @@ using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd {
 
-    public readonly struct SyntaxToken {
+    public readonly struct SyntaxToken: IEquatable<SyntaxToken> {
 
         internal SyntaxToken(SyntaxTree syntaxTree, TokenSlot slot, SyntaxNode parent, int position) {
             Position   = position;
@@ -45,6 +47,36 @@ namespace Pharmatechnik.Language.Gd {
 
         public override string ToString() {
             return $"{Kind}: {SyntaxTree.SourceText.Substring(Extent)}";
+        }
+
+        public bool Equals(SyntaxToken other) {
+            return Slot       == other.Slot       &&
+                   SyntaxTree == other.SyntaxTree &&
+                   Parent     == other.Parent     &&
+                   Position   == other.Position;
+        }
+
+        public override bool Equals(object obj) {
+            return obj is SyntaxToken other &&
+                   Equals(other);
+        }
+
+        public override int GetHashCode() {
+            unchecked {
+                var hashCode = (Slot != null ? Slot.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (SyntaxTree != null ? SyntaxTree.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (Parent     != null ? Parent.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ Position;
+                return hashCode;
+            }
+        }
+
+        public static bool operator ==(SyntaxToken left, SyntaxToken right) {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(SyntaxToken left, SyntaxToken right) {
+            return !left.Equals(right);
         }
 
     }
