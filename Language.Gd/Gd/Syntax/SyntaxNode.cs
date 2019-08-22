@@ -50,6 +50,10 @@ namespace Pharmatechnik.Language.Gd {
         internal bool IsList    => Slot.IsList;
         internal int  SlotCount => Slot.SlotCount;
 
+        public override string ToString() {
+            return $"N: {Kind}: {SyntaxTree.SourceText.Substring(Extent)}";
+        }
+
         // TODO Descendants Childs etc...
 
         public SyntaxToken FindToken(int position) {

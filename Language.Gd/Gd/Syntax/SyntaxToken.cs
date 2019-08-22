@@ -46,7 +46,7 @@ namespace Pharmatechnik.Language.Gd {
         internal int FullLength => Slot.FullLength;
 
         public override string ToString() {
-            return $"{Kind}: {SyntaxTree.SourceText.Substring(Extent)}";
+            return $"T: {Kind}: {SyntaxTree.SourceText.Substring(Extent)}";
         }
 
         public bool Equals(SyntaxToken other) {
