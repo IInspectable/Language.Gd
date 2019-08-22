@@ -187,6 +187,26 @@ END NAMESPACE
             Assert.That(eof.Position,   Is.EqualTo(0));
             Assert.That(eof.FullLength, Is.EqualTo(text.Length));
 
+            Assert.That(eof.LeadingTrivia.Count, Is.EqualTo(6));
+
+            Assert.That(eof.LeadingTrivia[0].Kind,      Is.EqualTo(SyntaxKind.Questionmark));
+            Assert.That(eof.LeadingTrivia[0].GetText(), Is.EqualTo("?"));
+
+            Assert.That(eof.LeadingTrivia[1].Kind, Is.EqualTo(SyntaxKind.WhitespaceTrivia));
+            Assert.That(eof.LeadingTrivia[1].GetText(), Is.EqualTo(" "));
+
+            Assert.That(eof.LeadingTrivia[2].Kind, Is.EqualTo(SyntaxKind.Unknown));
+            Assert.That(eof.LeadingTrivia[2].GetText(), Is.EqualTo("@"));
+
+            Assert.That(eof.LeadingTrivia[3].Kind, Is.EqualTo(SyntaxKind.Identifier));
+            Assert.That(eof.LeadingTrivia[3].GetText(), Is.EqualTo("Foo"));
+
+            Assert.That(eof.LeadingTrivia[4].Kind, Is.EqualTo(SyntaxKind.WhitespaceTrivia));
+            Assert.That(eof.LeadingTrivia[4].GetText(), Is.EqualTo(" "));
+
+            Assert.That(eof.LeadingTrivia[5].Kind, Is.EqualTo(SyntaxKind.Dialog));
+            Assert.That(eof.LeadingTrivia[5].GetText(), Is.EqualTo("DIALOG"));
+
         }
 
         [Test]

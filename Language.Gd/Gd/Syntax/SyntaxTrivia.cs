@@ -32,8 +32,10 @@ namespace Pharmatechnik.Language.Gd {
         public TextExtent FullExtent => new TextExtent(start: Position, length: FullLength);
         public TextExtent Extent     => new TextExtent(start: Start,    length: Length);
 
+        public string GetText() => SyntaxTree.SourceText.Substring(Extent);
+
         public override string ToString() {
-            return $"Tr: {Kind}: {SyntaxTree.SourceText.Substring(Extent)}";
+            return $"Tr: {Kind}: {GetText()}";
         }
 
     }
