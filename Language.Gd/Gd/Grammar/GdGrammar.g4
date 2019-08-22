@@ -13,88 +13,88 @@ options
 }
 
 guiDescription 
-    :   usingDeclaration* 
-        namespaceDeclaration 
+    :   usingDeclarationSection* 
+        namespaceDeclarationSection 
         EOF
     ;
 
-usingDeclaration 
-    :   usingDeclarationBegin 
+usingDeclarationSection
+    :   usingDeclarationSectionBegin 
             qualifiedName 
-        usingDeclarationEnd
+        usingDeclarationSectionEnd
     ;
 
-usingDeclarationBegin
+usingDeclarationSectionBegin
     : Using
     ;
 
-usingDeclarationEnd
+usingDeclarationSectionEnd
     : End Using
     ;
 
-namespaceDeclaration 
-    :   namespaceDeclarationBegin
+namespaceDeclarationSection 
+    :   namespaceDeclarationSectionBegin
             container+ 
-        namespaceDeclarationEnd
+        namespaceDeclarationSectionEnd
     ;
 
-namespaceDeclarationBegin
+namespaceDeclarationSectionBegin
     :   Namespace qualifiedName
     ;
 
 
-namespaceDeclarationEnd
+namespaceDeclarationSectionEnd
     :   End Namespace
     ;
 
 
 container 
-    :   form
-    |   dialog
-    |   usercontrol
+    :   formSection
+    |   dialogSection
+    |   usercontrolSection
     ;
 
 
-form 
-    :   formBegin
+formSection 
+    :   formSectionBegin
             containerDeclaration
-        formEnd       
+        formSectionEnd       
     ;
 
-formBegin
+formSectionBegin
     :   Form Identifier
     ;
 
-formEnd
+formSectionEnd
     :   End Form Identifier?   
     ;
 
 
-dialog 
-    :   dialogBegin
+dialogSection 
+    :   dialogSectionBegin
             containerDeclaration
-        dialogEnd
+        dialogSectionEnd
     ;
 
-dialogBegin
+dialogSectionBegin
     :   Dialog Identifier
     ;
 
-dialogEnd
+dialogSectionEnd
     :   End Dialog Identifier?
     ;
 
-usercontrol 
-    :   userControlBegin 
+usercontrolSection 
+    :   userControlSectionBegin 
             containerDeclaration
-        userControlEnd
+        userControlSectionEnd
     ;
 
-userControlBegin 
+userControlSectionBegin 
     : User Control Identifier
     ;
 
-userControlEnd 
+userControlSectionEnd 
     : End User Control Identifier? 
     ;
 
