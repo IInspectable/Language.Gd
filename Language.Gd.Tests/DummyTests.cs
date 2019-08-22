@@ -1,5 +1,7 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
+using System.Text;
 
 using NUnit.Framework;
 
@@ -11,7 +13,7 @@ namespace Pharmatechnik.Language.Gd.Tests {
     public class DummyTests {
 
         private const string TestGd = @"
-
+// Foo
 NAMESPACE ns
     DIALOG DemoDialog
         PROPERTIES
@@ -170,7 +172,7 @@ END NAMESPACE
         [Test]
         public void ParseInvalidGd() {
 
-            var text = "? @Foo DIALOG";
+            var text   = "? @Foo DIALOG";
             var source = SourceText.From(text);
             var tree   = SyntaxTree.Parse(source);
 
@@ -181,8 +183,8 @@ END NAMESPACE
             var eof = tokens.Last();
 
             // Der ganze "Mist" hängt als "Leading Trivia" am Eof Token
-            Assert.That(eof.Kind, Is.EqualTo(SyntaxKind.Eof));
-            Assert.That(eof.Position, Is.EqualTo(0));
+            Assert.That(eof.Kind,       Is.EqualTo(SyntaxKind.Eof));
+            Assert.That(eof.Position,   Is.EqualTo(0));
             Assert.That(eof.FullLength, Is.EqualTo(text.Length));
 
         }
@@ -196,6 +198,7 @@ END NAMESPACE
                 return;
             }
 
+            var stats = new SyntaxStatistics();
             var count = 0;
             foreach (var file in Directory.EnumerateFiles(
                 testDir, "*.gd", SearchOption.AllDirectories)) {
@@ -209,13 +212,59 @@ END NAMESPACE
                 EnsureContinousNodes(0, tree.Root);
                 EnsureContinousTokens(tree.Root);
 
+                //MeasureTrivias(tree.Root, stats);
+
                 if (tree.Diagnostics.Length > 0) {
                     Assert.Warn($"{file}\r\n{tree.Diagnostics.First().Location}");
                 }
-
             }
 
-            Assert.Warn($"{count} files processed.");
+            TestContext.Out.WriteLine(stats.ToString());
+            TestContext.Out.WriteLine($"{count} files processed.");
+        }
+
+        class SyntaxStatistics {
+
+            public SyntaxStatistics() {
+                LeadingTriviaStats  = new Dictionary<int, int>();
+                TrailingTriviaStats = new Dictionary<int, int>();
+            }
+
+            public Dictionary<int, int> LeadingTriviaStats  { get; }
+            public Dictionary<int, int> TrailingTriviaStats { get; }
+
+            public void MeasureTrivia(SyntaxToken token) {
+
+                var leadingTriviaCount = token.LeadingTrivia.Count;
+                LeadingTriviaStats.TryGetValue(leadingTriviaCount, out var leadingTriviaCountUsed);
+                LeadingTriviaStats[leadingTriviaCount] = leadingTriviaCountUsed + 1;
+
+                var trailingTriviaCount = token.TrailingTrivia.Count;
+                TrailingTriviaStats.TryGetValue(trailingTriviaCount, out var trailingTriviaCountUsed);
+                TrailingTriviaStats[trailingTriviaCount] = trailingTriviaCountUsed + 1;
+            }
+
+            public override string ToString() {
+                var sb = new StringBuilder();
+
+                foreach (var entry in LeadingTriviaStats.OrderBy(kvp => kvp.Key)) {
+                    sb.AppendLine($"LeadingTrivia: trivia count {entry.Key} => used {entry.Value}.");
+                }
+
+                foreach (var entry in TrailingTriviaStats.OrderBy(kvp => kvp.Key)) {
+                    sb.AppendLine($"TrailingTrivia: trivia count {entry.Key} => used {entry.Value}.");
+                }
+
+                return sb.ToString();
+            }
+
+        }
+
+        // ReSharper disable once UnusedMember.Local
+        void MeasureTrivias(SyntaxNode root, SyntaxStatistics statistics) {
+            foreach (var token in root.DescendantTokens()) {
+                statistics.MeasureTrivia(token);
+            }
         }
 
         void EnsureContinousNodes(int pos, SyntaxNode rootNode) {

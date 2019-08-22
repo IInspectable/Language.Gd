@@ -7,9 +7,9 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
     class TokenBuilder {
 
-        readonly List<TriviaSlot> _leadingTrivias  = new List<TriviaSlot>();
-        readonly List<TriviaSlot> _trailingTrivias = new List<TriviaSlot>();
-        readonly List<TriviaSlot> _pendingTrivias  = new List<TriviaSlot>();
+        readonly List<TriviaSlot> _leadingTrivia  = new List<TriviaSlot>();
+        readonly List<TriviaSlot> _trailingTrivia = new List<TriviaSlot>();
+        readonly List<TriviaSlot> _pendingTrivia  = new List<TriviaSlot>();
 
         TextExtent? _tokenExtent;
         SyntaxKind? _tokenKind;
@@ -18,9 +18,9 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
         public void AddTrivia(TriviaSlot trivia) {
             if (!HasToken) {
-                _leadingTrivias.Add(trivia);
+                _leadingTrivia.Add(trivia);
             } else {
-                _trailingTrivias.Add(trivia);
+                _trailingTrivia.Add(trivia);
             }
         }
 
@@ -30,20 +30,20 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
             if (HasToken) {
 
-                if (_trailingTrivias.Any()) {
+                if (_trailingTrivia.Any()) {
 
-                    var index = _trailingTrivias.FindIndex(t => t.Kind == SyntaxKind.NewLineTrivia);
+                    var index = _trailingTrivia.FindIndex(t => t.Kind == SyntaxKind.NewLineTrivia);
                     if (index >= 0) {
-                        _pendingTrivias.AddRange(_trailingTrivias.GetRange(index: index + 1, count: _trailingTrivias.Count - index - 1));
-                        _trailingTrivias.RemoveRange(index: index + 1, count: _trailingTrivias.Count - index - 1);
+                        _pendingTrivia.AddRange(_trailingTrivia.GetRange(index: index + 1, count: _trailingTrivia.Count - index - 1));
+                        _trailingTrivia.RemoveRange(index: index + 1, count: _trailingTrivia.Count - index - 1);
                     }
                 }
 
                 completedTokenInfo = TryCompleteToken();
 
-                if (_pendingTrivias.Any()) {
-                    _leadingTrivias.AddRange(_pendingTrivias);
-                    _pendingTrivias.Clear();
+                if (_pendingTrivia.Any()) {
+                    _leadingTrivia.AddRange(_pendingTrivia);
+                    _pendingTrivia.Clear();
                 }
 
             }
@@ -60,7 +60,7 @@ namespace Pharmatechnik.Language.Gd.Internal {
             }
 
             var start     = _tokenExtent.Value.Start;
-            var tokenSlot = TokenSlot.Create(_tokenExtent.Value.Length, _tokenKind.Value, _leadingTrivias, _trailingTrivias);
+            var tokenSlot = TokenSlot.Create(_tokenExtent.Value.Length, _tokenKind.Value, _leadingTrivia, _trailingTrivia);
 
             Clear();
 
@@ -69,10 +69,10 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
         private void Clear() {
 
-            _leadingTrivias.Clear();
+            _leadingTrivia.Clear();
             _tokenExtent = null;
             _tokenKind   = null;
-            _trailingTrivias.Clear();
+            _trailingTrivia.Clear();
         }
 
     }

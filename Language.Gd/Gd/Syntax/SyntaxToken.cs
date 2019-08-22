@@ -29,11 +29,14 @@ namespace Pharmatechnik.Language.Gd {
         public bool IsMissing => Slot.IsMissing;
         public bool IsKeyword => SyntaxFacts.IsKeyword(Kind);
 
-        // TODO Leading / Trailing Trivias
         public string Text => SyntaxTree.SourceText.Substring(Extent);
 
-        public bool HasLeadingTrivia   => Slot.LeadingTrivias.Length  > 0;
-        public bool HasTrailingTrivias => Slot.TrailingTrivias.Length > 0;
+        // TODO Leading / Trailing Trivias
+        public bool HasLeadingTrivia  => Slot.LeadingTrivia.Length  > 0;
+        public bool HasTrailingTrivia => Slot.TrailingTrivia.Length > 0;
+
+        public SyntaxTriviaList LeadingTrivia  => new SyntaxTriviaList(this, Slot.LeadingTrivia,  Position);
+        public SyntaxTriviaList TrailingTrivia => new SyntaxTriviaList(this, Slot.TrailingTrivia, Position + FullLength - Slot.GetTrailingTriviaWidth());
 
         public int        ExtentStart => Position + Slot.GetLeadingTriviaWidth();
         public TextExtent Extent      => Slot.GetExtent(Position);

@@ -90,6 +90,7 @@ writeSyntaxProperty(syntaxSlot)::=<<
 >>
 
 writeSyntaxPropertyTo1(syntaxSlot)::=<<
+[CanBeNull]
 public <syntaxSlot.Name>Syntax <syntaxSlot.Name> => (<syntaxSlot.Name>Syntax) GetSyntaxNode(<syntaxSlot.SlotIndex>);
 >>
 
