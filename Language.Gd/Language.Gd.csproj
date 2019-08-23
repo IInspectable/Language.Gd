@@ -30,7 +30,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Language.Core\Language.Core.csproj" />
-    <ProjectReference Include="..\Tool.GdSyntaxGenerator\Tool.GdSyntaxGenerator.csproj"  >
+    <ProjectReference Include="..\Tool.GdSyntaxGenerator\Tool.GdSyntaxGenerator.csproj">
       <ReferenceOutputAssembly>false</ReferenceOutputAssembly>
     </ProjectReference>
   </ItemGroup>

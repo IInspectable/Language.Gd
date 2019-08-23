@@ -22,7 +22,8 @@ namespace Pharmatechnik.Language.Gd {
         public bool IsMissing           => _slot.IsMissing;
         public bool IsSkipedTokenTrivia => _slot.IsSkipedTokenTrivia;
 
-        internal int Position { get; }
+        internal int Position    { get; }
+        internal int EndPosition => Position + _slot.FullLength;
 
         public int Start      => Position + _slot.GetLeadingTriviaWidth();
         public int Length     => _slot.Length;

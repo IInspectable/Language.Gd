@@ -94,6 +94,7 @@ namespace Pharmatechnik.Language.Gd {
             return child.AsNode().FindToken(position);
         }
 
+        // TODO Überladung mit Textextent?
         public IEnumerable<SyntaxToken> DescendantTokens() {
             return DescendantTokensImpl();
         }
