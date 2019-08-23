@@ -2,8 +2,8 @@
 
     public interface ISectionSyntax {
 
-        SyntaxNode Begin { get; }
-        SyntaxNode End   { get; }
+        SyntaxNode SectionBegin { get; }
+        SyntaxNode SectionEnd   { get; }
 
     }
 
@@ -17,15 +17,15 @@
     // TODO Nur zum Testen...
     partial class PropertiesSectionSyntax: ISectionSyntax {
 
-        SyntaxNode ISectionSyntax.Begin => PropertiesSectionBegin;
-        SyntaxNode ISectionSyntax.End   => PropertiesSectionEnd;
+        SyntaxNode ISectionSyntax.SectionBegin => PropertiesSectionBegin;
+        SyntaxNode ISectionSyntax.SectionEnd   => PropertiesSectionEnd;
 
     }
 
     partial class ControlSectionSyntax: INamedSectionSyntax {
 
-        SyntaxNode ISectionSyntax.Begin => ControlSectionBegin;
-        SyntaxNode ISectionSyntax.End   => ControlSectionEnd;
+        SyntaxNode ISectionSyntax.SectionBegin => ControlSectionBegin;
+        SyntaxNode ISectionSyntax.SectionEnd   => ControlSectionEnd;
 
         SyntaxToken? INamedSectionSyntax.NameBegin => ControlSectionBegin?.ControlNameToken;
         SyntaxToken? INamedSectionSyntax.NameEnd   => ControlSectionEnd?.ControlNameToken;
