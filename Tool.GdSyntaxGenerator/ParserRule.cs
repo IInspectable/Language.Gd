@@ -10,7 +10,7 @@ namespace Tool.GdSyntaxGenerator {
         public List<Alternative> Alternatives { get; } = new List<Alternative>();
 
         public override string ToString() {
-            var alt = String.Join("    |  ", Alternatives.Select(a => a.ToString() + "\r\n").ToArray());
+            var alt = String.Join("    |  ", Alternatives.Select(a => a + "\r\n").ToArray());
             return $"{Name}\r\n"   +
                    $"    :  {alt}" +
                    $"    ;";

@@ -2,7 +2,7 @@
 
 namespace Pharmatechnik.Language.Gd {
 
-    public static partial class DiagnosticDescriptors {
+    public static class DiagnosticDescriptors {
 
         public static DiagnosticDescriptor NewInternalError(Exception ex) {
             return new DiagnosticDescriptor(
