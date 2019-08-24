@@ -16,6 +16,9 @@
 /Language.Gd.Cli/bin
 /Language.Gd.Cli/obj
 
+/Language.Gd.Extension/bin
+/Language.Gd.Extension/obj
+
 /Tool.GdSyntaxGenerator/bin
 /Tool.GdSyntaxGenerator/obj
 

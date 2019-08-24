@@ -24,6 +24,8 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_build", "_build", "{1515F2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tool.GdSyntaxGenerator", "Tool.GdSyntaxGenerator\Tool.GdSyntaxGenerator.csproj", "{0DE4F6EF-0E82-4D25-BF59-BD321CB0985B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Language.Gd.Extension", "Language.Gd.Extension\Language.Gd.Extension.csproj", "{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -54,6 +56,10 @@ Global
 		{0DE4F6EF-0E82-4D25-BF59-BD321CB0985B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{0DE4F6EF-0E82-4D25-BF59-BD321CB0985B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{0DE4F6EF-0E82-4D25-BF59-BD321CB0985B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
