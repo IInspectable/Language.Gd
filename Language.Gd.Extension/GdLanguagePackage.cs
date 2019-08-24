@@ -4,6 +4,7 @@ using System;
 using System.Runtime.InteropServices;
 using System.Threading;
 
+using Microsoft.CodeAnalysis;
 using Microsoft.VisualStudio.Shell;
 
 using Task = System.Threading.Tasks.Task;
@@ -30,8 +31,8 @@ namespace Pharmatechnik.Language.Gd.Extension {
     /// </para>
     /// </remarks>
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
-    [Guid(LanguageGdPackage.PackageGuidString)]
-    public sealed class LanguageGdPackage: AsyncPackage {
+    [Guid(GdLanguagePackage.PackageGuidString)]
+    public sealed class GdLanguagePackage: AsyncPackage {
 
         /// <summary>
         /// Language.Gd.ExtensionPackage GUID string.
@@ -49,6 +50,10 @@ namespace Pharmatechnik.Language.Gd.Extension {
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+        }
+
+        public static Project GetContainingProject(string filePath) {
+            throw new NotImplementedException();
         }
 
     }

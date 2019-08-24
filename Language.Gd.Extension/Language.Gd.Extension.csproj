@@ -48,8 +48,23 @@
     <Compile Include="..\_build\GobalAssemblyInfo.cs">
       <Link>GobalAssemblyInfo.cs</Link>
     </Compile>
+    <Compile Include="Classification\ClassificationTypeDefinitions.cs" />
+    <Compile Include="Classification\ClassificationTypeNames.cs" />
+    <Compile Include="Classification\SyntacticClassificationTagger.cs" />
+    <Compile Include="Classification\SyntacticClassificationTaggerProvider.cs" />
+    <Compile Include="Common\AndSnapshot.cs" />
+    <Compile Include="Common\ServiceProperties.cs" />
+    <Compile Include="Common\TextBufferExtensions.cs" />
+    <Compile Include="Common\TextBufferScopedValue.cs" />
+    <Compile Include="Common\TextSnapshotExtensions.cs" />
+    <Compile Include="GdLanguageContentDefinitions.cs" />
+    <Compile Include="HACK_ThemeColorFixer.cs" />
+    <Compile Include="Logging\Logger.cs" />
+    <Compile Include="ParserService\ParserService.cs" />
+    <Compile Include="ParserService\ParserServiceDependent.cs" />
+    <Compile Include="ParserService\SyntaxTreeAndSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="LanguageGdPackage.cs" />
+    <Compile Include="GdLanguagePackage.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -59,11 +74,29 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers">
+      <Version>2.9.4</Version>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
+    <PackageReference Include="Microsoft.CodeAnalysis.EditorFeatures.Text">
+      <Version>3.2.1</Version>
+    </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.200" ExcludeAssets="runtime" />
     <PackageReference Include="Microsoft.VSSDK.BuildTools" Version="16.2.3073" />
+    <PackageReference Include="NLog">
+      <Version>4.6.6</Version>
+    </PackageReference>
+    <PackageReference Include="System.Reactive">
+      <Version>4.1.6</Version>
+    </PackageReference>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Language.Core\Language.Core.csproj">

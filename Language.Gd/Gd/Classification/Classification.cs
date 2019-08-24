@@ -1,9 +1,10 @@
 ﻿namespace Pharmatechnik.Language.Gd {
 
-    public enum Classification {
+    public enum GdClassification {
 
+        Unknown,
         Comment,
-        Unused,
+        Skiped,
         Identifier,
         Keyword,
         NumericLiteral,

@@ -6,17 +6,16 @@ namespace Pharmatechnik.Language.Gd {
 
     public struct ClassifiedExtent: IEquatable<ClassifiedExtent> {
 
-        public ClassifiedExtent(TextExtent extent, Classification classification) {
+        public ClassifiedExtent(TextExtent extent, GdClassification classification) {
             Extent         = extent;
             Classification = classification;
 
         }
 
-        public TextExtent     Extent         { get; }
-        public Classification Classification { get; }
+        public TextExtent       Extent         { get; }
+        public GdClassification Classification { get; }
 
-        public override string ToString()
-        {
+        public override string ToString() {
             return $"{Extent} {Classification}";
         }
 

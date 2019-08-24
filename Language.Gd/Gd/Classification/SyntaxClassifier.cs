@@ -10,7 +10,7 @@ using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd {
 
-    class SyntaxClassifier {
+    public class SyntaxClassifier {
 
         readonly TextExtent             _extent;
         readonly List<ClassifiedExtent> _result;
@@ -110,24 +110,30 @@ namespace Pharmatechnik.Language.Gd {
 
         void ClassifyTrivia(SyntaxTrivia syntaxTrivia) {
 
+            var classification = SyntaxClassifierHelper.ClassifyKind(syntaxTrivia.Kind);
+           
             if (syntaxTrivia.IsSkipedTokenTrivia) {
-                AddClassification(syntaxTrivia, Classification.Unused);
+                AddClassification(syntaxTrivia, GdClassification.Skiped);
+              
+                if (classification == GdClassification.Text) {
+                    classification = GdClassification.Unknown;
+                }
 
             }
 
-            AddClassification(syntaxTrivia, SyntaxClassifierHelper.ClassifyKind(syntaxTrivia.Kind));
+            AddClassification(syntaxTrivia, classification);
 
         }
 
-        void AddClassification(SyntaxTrivia trivia, Classification classification) {
+        void AddClassification(SyntaxTrivia trivia, GdClassification classification) {
             AddClassification(trivia.Extent, classification);
         }
 
-        void AddClassification(SyntaxToken token, Classification classification) {
+        void AddClassification(SyntaxToken token, GdClassification classification) {
             AddClassification(token.Extent, classification);
         }
 
-        void AddClassification(TextExtent extent, Classification classification) {
+        void AddClassification(TextExtent extent, GdClassification classification) {
             if (ShouldAdd(extent)) {
                 _result.Add(new ClassifiedExtent(extent, classification));
             }

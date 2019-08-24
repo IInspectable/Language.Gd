@@ -2,69 +2,105 @@
 
     class SyntaxClassifierHelper {
 
-        public static Classification ClassifyToken(SyntaxToken token) {
+        public static GdClassification ClassifyToken(SyntaxToken token) {
 
             if (token.Kind == SyntaxKind.Identifier) {
 
                 if (token.Parent is EventDeclarationSyntax eventDeclaration) {
                     if (eventDeclaration.EventNameToken == token) {
-                        return Classification.EventName;
+                        return GdClassification.EventName;
                     }
 
                     if (eventDeclaration.CallNameToken == token) {
-                        return Classification.MethodName;
+                        return GdClassification.MethodName;
+                    }
+
+                }
+
+                if (token.Parent is HotkeyDeclarationSyntax hotkeyDeclaration) {
+
+                    if (hotkeyDeclaration.HotKeyNameToken == token) {
+                        return GdClassification.StaticSymbol;
+                    }
+
+                    if (hotkeyDeclaration.CallNameToken == token) {
+                        return GdClassification.MethodName;
+                    }
+
+                }
+
+                if (token.Parent is DialogSectionBeginSyntax dialogSectionBegin) {
+
+                    if (dialogSectionBegin.IdentifierToken == token) {
+                        return GdClassification.ClassName;
+                    }
+
+                }
+
+                if (token.Parent is FormSectionBeginSyntax formSectionBegin) {
+
+                    if (formSectionBegin.IdentifierToken == token) {
+                        return GdClassification.ClassName;
+                    }
+
+                }
+
+                if (token.Parent is UserControlSectionBeginSyntax userControlSectionBegin) {
+
+                    if (userControlSectionBegin.IdentifierToken == token) {
+                        return GdClassification.ClassName;
                     }
 
                 }
 
                 if (token.Parent is ControlSectionBeginSyntax controlSectionBegin) {
                     if (controlSectionBegin.ControlTypeToken == token) {
-                        return Classification.ClassName;
+                        return GdClassification.ClassName;
                     }
                 }
 
-                return Classification.Identifier;
+                return GdClassification.Identifier;
             }
 
             return ClassifyKind(token.Kind);
         }
 
-        public static Classification ClassifyKind(SyntaxKind syntaxKind) {
+        public static GdClassification ClassifyKind(SyntaxKind syntaxKind) {
 
             if (SyntaxFacts.IsKeyword(syntaxKind)) {
-                return Classification.Keyword;
+                return GdClassification.Keyword;
             }
 
             if (SyntaxFacts.IsPunctuation(syntaxKind)) {
-                return Classification.Punctuation;
+                return GdClassification.Punctuation;
             }
 
             if (SyntaxFacts.IsHotKeyModifier(syntaxKind)) {
-                return Classification.StaticSymbol;
+                return GdClassification.StaticSymbol;
             }
 
             // TODO ClassifyTokenKind
             switch (syntaxKind) {
                 case SyntaxKind.MultiLineCommentTrivia:
                 case SyntaxKind.SingleLineCommentTrivia:
-                    return Classification.Comment;
+                    return GdClassification.Comment;
                 case SyntaxKind.WhitespaceTrivia:
                 case SyntaxKind.NewLineTrivia:
                 case SyntaxKind.Eof:
-                    return Classification.WhiteSpace;
+                    return GdClassification.WhiteSpace;
                 case SyntaxKind.SemicolonTrivia:
-                    return Classification.Unused;
+                    return GdClassification.Skiped;
                 case SyntaxKind.Identifier:
-                    return Classification.Identifier;
+                    return GdClassification.Identifier;
                 case SyntaxKind.Integer:
-                    return Classification.NumericLiteral;
+                    return GdClassification.NumericLiteral;
                 case SyntaxKind.String:
                 case SyntaxKind.Character:
-                    return Classification.StringLiteral;
-     
+                    return GdClassification.StringLiteral;
+
             }
 
-            return Classification.Text;
+            return GdClassification.Text;
         }
 
     }
