@@ -12,8 +12,8 @@ using Microsoft.VisualStudio.Utilities;
 
 namespace Pharmatechnik.Language.Gd.Extension.Classification {
 
-    // Zu Debugging Zwecken
-    [Export(typeof(ITaggerProvider))]
+    // Zu "visuellen" Debugging Zwecken
+    //[Export(typeof(ITaggerProvider))]
     [ContentType(GdLanguageContentDefinitions.ContentType)]
     [TagType(typeof(IClassificationTag))]
     [TextViewRole(PredefinedTextViewRoles.Document)]

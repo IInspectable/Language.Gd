@@ -59,6 +59,7 @@
     <Compile Include="Common\ServiceProperties.cs" />
     <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\TextBufferExtensions.cs" />
+    <Compile Include="Common\TextBufferScopedTagger.cs" />
     <Compile Include="Common\TextBufferScopedValue.cs" />
     <Compile Include="Common\TextSnapshotExtensions.cs" />
     <Compile Include="Common\TextSnapshotLineExtensions.cs" />
@@ -67,6 +68,10 @@
     <Compile Include="GdLanguageContentDefinitions.cs" />
     <Compile Include="HACK_ThemeColorFixer.cs" />
     <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Outlining\OutlineTagger\CodeNamespaceDeclarationOutlineTagger.cs" />
+    <Compile Include="Outlining\OutlineTagger\MultilineCommentOutlineTagger.cs" />
+    <Compile Include="Outlining\OutliningTagger.cs" />
+    <Compile Include="Outlining\OutliningTaggerProvider.cs" />
     <Compile Include="ParserService\ParserService.cs" />
     <Compile Include="ParserService\ParserServiceDependent.cs" />
     <Compile Include="ParserService\SyntaxTreeAndSnapshot.cs" />
