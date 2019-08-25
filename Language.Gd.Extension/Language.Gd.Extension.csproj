@@ -14,7 +14,7 @@
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>Pharmatechnik.Language.Gd.Extension</RootNamespace>
-    <AssemblyName>Pharmatechnik.Language.Gd.Extension</AssemblyName>
+    <AssemblyName>Pharmatechnik.Language.Gd.Extension.2019</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <GeneratePkgDefFile>true</GeneratePkgDefFile>
     <UseCodebase>true</UseCodebase>
