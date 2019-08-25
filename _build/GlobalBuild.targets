@@ -2,7 +2,7 @@
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   
   <PropertyGroup>
-    <ProductName>Gui Description Language (GD)</ProductName>
+    <ProductName>GD Language Extensions</ProductName>
   </PropertyGroup>
   <Import Project="WriteThisAssemblyFile.targets" />
   <Import Project="Version.targets" />

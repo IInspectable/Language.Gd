@@ -1,6 +1,29 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
+
   <Import Project="..\_build\GlobalBuild.targets" />
-  
+  <PropertyGroup>
+    <VsixmanifestFile>$(MSBuildProjectDirectory)\source.extension.vsixmanifest</VsixmanifestFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <XmlConfigUpdates Include="$(VsixmanifestFile)">
+      <Namespaces>"&lt;Namespace Prefix='a' Uri='http://schemas.microsoft.com/developer/vsx-schema/2011' /&gt;"</Namespaces>
+      <XPath>/a:PackageManifest/a:Metadata/a:Identity/@Version</XPath>
+      <NewValue>$(ProductVersion)</NewValue>
+    </XmlConfigUpdates>
+    <XmlConfigUpdates Include="$(VsixmanifestFile)">
+      <Namespaces>"&lt;Namespace Prefix='a' Uri='http://schemas.microsoft.com/developer/vsx-schema/2011' /&gt;"</Namespaces>
+      <XPath>/a:PackageManifest/a:Metadata/a:DisplayName</XPath>
+      <NewValue>$(ProductName)</NewValue>
+    </XmlConfigUpdates>
+  </ItemGroup>
+
+  <Target Name="UpdateProductVersion" BeforeTargets="PrepareForBuild">
+    <Message Text="Updating XML $(ProductVersion) files %(XmlConfigUpdates.FullPath)" Importance="high" />
+    <XmlPoke Namespaces="%(XmlConfigUpdates.Namespaces)" XmlInputPath="%(XmlConfigUpdates.FullPath)"
+             Query="%(XmlConfigUpdates.XPath)" Value="%(XmlConfigUpdates.NewValue)" />
+  </Target>
+
 </Project>
