@@ -13,8 +13,8 @@ using Microsoft.VisualStudio.Utilities;
 namespace Pharmatechnik.Language.Gd.Extension.Classification {
 
     // Zu Debugging Zwecken
-    [ContentType(GdLanguageContentDefinitions.ContentType)]
     [Export(typeof(ITaggerProvider))]
+    [ContentType(GdLanguageContentDefinitions.ContentType)]
     [TagType(typeof(IClassificationTag))]
     [TextViewRole(PredefinedTextViewRoles.Document)]
     sealed class TriviaSpanClassificationTaggerProvider: ITaggerProvider {
