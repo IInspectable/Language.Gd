@@ -56,6 +56,8 @@ namespace Pharmatechnik.Language.Gd {
 
         // TODO Descendants Childs etc...
 
+        // TODO LastToken FirstToken
+
         public SyntaxToken FindToken(int position) {
 
             if (TryGetEofAt(out var eof)) {
