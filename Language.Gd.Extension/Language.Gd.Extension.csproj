@@ -55,10 +55,15 @@
     <Compile Include="Classification\SyntacticClassificationTagger.cs" />
     <Compile Include="Classification\SyntacticClassificationTaggerProvider.cs" />
     <Compile Include="Common\AndSnapshot.cs" />
+    <Compile Include="Common\CodeContentControlProvider.cs" />
     <Compile Include="Common\ServiceProperties.cs" />
+    <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\TextBufferExtensions.cs" />
     <Compile Include="Common\TextBufferScopedValue.cs" />
     <Compile Include="Common\TextSnapshotExtensions.cs" />
+    <Compile Include="Common\TextSnapshotLineExtensions.cs" />
+    <Compile Include="Common\TextViewConnectionListener.cs" />
+    <Compile Include="Common\WpfTextViewExtensions.cs" />
     <Compile Include="GdLanguageContentDefinitions.cs" />
     <Compile Include="HACK_ThemeColorFixer.cs" />
     <Compile Include="Logging\Logger.cs" />
@@ -80,6 +85,8 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
