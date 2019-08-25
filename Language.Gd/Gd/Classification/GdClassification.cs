@@ -1,5 +1,11 @@
 ﻿namespace Pharmatechnik.Language.Gd {
 
+    /// <summary>
+    /// Es besteht nicht notwendigerweise eine 1:1 Bezihung zwischen einem
+    /// Textbereich und einer Klassifizierung. Ein Textbereich kann auch mehr
+    /// als eine Klassifizierung zugeweisen bekommen, z.B. {Skiped, Keyword},
+    /// wenn ein Keyword an der falschen Stelle auftaucht.
+    /// </summary>
     public enum GdClassification {
 
         Unknown,
@@ -23,7 +29,12 @@
         MethodName,
         InterfaceName,
         ConstantName,
-        CallType
+        CallType,
+
+        // Zum visuellen Debuggen
+        LeadingTriviaSpan,
+        TokenSpan,
+        TrailingTriviaSpan
 
     }
 

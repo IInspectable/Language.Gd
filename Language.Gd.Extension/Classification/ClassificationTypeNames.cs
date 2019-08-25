@@ -30,6 +30,10 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
         public const string Underline    = "GdUnderline";
         public const string CallType     = "GdCallType";
 
+        public const string LeadingTriviaSpan  = "Gd LeadingTriviaSpan";
+        public const string TokenSpan          = "Gd TokenSpan";
+        public const string TrailingTriviaSpan = "Gd TrailingTriviaSpan";
+
     }
 
 }

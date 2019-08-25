@@ -50,6 +50,8 @@
     </Compile>
     <Compile Include="Classification\ClassificationTypeDefinitions.cs" />
     <Compile Include="Classification\ClassificationTypeNames.cs" />
+    <Compile Include="Classification\TriviaSpanClassificationTaggerProvider.cs" />
+    <Compile Include="Classification\TriviaSpanClassificationTagger.cs" />
     <Compile Include="Classification\SyntacticClassificationTagger.cs" />
     <Compile Include="Classification\SyntacticClassificationTaggerProvider.cs" />
     <Compile Include="Common\AndSnapshot.cs" />

@@ -10,34 +10,22 @@ using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd {
 
-    class SyntaxClassifierWorker: ClassifierWorker {
+    class TriviaSpanClassifierWorker: ClassifierWorker {
 
-        public SyntaxClassifierWorker(TextExtent extent, List<ClassifiedExtent> result, CancellationToken cancellationToken): base(extent, result, cancellationToken) {
+        public TriviaSpanClassifierWorker(TextExtent extent, List<ClassifiedExtent> result, CancellationToken cancellationToken): base(extent, result, cancellationToken) {
         }
 
         protected override void ClassifyToken(SyntaxToken token) {
-            AddClassification(token, SyntaxClassifierHelper.ClassifyToken(token));
+            AddClassification(token, GdClassification.TokenSpan);
         }
 
         protected override void ClassifyTrivia(SyntaxTrivia syntaxTrivia, bool isLeadingTrivia) {
-
-            var classification = SyntaxClassifierHelper.ClassifyKind(syntaxTrivia.Kind);
-
-            if (syntaxTrivia.IsSkipedTokenTrivia) {
-                AddClassification(syntaxTrivia, GdClassification.Skiped);
-
-                if (classification == GdClassification.Text) {
-                    classification = GdClassification.Unknown;
-                }
-
-            }
-
-            AddClassification(syntaxTrivia, classification);
+            AddClassification(syntaxTrivia, isLeadingTrivia ? GdClassification.LeadingTriviaSpan : GdClassification.TrailingTriviaSpan);
         }
 
     }
 
-    public class SyntaxClassifier {
+    public class TriviaSpanClassifier {
 
         public static ImmutableArray<ClassifiedExtent> Classify(SyntaxNode node, CancellationToken cancellationToken = default) {
 
@@ -53,7 +41,7 @@ namespace Pharmatechnik.Language.Gd {
 
         public static void AddClassifications(SyntaxNode node, TextExtent extent, List<ClassifiedExtent> result, CancellationToken cancellationToken = default) {
 
-            var worker = new SyntaxClassifierWorker(extent, result, cancellationToken);
+            var worker = new TriviaSpanClassifierWorker(extent, result, cancellationToken);
             worker.ClassifyNode(node);
         }
 

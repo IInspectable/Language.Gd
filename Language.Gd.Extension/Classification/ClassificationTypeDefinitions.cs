@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
+using System.Windows.Media;
 
 using Microsoft.VisualStudio.Language.StandardClassification;
 using Microsoft.VisualStudio.Text.Classification;
@@ -115,9 +116,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
 
         #region CallType
 
-        [Export(typeof(ClassificationTypeDefinition))]
-        [Name(ClassificationTypeNames.CallType)] 
-        [BaseDefinition(ClassificationTypeNames.Identifier)]
+        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.CallType)] [BaseDefinition(ClassificationTypeNames.Identifier)]
         public static ClassificationTypeDefinition CallType;
 
         [Export(typeof(EditorFormatDefinition))]
@@ -128,6 +127,48 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
 
             public CallTypeClassificationFormatDefinition() {
                 IsItalic = true;
+            }
+
+        }
+
+        #endregion
+
+        #region LeadingTriviaSpan
+
+        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.LeadingTriviaSpan)] [BaseDefinition(ClassificationTypeNames.WhiteSpace)]
+        public static ClassificationTypeDefinition LeadingTriviaSpan;
+
+        [Export(typeof(EditorFormatDefinition))]
+        [Name(ClassificationTypeNames.LeadingTriviaSpan)]
+        [UserVisible(Is.UserVisible)]
+        [Order(Before = Priority.Low)]
+        public sealed class LeadingTriviaSpanClassificationFormatDefinition: ClassificationFormatDefinition {
+
+            public LeadingTriviaSpanClassificationFormatDefinition() {
+                IsBold            = true;
+                BackgroundBrush   = Brushes.LightGreen;
+                BackgroundOpacity = 0.1;
+            }
+
+        }
+
+        #endregion
+
+        #region LeadingTriviaSpan
+
+        [Export(typeof(ClassificationTypeDefinition))] [Name(ClassificationTypeNames.TrailingTriviaSpan)] [BaseDefinition(ClassificationTypeNames.WhiteSpace)]
+        public static ClassificationTypeDefinition TrailingTriviaSpan;
+
+        [Export(typeof(EditorFormatDefinition))]
+        [Name(ClassificationTypeNames.TrailingTriviaSpan)]
+        [UserVisible(Is.UserVisible)]
+        [Order(Before = Priority.Low)]
+        public sealed class TrailingTriviaSpanClassificationFormatDefinition: ClassificationFormatDefinition {
+
+            public TrailingTriviaSpanClassificationFormatDefinition() {
+                IsBold            = true;
+                BackgroundBrush   = Brushes.OrangeRed;
+                BackgroundOpacity = 0.1;
             }
 
         }
@@ -158,6 +199,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
                 {GdClassification.ConstantName, registry.GetClassificationType(ClassificationTypeNames.ConstantName)},
                 {GdClassification.Unknown, registry.GetClassificationType(ClassificationTypeNames.Unknown)},
                 {GdClassification.CallType, registry.GetClassificationType(ClassificationTypeNames.CallType)},
+               
+                {GdClassification.LeadingTriviaSpan, registry.GetClassificationType(ClassificationTypeNames.LeadingTriviaSpan)},
+                {GdClassification.TrailingTriviaSpan, registry.GetClassificationType(ClassificationTypeNames.TrailingTriviaSpan)},
 
             };
 
