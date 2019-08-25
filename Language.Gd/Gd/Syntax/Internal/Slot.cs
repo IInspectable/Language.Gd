@@ -57,7 +57,6 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return FullLength != 0 ? GetLastNonMissingChild().GetTrailingTriviaWidth() : 0;
         }
 
-        // TODO Evtl. Missing tokens als null reinkippen...
         internal Slot GetFirstNonMissingChild() {
             Slot node = this;
 
@@ -65,7 +64,7 @@ namespace Pharmatechnik.Language.Gd.Internal {
                 Slot firstChild = null;
                 for (int i = 0, n = node.SlotCount; i < n; i++) {
                     var child = node.GetSlot(i);
-                    if (child != null && child.FullLength != 0) {
+                    if (child != null && !child.IsMissing) {
                         firstChild = child;
                         break;
                     }
@@ -84,7 +83,7 @@ namespace Pharmatechnik.Language.Gd.Internal {
                 Slot lastChild = null;
                 for (int i = node.SlotCount - 1; i >= 0; i--) {
                     var child = node.GetSlot(i);
-                    if (child != null && child.FullLength != 0) {
+                    if (child != null && !child.IsMissing) {
                         lastChild = child;
                         break;
                     }

@@ -216,7 +216,6 @@ namespace Pharmatechnik.Language.Gd {
             return false;
         }
 
-        // TODO Hier Evtl. SyntaxKind reinkippen wegen Missing Tokens
         private protected SyntaxToken GetSyntaxToken(TokenSlot slot, int index) {
 
             return slot.Realize(SyntaxTree, this, GetChildPosition(index));
