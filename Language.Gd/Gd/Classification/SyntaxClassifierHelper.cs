@@ -15,6 +15,10 @@
                         return GdClassification.MethodName;
                     }
 
+                    if (eventDeclaration.CallTypeToken == token) {
+                        return GdClassification.CallType;
+                    }
+
                 }
 
                 if (token.Parent is HotkeyDeclarationSyntax hotkeyDeclaration) {
@@ -25,6 +29,22 @@
 
                     if (hotkeyDeclaration.CallNameToken == token) {
                         return GdClassification.MethodName;
+                    }
+
+                    if (hotkeyDeclaration.CallTypeToken == token) {
+                        return GdClassification.CallType;
+                    }
+
+                }
+
+                if (token.Parent is PropertyAddAssignSyntax propertyAddAssign) {
+
+                    if (propertyAddAssign.CallNameToken == token) {
+                        return GdClassification.MethodName;
+                    }
+
+                    if (propertyAddAssign.CallTypeToken == token) {
+                        return GdClassification.CallType;
                     }
 
                 }

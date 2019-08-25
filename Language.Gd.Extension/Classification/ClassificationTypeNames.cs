@@ -28,6 +28,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
         public const string Unknown      = "GdUnknown";
         public const string Skiped       = "Gd Skiped Token";
         public const string Underline    = "GdUnderline";
+        public const string CallType     = "GdCallType";
 
     }
 

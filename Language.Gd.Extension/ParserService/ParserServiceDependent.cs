@@ -9,8 +9,8 @@ using Microsoft.VisualStudio.Text;
 
 namespace Pharmatechnik.Language.Gd.Extension.ParserService {
 
-    abstract class ParserServiceDependent: IDisposable {
-        
+    abstract class ParserServiceDependent {
+
         readonly ParserService _parserService;
 
         protected ParserServiceDependent(ITextBuffer textBuffer) {
@@ -23,22 +23,15 @@ namespace Pharmatechnik.Language.Gd.Extension.ParserService {
             WeakEventManager<ParserService, SnapshotSpanEventArgs>.AddHandler(_parserService, nameof(ParserService.ParseResultChanged), OnParseResultChanged);
         }
 
-        public virtual void Dispose() {
-
-            WeakEventManager<ParserService, EventArgs>.RemoveHandler(_parserService, nameof(ParserService.ParseResultChanging), OnParseResultChanging);
-            WeakEventManager<ParserService, SnapshotSpanEventArgs>.RemoveHandler(_parserService, nameof(ParserService.ParseResultChanged), OnParseResultChanged);
-        }
-
         protected ITextBuffer TextBuffer { get; }
-
-        protected ParserService ParserService {
-            get { return _parserService; }
-        }
+        protected ParserService ParserService => _parserService;
 
         protected virtual void OnParseResultChanging(object sender, EventArgs e) {
         }
 
         protected virtual void OnParseResultChanged(object sender, SnapshotSpanEventArgs e) {
-        }        
+        }
+
     }
+
 }

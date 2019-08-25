@@ -67,14 +67,10 @@ namespace Pharmatechnik.Language.Gd.Extension.ParserService {
         [NotNull]
         public ITextBuffer TextBuffer { get; }
 
-        public bool WaitingForAnalysis {
-            get { return _waitingForAnalysis; }
-        }
+        public bool WaitingForAnalysis => _waitingForAnalysis;
 
         [CanBeNull]
-        public SyntaxTreeAndSnapshot SyntaxTreeAndSnapshot {
-            get { return _syntaxTreeAndSnapshot; }
-        }
+        public SyntaxTreeAndSnapshot SyntaxTreeAndSnapshot => _syntaxTreeAndSnapshot;
 
         public static ParseMethod GetParseMethod(ITextBuffer textBuffer) {
             textBuffer.Properties.TryGetProperty(ParseMethodKey, out ParseMethod parseMethod);
@@ -82,9 +78,14 @@ namespace Pharmatechnik.Language.Gd.Extension.ParserService {
         }
 
         public static ParserService GetOrCreateSingelton(ITextBuffer textBuffer) {
-            return textBuffer.Properties.GetOrCreateSingletonProperty(
+            return TextBufferScopedValue<ParserService>.GetOrCreate(
+                textBuffer,
                 typeof(ParserService),
-                () => new ParserService(textBuffer));
+                () => new ParserService(textBuffer)).Value;
+
+            //return textBuffer.Properties.GetOrCreateSingletonProperty(
+            //    typeof(ParserService),
+            //    () => new ParserService(textBuffer));
         }
 
         public static ParserService TryGet(ITextBuffer textBuffer) {

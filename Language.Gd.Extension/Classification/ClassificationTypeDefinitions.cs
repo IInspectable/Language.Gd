@@ -38,7 +38,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
         public sealed class UnknownClassificationFormatDefinition: ClassificationFormatDefinition {
 
             public UnknownClassificationFormatDefinition() {
-                DisplayName = "Nav Unknown";
+                DisplayName = "Gd Unknown";
             }
 
         }
@@ -77,7 +77,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
         public sealed class UnderlineClassificationFormatDefinition: ClassificationFormatDefinition {
 
             public UnderlineClassificationFormatDefinition() {
-                DisplayName = "Nav Underline";
+                DisplayName = "Gd Underline";
 
                 var underline = new System.Windows.TextDecoration {
                     PenThicknessUnit = System.Windows.TextDecorationUnit.FontRecommended
@@ -113,6 +113,27 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
 
         #endregion
 
+        #region CallType
+
+        [Export(typeof(ClassificationTypeDefinition))]
+        [Name(ClassificationTypeNames.CallType)] 
+        [BaseDefinition(ClassificationTypeNames.Identifier)]
+        public static ClassificationTypeDefinition CallType;
+
+        [Export(typeof(EditorFormatDefinition))]
+        [Name(ClassificationTypeNames.CallType)]
+        [UserVisible(Is.UserVisible)]
+        [Order(Before = Priority.Low)]
+        public sealed class CallTypeClassificationFormatDefinition: ClassificationFormatDefinition {
+
+            public CallTypeClassificationFormatDefinition() {
+                IsItalic = true;
+            }
+
+        }
+
+        #endregion
+
         public static ImmutableDictionary<GdClassification, IClassificationType> GetSyntaxTokenClassificationMap(IClassificationTypeRegistryService registry) {
 
             // TODO Mapping...
@@ -136,6 +157,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
                 {GdClassification.NamespaceName, registry.GetClassificationType(ClassificationTypeNames.NamespaceName)},
                 {GdClassification.ConstantName, registry.GetClassificationType(ClassificationTypeNames.ConstantName)},
                 {GdClassification.Unknown, registry.GetClassificationType(ClassificationTypeNames.Unknown)},
+                {GdClassification.CallType, registry.GetClassificationType(ClassificationTypeNames.CallType)},
 
             };
 
