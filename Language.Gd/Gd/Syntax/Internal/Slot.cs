@@ -46,27 +46,26 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return slot;
         }
 
-        //  public abstract int Length
-        // TODO Extent weg, Statt dessen Length und FullLength
         public int FullLength => _fullLength;
         public int Length     => FullLength - GetLeadingTriviaWidth() - GetTrailingTriviaWidth();
 
         public virtual int GetLeadingTriviaWidth() {
-            return FullLength != 0 ? GetFirstToken().GetLeadingTriviaWidth() : 0;
+            return FullLength != 0 ? GetFirstNonMissingChild().GetLeadingTriviaWidth() : 0;
         }
 
         public virtual int GetTrailingTriviaWidth() {
-            return FullLength != 0 ? GetLastToken().GetTrailingTriviaWidth() : 0;
+            return FullLength != 0 ? GetLastNonMissingChild().GetTrailingTriviaWidth() : 0;
         }
 
-        internal Slot GetFirstToken() {
+        // TODO Evtl. Missing tokens als null reinkippen...
+        internal Slot GetFirstNonMissingChild() {
             Slot node = this;
 
             do {
                 Slot firstChild = null;
                 for (int i = 0, n = node.SlotCount; i < n; i++) {
                     var child = node.GetSlot(i);
-                    if (child != null) {
+                    if (child != null && child.FullLength != 0) {
                         firstChild = child;
                         break;
                     }
@@ -78,14 +77,14 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return node;
         }
 
-        internal Slot GetLastToken() {
+        internal Slot GetLastNonMissingChild() {
             Slot node = this;
 
             do {
                 Slot lastChild = null;
                 for (int i = node.SlotCount - 1; i >= 0; i--) {
                     var child = node.GetSlot(i);
-                    if (child != null) {
+                    if (child != null && child.FullLength != 0) {
                         lastChild = child;
                         break;
                     }
