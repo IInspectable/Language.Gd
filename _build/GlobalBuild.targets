@@ -1,16 +1,18 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
+
 <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  
+
   <PropertyGroup>
     <ProductName>GD Language Extensions</ProductName>
   </PropertyGroup>
+
   <Import Project="WriteThisAssemblyFile.targets" />
   <Import Project="Version.targets" />
 
   <ItemGroup>
-    <Compile  Include="$(MSBuildThisFileDirectory)GobalAssemblyInfo.cs"/>
-    <Compile  Include="$(MSBuildThisFileDirectory)Resharper.cs"/>
+    <Compile Include="$(MSBuildThisFileDirectory)GobalAssemblyInfo.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Resharper.cs" />
   </ItemGroup>
-  
+
 
 </Project>

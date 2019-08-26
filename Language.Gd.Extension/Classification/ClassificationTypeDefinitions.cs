@@ -11,6 +11,8 @@ using Microsoft.VisualStudio.Utilities;
 
 #endregion
 
+#pragma warning disable 0649
+
 namespace Pharmatechnik.Language.Gd.Extension.Classification {
 
     // ReSharper disable UnassignedField.Local
