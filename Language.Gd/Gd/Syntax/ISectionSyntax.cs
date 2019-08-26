@@ -19,20 +19,4 @@ namespace Pharmatechnik.Language.Gd {
 
     }
 
-    // TODO Nur zum Testen...
-
-    partial class ControlSectionSyntax: INamedSectionSyntax {
-
-        SyntaxToken? INamedSectionSyntax.NameBegin => ControlSectionBegin?.ControlNameToken;
-        SyntaxToken? INamedSectionSyntax.NameEnd   => ControlSectionEnd?.ControlNameToken;
-
-    }
-
-    partial class FormSectionSyntax: INamedSectionSyntax {
-
-        SyntaxToken? INamedSectionSyntax.NameBegin => FormSectionBegin?.FormToken;
-        SyntaxToken? INamedSectionSyntax.NameEnd   => FormSectionEnd?.FormToken;
-
-    }
-
 }

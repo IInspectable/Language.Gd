@@ -1,5 +1,27 @@
 ﻿/*
+========================
 Grammar for Gd Language
+========================
+
+Konventionen
+==================
+Sektionen
+  Sektionen enden immer mit dem Namen *Section, und haben als Kinder eine *SectionBegin und *SectionEnd Regel
+  Derartige Regeln respektive deren generierte Syntaxen implementieren dann die ISection Schnittstelle
+
+Regeln
+  Eine Regel besteht entweder nur aus einer einzigen Alternative, wobei diese Alternative wiederum aus Regeln und Terminals bestehen kann,
+  oder eine Regel besteht aus mehreren Alternativen, wobei jede Alternative dann eweils nur eine Regelreferenz darstellt. 
+  Dieser Fall (mehrere Alternativen) wird auf eine Vererbungshierarchie abgebildet, wobei die alternativen dfinierende 
+  Regel zur Basisklasse wird.
+
+  Bsp.:
+  container  // <- Wird zur abstrakten Basisklasse ContainerSyntax
+    :   formSection        // <- wird zu FormSectionSyntax und erbt von ContainerSyntax
+    |   dialogSection      // <- wird zu DialogSectionSyntax und erbt von ContainerSyntax
+    |   userControlSection // <- wird zu UserControlSectionSyntax und erbt von ContainerSyntax
+    ;
+
 */
 
 parser grammar GdGrammar;
@@ -273,11 +295,11 @@ controlSection
             
 
 controlSectionBegin
-    : ControlKeyword=Control ControlType=Identifier ControlName=Identifier template?
+    : ControlKeyword=Control ControlType=Identifier ControlIdentifier=Identifier template?
     ;
 
 controlSectionEnd
-    : EndKeyword=End ControlKeyword=Control ControlName=Identifier?
+    : EndKeyword=End ControlKeyword=Control ControlIdentifier=Identifier?
     ;
 
 barManagerSection

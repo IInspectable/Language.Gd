@@ -158,7 +158,16 @@ case <slotModel.SlotIndex>:
 
 writeSectionSyntaxImplementation(slot) ::=<<
 <if(slot.IsSection)>
-SyntaxNode ISectionSyntax.SectionBegin => <slot.SectionBeginName>;
-SyntaxNode ISectionSyntax.SectionEnd   => <slot.SectionEndName>;
+[CanBeNull]
+public <slot.SectionBeginName>Syntax SectionBegin => <slot.SectionBeginName>;
+
+[CanBeNull]
+public <slot.SectionEndName>Syntax SectionEnd => <slot.SectionEndName>;
+
+[CanBeNull]
+SyntaxNode ISectionSyntax.SectionBegin => SectionBegin;
+
+[CanBeNull]
+SyntaxNode ISectionSyntax.SectionEnd => SectionEnd;
 <endif>
 >>
