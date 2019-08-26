@@ -2,6 +2,8 @@
 
 using System;
 
+using JetBrains.Annotations;
+
 using Pharmatechnik.Language.Gd.Internal;
 using Pharmatechnik.Language.Text;
 
@@ -19,49 +21,54 @@ namespace Pharmatechnik.Language.Gd {
 
         }
 
+        [CanBeNull]
         internal TokenSlot Slot { get; }
 
+        [CanBeNull]
         public SyntaxTree SyntaxTree { get; }
-        public SyntaxNode Parent     { get; }
 
-        public SyntaxKind Kind => Slot.Kind;
+        [CanBeNull]
+        public SyntaxNode Parent { get; }
 
-        public bool IsMissing => Slot.IsMissing;
+        public SyntaxKind Kind => Slot?.Kind ?? SyntaxKind.None;
+
+        public bool IsMissing => Slot?.IsMissing ?? false;
         public bool IsKeyword => SyntaxFacts.IsKeyword(Kind);
 
-        public string Text => SyntaxTree.SourceText.Substring(Extent);
+        public string Text => SyntaxTree?.SourceText.Substring(Extent) ?? String.Empty;
 
-        // TODO Leading / Trailing Trivias
-        public bool HasLeadingTrivia  => Slot.LeadingTrivia.Length  > 0;
-        public bool HasTrailingTrivia => Slot.TrailingTrivia.Length > 0;
+        public bool HasLeadingTrivia  => Slot?.LeadingTrivia.Length  > 0;
+        public bool HasTrailingTrivia => Slot?.TrailingTrivia.Length > 0;
 
-        public SyntaxTriviaList LeadingTrivia  => new SyntaxTriviaList(this, Slot.LeadingTrivia,  Position);
-        public SyntaxTriviaList TrailingTrivia => new SyntaxTriviaList(this, Slot.TrailingTrivia, Position + FullLength - Slot.GetTrailingTriviaWidth());
+        public SyntaxTriviaList LeadingTrivia  => new SyntaxTriviaList(this, Slot?.LeadingTrivia,  Position);
+        public SyntaxTriviaList TrailingTrivia => new SyntaxTriviaList(this, Slot?.TrailingTrivia, Position + FullLength - TrailingWidth);
 
-        public int        ExtentStart => Position + Slot.GetLeadingTriviaWidth();
-        public TextExtent Extent      => Slot.GetExtent(Position);
+        internal int LeadingWidth  => Slot?.GetLeadingTriviaWidth()  ?? 0;
+        internal int TrailingWidth => Slot?.GetTrailingTriviaWidth() ?? 0;
+
+        public int        ExtentStart => Position + Slot?.GetLeadingTriviaWidth() ?? 0;
+        public TextExtent Extent      => Slot?.GetExtent(Position)                ?? default;
         public TextExtent FullExtent  => TextExtent.FromBounds(start: Position, end: EndPosition);
 
         internal int Position    { get; }
-        internal int EndPosition => Position + Slot.FullLength;
+        internal int EndPosition => Position + Slot?.FullLength ?? 0;
 
-        internal int Length     => Slot.Length;
-        internal int FullLength => Slot.FullLength;
+        internal int Length     => Slot?.Length     ?? 0;
+        internal int FullLength => Slot?.FullLength ?? 0;
 
         public override string ToString() {
-            return $"T: {Kind}: {SyntaxTree.SourceText.Substring(Extent)}";
+            return $"T: {Kind}: {Text}";
         }
 
         public bool Equals(SyntaxToken other) {
-            return Slot       == other.Slot       &&
-                   SyntaxTree == other.SyntaxTree &&
-                   Parent     == other.Parent     &&
-                   Position   == other.Position;
+            return Equals(Slot,       other.Slot)       &&
+                   Equals(SyntaxTree, other.SyntaxTree) &&
+                   Equals(Parent,     other.Parent)     &&
+                   Position == other.Position;
         }
 
         public override bool Equals(object obj) {
-            return obj is SyntaxToken other &&
-                   Equals(other);
+            return obj is SyntaxToken other && Equals(other);
         }
 
         public override int GetHashCode() {

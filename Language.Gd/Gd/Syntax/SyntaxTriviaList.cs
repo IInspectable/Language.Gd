@@ -11,8 +11,8 @@ namespace Pharmatechnik.Language.Gd {
 
         private readonly ImmutableArray<TriviaSlot> _trivias;
 
-        internal SyntaxTriviaList(SyntaxToken token, ImmutableArray<TriviaSlot> trivias, int position) {
-            _trivias = trivias;
+        internal SyntaxTriviaList(SyntaxToken token, ImmutableArray<TriviaSlot>? trivias, int position) {
+            _trivias = trivias ?? ImmutableArray<TriviaSlot>.Empty;
             Token    = token;
             Position = position;
 

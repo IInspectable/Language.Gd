@@ -167,6 +167,11 @@ END NAMESPACE
                 Assert.That(t1, Is.EqualTo(t2));
             }
 
+            var firstToken = gds.FirstToken();
+            var lastToken  = gds.LastToken();
+
+            Assert.That(firstToken.Kind, Is.EqualTo(SyntaxKind.Namespace));
+            Assert.That(lastToken.Kind,  Is.EqualTo(SyntaxKind.Eof));
         }
 
         [Test]
@@ -192,19 +197,19 @@ END NAMESPACE
             Assert.That(eof.LeadingTrivia[0].Kind,      Is.EqualTo(SyntaxKind.Questionmark));
             Assert.That(eof.LeadingTrivia[0].GetText(), Is.EqualTo("?"));
 
-            Assert.That(eof.LeadingTrivia[1].Kind, Is.EqualTo(SyntaxKind.WhitespaceTrivia));
+            Assert.That(eof.LeadingTrivia[1].Kind,      Is.EqualTo(SyntaxKind.WhitespaceTrivia));
             Assert.That(eof.LeadingTrivia[1].GetText(), Is.EqualTo(" "));
 
-            Assert.That(eof.LeadingTrivia[2].Kind, Is.EqualTo(SyntaxKind.Unknown));
+            Assert.That(eof.LeadingTrivia[2].Kind,      Is.EqualTo(SyntaxKind.Unknown));
             Assert.That(eof.LeadingTrivia[2].GetText(), Is.EqualTo("@"));
 
-            Assert.That(eof.LeadingTrivia[3].Kind, Is.EqualTo(SyntaxKind.Identifier));
+            Assert.That(eof.LeadingTrivia[3].Kind,      Is.EqualTo(SyntaxKind.Identifier));
             Assert.That(eof.LeadingTrivia[3].GetText(), Is.EqualTo("Foo"));
 
-            Assert.That(eof.LeadingTrivia[4].Kind, Is.EqualTo(SyntaxKind.WhitespaceTrivia));
+            Assert.That(eof.LeadingTrivia[4].Kind,      Is.EqualTo(SyntaxKind.WhitespaceTrivia));
             Assert.That(eof.LeadingTrivia[4].GetText(), Is.EqualTo(" "));
 
-            Assert.That(eof.LeadingTrivia[5].Kind, Is.EqualTo(SyntaxKind.Dialog));
+            Assert.That(eof.LeadingTrivia[5].Kind,      Is.EqualTo(SyntaxKind.Dialog));
             Assert.That(eof.LeadingTrivia[5].GetText(), Is.EqualTo("DIALOG"));
 
         }

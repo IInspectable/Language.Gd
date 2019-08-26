@@ -26,8 +26,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Outlining.OutlineTagger {
                     continue;
                 }
 
-                // TODO Letztes Trailing verwenden, wenn LastToken implementiert ist
-                var regionExtent = TextExtent.FromBounds(start: section.SectionBegin.Extent.End,
+                var regionExtent = TextExtent.FromBounds(start: GetEndIncludingWhiteSpace(section.SectionBegin),
                                                          end: section.SectionEnd.Extent.End);
 
                 var hintExtent = TextExtent.FromBounds(start: section.SectionBegin.ExtentStart,
@@ -35,8 +34,8 @@ namespace Pharmatechnik.Language.Gd.Extension.Outlining.OutlineTagger {
 
                 // TODO Location der Syntax verwenden
                 var regionStartLine = syntaxTreeAndSnapshot.Snapshot.GetLineNumberFromPosition(regionExtent.Start);
-                var regionEndLone   = syntaxTreeAndSnapshot.Snapshot.GetLineNumberFromPosition(regionExtent.End);
-                if (regionStartLine == regionEndLone) {
+                var regionEndLine   = syntaxTreeAndSnapshot.Snapshot.GetLineNumberFromPosition(regionExtent.End);
+                if (regionStartLine == regionEndLine) {
                     continue;
                 }
 
@@ -47,6 +46,21 @@ namespace Pharmatechnik.Language.Gd.Extension.Outlining.OutlineTagger {
                 yield return new TagSpan<IOutliningRegionTag>(regionSpan, tag);
             }
 
+            int GetEndIncludingWhiteSpace(SyntaxNode node) {
+
+                var token    = node.LastToken();
+                int position = token.Extent.End;
+
+                foreach (var trivia in token.TrailingTrivia) {
+                    if (trivia.Kind != SyntaxKind.WhitespaceTrivia) {
+                        break;
+                    }
+
+                    position = trivia.End;
+                }
+
+                return position;
+            }
         }
 
     }

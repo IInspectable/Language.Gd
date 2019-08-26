@@ -58,6 +58,52 @@ namespace Pharmatechnik.Language.Gd {
 
         // TODO LastToken FirstToken
 
+        public SyntaxToken LastToken() {
+
+            foreach (var nodeOrToken in ChildNodesAndTokens().Reverse()) {
+
+                if (nodeOrToken.IsToken) {
+                    var token = nodeOrToken.AsToken();
+                    if (!token.IsMissing) {
+                        return token;
+                    }
+                }
+
+                if (nodeOrToken.IsNode) {
+                    var node  = nodeOrToken.AsNode();
+                    var token = node.LastToken();
+                    if (token.Kind != SyntaxKind.None) {
+                        return token;
+                    }
+                }
+            }
+
+            return default;
+        }
+
+        public SyntaxToken FirstToken() {
+
+            foreach (var nodeOrToken in ChildNodesAndTokens()) {
+
+                if (nodeOrToken.IsToken) {
+                    var token = nodeOrToken.AsToken();
+                    if (!token.IsMissing) {
+                        return token;
+                    }
+                }
+
+                if (nodeOrToken.IsNode) {
+                    var node  = nodeOrToken.AsNode();
+                    var token = node.FirstToken();
+                    if (token.Kind != SyntaxKind.None) {
+                        return token;
+                    }
+                }
+            }
+
+            return default;
+        }
+
         public SyntaxToken FindToken(int position) {
 
             if (TryGetEofAt(out var eof)) {

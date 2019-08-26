@@ -7,7 +7,7 @@ using Pharmatechnik.Language.Gd.Internal;
 
 namespace Pharmatechnik.Language.Gd {
 
-    public class ChildNodesAndTokenList: IReadOnlyList<SyntaxNodeOrToken> {
+    public partial class ChildNodesAndTokenList: IReadOnlyList<SyntaxNodeOrToken> {
 
         public ChildNodesAndTokenList(SyntaxNode node) {
             Node  = node;
@@ -45,6 +45,10 @@ namespace Pharmatechnik.Language.Gd {
             }
 
             throw new InvalidOperationException();
+        }
+
+        public Reversed Reverse() {
+            return new Reversed(Node, Count);
         }
 
         public SyntaxNodeOrToken Last() {
