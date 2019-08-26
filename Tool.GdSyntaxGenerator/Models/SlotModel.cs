@@ -50,6 +50,11 @@ namespace Tool.GdSyntaxGenerator.Models {
         public IEnumerable<SlotMemberModel> SyntaxSlots => Slots.Where(s => !s.IsToken);
         public IEnumerable<SlotMemberModel> TokenSlots  => Slots.Where(s => s.IsToken);
 
+        // TODO Named Sections generieren?
+        public bool   IsSection        => RuleName.EndsWith("Section");
+        public string SectionBeginName => IsSection ? RuleName + "Begin" : "";
+        public string SectionEndName   => IsSection ? RuleName + "End" : "";
+
     }
 
 }

@@ -43,7 +43,7 @@ writeSyntaxClasses(slots) ::=<<
 >>
 
 writeSyntaxClass(slot) ::=<<
-public partial class <slot.RuleName>Syntax : <if(slot.BaseRuleName)><slot.BaseRuleName>Syntax<else>SyntaxNode<endif> {
+public partial class <slot.RuleName>Syntax : <if(slot.BaseRuleName)><slot.BaseRuleName>Syntax<else>SyntaxNode<endif><if(slot.IsSection)>, ISectionSyntax<endif> {
     
     <writeSyntaxNodeFields(slot.SyntaxSlots)>
 
@@ -65,6 +65,8 @@ public partial class <slot.RuleName>Syntax : <if(slot.BaseRuleName)><slot.BaseRu
 	<writeGetSyntaxNodeMethod(slot.Slots)>
 
 	<writeGetCachedSyntaxNodeMethod(slot.Slots)>
+
+	<writeSectionSyntaxImplementation(slot)>
 	    
 	[NotNull]
     internal new <slot.RuleName>SyntaxSlot Slot => (<slot.RuleName>SyntaxSlot) base.Slot;
@@ -152,4 +154,11 @@ writeGetSyntaxNodeCase(slotModel) ::=<<
 <if(slotModel.IsSyntaxNode)>
 case <slotModel.SlotIndex>:
 	return GetSyntaxNode(ref <slotModel.FieldName><slotModel:pl()>, Slot.<slotModel.Name><slotModel:pl()>, index: <slotModel.SlotIndex>);<endif>
+>>
+
+writeSectionSyntaxImplementation(slot) ::=<<
+<if(slot.IsSection)>
+SyntaxNode ISectionSyntax.SectionBegin => <slot.SectionBeginName>;
+SyntaxNode ISectionSyntax.SectionEnd   => <slot.SectionEndName>;
+<endif>
 >>

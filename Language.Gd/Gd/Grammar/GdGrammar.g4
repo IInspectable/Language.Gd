@@ -51,7 +51,7 @@ namespaceDeclarationSectionEnd
 container 
     :   formSection
     |   dialogSection
-    |   usercontrolSection
+    |   userControlSection
     ;
 
 
@@ -84,7 +84,7 @@ dialogSectionEnd
     :   End Dialog Identifier?
     ;
 
-usercontrolSection 
+userControlSection 
     :   userControlSectionBegin 
             containerDeclaration
         userControlSectionEnd
