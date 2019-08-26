@@ -8,7 +8,8 @@ namespace Tool.GdSyntaxGenerator.Models {
 
     class SlotModel: AbstractSlotModel {
 
-        public SlotModel(ParserRule rule, string baseRule, string baseNamespace): base(rule: rule, baseNamespace: baseNamespace) {
+        public SlotModel(ParserRule rule, string baseRule, string baseNamespace, GrammarInfo grammarInfo)
+            : base(rule: rule, baseNamespace: baseNamespace) {
 
             if (rule.Alternatives.Count != 1) {
                 throw new ArgumentException();
@@ -18,6 +19,24 @@ namespace Tool.GdSyntaxGenerator.Models {
             SyntaxKind   = $"{rule.Name.ToPascalcase()}Syntax";
 
             int index = 0;
+
+            if (IsSection) {
+
+                // Überprüfen, ob es sich um eine benannte Sektion handelt
+                var expectedSectionName = RuleName.Replace("Section", "Identifier");
+
+                // Die Begin-/End Sektionen muss es geben, andernfalls ist die Grammatik falsch formuliert
+                var sb     = grammarInfo.Rules.Single(r => r.Name?.ToPascalcase()                        == SectionBeginName);
+                var sbName = sb.Alternatives.Single().Elements.FirstOrDefault(e => e.Name.ToPascalcase() == expectedSectionName);
+
+                var se     = grammarInfo.Rules.Single(r => r.Name?.ToPascalcase()                        == SectionEndName);
+                var seName = se.Alternatives.Single().Elements.FirstOrDefault(e => e.Name.ToPascalcase() == expectedSectionName);
+
+                if (sbName != null && seName != null) {
+                    IsNamedSection             = true;
+                    NamedSectionIdentifierName = expectedSectionName;
+                }
+            }
 
             foreach (var element in rule.Alternatives.Single().Elements) {
 
@@ -51,9 +70,13 @@ namespace Tool.GdSyntaxGenerator.Models {
         public IEnumerable<SlotMemberModel> TokenSlots  => Slots.Where(s => s.IsToken);
 
         // TODO Named Sections generieren?
-        public bool   IsSection        => RuleName.EndsWith("Section");
+        public bool IsSection => RuleName.EndsWith("Section");
+
         public string SectionBeginName => IsSection ? RuleName + "Begin" : "";
         public string SectionEndName   => IsSection ? RuleName + "End" : "";
+
+        public bool   IsNamedSection             { get; }
+        public string NamedSectionIdentifierName { get; }
 
     }
 

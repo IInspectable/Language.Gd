@@ -7,7 +7,7 @@ namespace Tool.GdSyntaxGenerator.Models {
     class SlotModels {
 
         public SlotModels(string baseNamespace, GrammarInfo grammarInfo) {
-           
+
             Namespace = baseNamespace;
 
             // Wenn eine Regel aus mehr als einer Alternative besteht, dann wird diese zur Basisklasse
@@ -27,7 +27,7 @@ namespace Tool.GdSyntaxGenerator.Models {
 
                 baseRules.TryGetValue(parserRule.Name, out var baseRule);
 
-                Slots.Add(new SlotModel(rule: parserRule, baseRule: baseRule, baseNamespace: baseNamespace));
+                Slots.Add(new SlotModel(rule: parserRule, baseRule: baseRule, baseNamespace: baseNamespace, grammarInfo));
             }
 
         }

@@ -43,7 +43,7 @@ writeSyntaxClasses(slots) ::=<<
 >>
 
 writeSyntaxClass(slot) ::=<<
-public partial class <slot.RuleName>Syntax : <if(slot.BaseRuleName)><slot.BaseRuleName>Syntax<else>SyntaxNode<endif><if(slot.IsSection)>, ISectionSyntax<endif> {
+public partial class <slot.RuleName>Syntax : <if(slot.BaseRuleName)><slot.BaseRuleName>Syntax<else>SyntaxNode<endif><if(slot.IsSection)>, ISectionSyntax<endif><if(slot.IsNamedSection)>, INamedSectionSyntax<endif> {
     
     <writeSyntaxNodeFields(slot.SyntaxSlots)>
 
@@ -170,4 +170,8 @@ SyntaxNode ISectionSyntax.SectionBegin => SectionBegin;
 [CanBeNull]
 SyntaxNode ISectionSyntax.SectionEnd => SectionEnd;
 <endif>
+<if(slot.IsNamedSection)>
+
+SyntaxToken? INamedSectionSyntax.NameBegin => SectionBegin?.<slot.NamedSectionIdentifierName>Token;
+SyntaxToken? INamedSectionSyntax.NameEnd   => SectionEnd?.<slot.NamedSectionIdentifierName>Token;<endif>
 >>

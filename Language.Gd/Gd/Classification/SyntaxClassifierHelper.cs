@@ -51,7 +51,7 @@
 
                 if (token.Parent is DialogSectionBeginSyntax dialogSectionBegin) {
 
-                    if (dialogSectionBegin.IdentifierToken == token) {
+                    if (dialogSectionBegin.DialogIdentifierToken == token) {
                         return GdClassification.ClassName;
                     }
 
@@ -59,7 +59,7 @@
 
                 if (token.Parent is FormSectionBeginSyntax formSectionBegin) {
 
-                    if (formSectionBegin.IdentifierToken == token) {
+                    if (formSectionBegin.FormIdentifierToken == token) {
                         return GdClassification.ClassName;
                     }
 
@@ -67,7 +67,7 @@
 
                 if (token.Parent is UserControlSectionBeginSyntax userControlSectionBegin) {
 
-                    if (userControlSectionBegin.IdentifierToken == token) {
+                    if (userControlSectionBegin.UserControlIdentifierToken == token) {
                         return GdClassification.ClassName;
                     }
 

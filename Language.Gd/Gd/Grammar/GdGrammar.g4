@@ -9,6 +9,25 @@ Sektionen
   Sektionen enden immer mit dem Namen *Section, und haben als Kinder eine *SectionBegin und *SectionEnd Regel
   Derartige Regeln respektive deren generierte Syntaxen implementieren dann die ISection Schnittstelle
 
+Benannte Sektionen
+  Benannte Sektionen haben in der Start und End Regel jeweils ein Token mit dem Namen der Sektion (ohne das Section) + Identifier
+  Bsp:
+	formSection 
+		:   formSectionBegin
+				containerDeclaration
+			formSectionEnd       
+		;
+
+	formSectionBegin
+		:   Form FormIdentifier=Identifier
+		;
+
+	formSectionEnd
+		:   End Form FormIdentifier=Identifier?   
+		;
+
+	formSection ist eine benannte Sektion, da die Begin und End Sektion ein Token mit dem Namen FormIdentifier besitzt
+
 Regeln
   Eine Regel besteht entweder nur aus einer einzigen Alternative, wobei diese Alternative wiederum aus Regeln und Terminals bestehen kann,
   oder eine Regel besteht aus mehreren Alternativen, wobei jede Alternative dann eweils nur eine Regelreferenz darstellt. 
@@ -84,11 +103,11 @@ formSection
     ;
 
 formSectionBegin
-    :   Form Identifier
+    :   Form FormIdentifier=Identifier
     ;
 
 formSectionEnd
-    :   End Form Identifier?   
+    :   End Form FormIdentifier=Identifier?   
     ;
 
 
@@ -99,11 +118,11 @@ dialogSection
     ;
 
 dialogSectionBegin
-    :   Dialog Identifier
+    :   Dialog DialogIdentifier=Identifier
     ;
 
 dialogSectionEnd
-    :   End Dialog Identifier?
+    :   End Dialog DialogIdentifier=Identifier?
     ;
 
 userControlSection 
@@ -113,11 +132,11 @@ userControlSection
     ;
 
 userControlSectionBegin 
-    : User Control Identifier
+    : User Control UserControlIdentifier=Identifier
     ;
 
 userControlSectionEnd 
-    : End User Control Identifier? 
+    : End User Control UserControlIdentifier=Identifier? 
     ;
 
 containerDeclaration 
@@ -258,11 +277,11 @@ panelSection
 
 
 panelSectionBegin
-    : Panel Identifier template? 
+    : Panel PanelIdentifier=Identifier template? 
     ;
 
 panelSectionEnd
-    : End Panel Identifier?
+    : End Panel PanelIdentifier=Identifier?
     ;
 
 detailsPanelSection
@@ -275,11 +294,11 @@ detailsPanelSection
     ;
 
 detailsPanelSectionBegin
-    :   DetailsPanel Identifier template?
+    :   DetailsPanel DetailsPanelIdentifier=Identifier template?
     ;
 
 detailsPanelSectionEnd
-    :   End DetailsPanel Identifier?
+    :   End DetailsPanel DetailsPanelIdentifier=Identifier?
     ;
 
 controlSection
@@ -311,11 +330,11 @@ barManagerSection
       
 
 barManagerSectionBegin
-    :   BarManager Identifier
+    :   BarManager BarManagerIdentifier=Identifier
     ;
 
 barManagerSectionEnd
-    :   End BarManager Identifier?
+    :   End BarManager BarManagerIdentifier=Identifier?
     ;
 
 tabNavigationSection
@@ -330,11 +349,11 @@ tabNavigationSection
       ;
 
 tabNavigationSectionBegin
-    :  TabNavigation Identifier
+    :  TabNavigation TabNavigationIdentifier=Identifier
     ;
 
 tabNavigationSectionEnd
-    :  End TabNavigation Identifier?
+    :  End TabNavigation TabNavigationIdentifier=Identifier?
     ;
 
 tabsSection
@@ -361,11 +380,11 @@ tabPageSection
     ;
 
 tabPageSectionBegin
-    :   TabPage Identifier template? 
+    :   TabPage TabPageIdentifier=Identifier template? 
     ;
 
 tabPageSectionEnd
-    :   End TabPage Identifier?
+    :   End TabPage TabPageIdentifier=Identifier?
     ;
 
 
@@ -382,11 +401,11 @@ multiViewSection
 
 
 multiViewSectionBegin
-    :  MultiView Identifier template?;
+    :  MultiView MultiViewIdentifier=Identifier template?;
 
 
 multiViewSectionEnd
-    :  End MultiView Identifier?;
+    :  End MultiView MultiViewIdentifier=Identifier?;
 
 
 sharedControlSection
