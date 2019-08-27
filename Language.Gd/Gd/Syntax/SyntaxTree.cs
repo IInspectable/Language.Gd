@@ -71,6 +71,10 @@ namespace Pharmatechnik.Language.Gd {
             return new SyntaxTree(sourceText, slot, diagnostics.ToImmutableArray());
         }
 
+        internal Location GetLocation(in TextExtent extent) {
+            return SourceText.GetLocation(extent);
+        }
+
     }
 
 }

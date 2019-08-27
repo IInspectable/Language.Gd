@@ -54,6 +54,10 @@ namespace Pharmatechnik.Language.Gd {
             return $"N: {Kind}: {SyntaxTree.SourceText.Substring(Extent)}";
         }
 
+        public Location GetLocation() {
+            return SyntaxTree.GetLocation(Extent);
+        }
+
         // TODO Descendants Childs etc...
 
         // TODO LastToken FirstToken

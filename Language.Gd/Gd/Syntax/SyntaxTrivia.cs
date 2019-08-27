@@ -1,4 +1,8 @@
-﻿using Pharmatechnik.Language.Gd.Internal;
+﻿using System;
+
+using JetBrains.Annotations;
+
+using Pharmatechnik.Language.Gd.Internal;
 using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd {
@@ -14,8 +18,10 @@ namespace Pharmatechnik.Language.Gd {
             _slot      = slot;
         }
 
-        public SyntaxTree  SyntaxTree { get; }
-        public SyntaxToken Token      { get; }
+        [CanBeNull]
+        public SyntaxTree SyntaxTree { get; }
+
+        public SyntaxToken Token { get; }
 
         public SyntaxKind Kind => _slot.Kind;
 
@@ -33,7 +39,11 @@ namespace Pharmatechnik.Language.Gd {
         public TextExtent FullExtent => new TextExtent(start: Position, length: FullLength);
         public TextExtent Extent     => new TextExtent(start: Start,    length: Length);
 
-        public string GetText() => SyntaxTree.SourceText.Substring(Extent);
+        public string GetText() => SyntaxTree?.SourceText.Substring(Extent) ?? String.Empty;
+
+        public Location GetLocation() {
+            return SyntaxTree?.GetLocation(Extent) ?? Location.None;
+        }
 
         public override string ToString() {
             return $"Tr: {Kind}: {GetText()}";

@@ -13,6 +13,10 @@ namespace Pharmatechnik.Language.Text {
     [Serializable]
     public class Location: IEquatable<Location> {
 
+        private Location() {
+
+        }
+
         protected Location(Location location) {
             Extent            = location.Extent;
             StartLinePosition = location.StartLinePosition;
@@ -38,7 +42,7 @@ namespace Pharmatechnik.Language.Text {
             FilePath          = filePath;
         }
 
-        //TODO Missing/None
+        public static readonly Location None = new Location();
 
         public TextExtent   Extent            { get; }
         public LinePosition StartLinePosition { get; }
@@ -143,8 +147,6 @@ namespace Pharmatechnik.Language.Text {
         }
 
         #endregion
-
-        
 
     }
 

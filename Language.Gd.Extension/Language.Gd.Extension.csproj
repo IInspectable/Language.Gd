@@ -65,8 +65,6 @@
     <Compile Include="GdLanguageContentDefinitions.cs" />
     <Compile Include="HACK_ThemeColorFixer.cs" />
     <Compile Include="Logging\Logger.cs" />
-    <Compile Include="Outlining\OutlineTagger\CodeNamespaceDeclarationOutlineTagger.cs" />
-    <Compile Include="Outlining\OutlineTagger\MultilineCommentOutlineTagger.cs" />
     <Compile Include="Outlining\OutliningTagger.cs" />
     <Compile Include="Outlining\OutliningTaggerProvider.cs" />
     <Compile Include="ParserService\ParserService.cs" />

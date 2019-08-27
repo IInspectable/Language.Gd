@@ -60,6 +60,10 @@ namespace Pharmatechnik.Language.Gd {
             return $"T: {Kind}: {Text}";
         }
 
+        public Location GetLocation() {
+            return SyntaxTree?.GetLocation(Extent) ?? Location.None;
+        }
+
         public bool Equals(SyntaxToken other) {
             return Equals(Slot,       other.Slot)       &&
                    Equals(SyntaxTree, other.SyntaxTree) &&
