@@ -9,7 +9,7 @@ using Pharmatechnik.Language.Text;
 namespace Pharmatechnik.Language.Gd.Tests {
 
     [TestFixture]
-    public class SyntaxTokenTest {
+    public class SyntaxTokenTests {
 
         [Test]
         public void TestDefaultToken() {

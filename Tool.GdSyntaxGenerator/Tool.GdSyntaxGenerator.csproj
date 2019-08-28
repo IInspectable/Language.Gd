@@ -23,6 +23,7 @@
 
   <ItemGroup>
     <None Remove="Templates\Common.stg" />
+    <None Remove="Templates\SyntaxFactory.stg" />
     <None Remove="Templates\SyntaxKindEnum.stg" />
     <None Remove="Templates\SyntaxNode.stg" />
     <None Remove="Templates\SyntaxSlot.stg" />
@@ -37,6 +38,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Templates\Common.stg" />
+    <EmbeddedResource Include="Templates\SyntaxFactory.stg" />
     <EmbeddedResource Include="Templates\SyntaxVisitor.stg" />
     <EmbeddedResource Include="Templates\SyntaxSlotBuilder.stg" />
     <EmbeddedResource Include="Templates\SyntaxNode.stg" />

@@ -1,4 +1,8 @@
-﻿using System;
+﻿// #define Verbose
+#region Using Directives
+
+using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -7,8 +11,10 @@ using Antlr4.Runtime;
 using Tool.GdSyntaxGenerator.Grammar;
 using Tool.GdSyntaxGenerator.Models;
 
-namespace Tool.GdSyntaxGenerator {
+#endregion
 
+namespace Tool.GdSyntaxGenerator {
+    
     class Program {
 
         public static void Main(string[] args) {
@@ -24,17 +30,29 @@ namespace Tool.GdSyntaxGenerator {
             }
 
             var tokenInfo = ReadTokenInfo(Resources.GdTokens);
+            DumpTokens(tokenInfo);
+
+            var grammarInfo = ReadGrammarInfo(Resources.GdGrammar);
+            DumpGrammar(grammarInfo);
+
+            WriteGeneratedFiles(targetDirectory, baseNamespace, tokenInfo, grammarInfo);
+        }
+
+        [Conditional("Verbose")]
+        private static void DumpTokens(TokenInfo tokenInfo) {
+
             foreach (var token in tokenInfo.Tokens) {
                 Console.WriteLine($"{token.Index}:{token.Name}");
             }
+        }
 
-            var grammarInfo = ReadGrammarInfo(Resources.GdGrammar);
+        [Conditional("Verbose")]
+        private static void DumpGrammar(GrammarInfo grammarInfo) {
+
             foreach (var rule in grammarInfo.Rules) {
                 Console.WriteLine();
                 Console.WriteLine(rule);
             }
-
-            WriteGeneratedFiles(targetDirectory, baseNamespace, tokenInfo, grammarInfo);
         }
 
         static void WriteGeneratedFiles(string targetDirectory, string baseNamespace, TokenInfo tokenInfo, GrammarInfo grammarInfo) {
@@ -55,13 +73,16 @@ namespace Tool.GdSyntaxGenerator {
                 Directory.CreateDirectory(targetDirectory);
             }
 
-            WriteSyntaxKind(targetDirectory, syntaxKindModel);
-            WriteSyntaxSlots(targetDirectory, slotModels);
-            WriteSyntaxNodes(targetDirectory, slotModels);
-            WriteSyntaxSlotBuilder(targetDirectory, slotModels);
-            WriteSyntaxVisitor(targetDirectory, slotModels);
+            var context = new CodeGeneratorContext();
+
+            WriteSyntaxKind(targetDirectory, syntaxKindModel, context);
+            WriteSyntaxSlots(targetDirectory, slotModels, context);
+            WriteSyntaxNodes(targetDirectory, slotModels, context);
+            WriteSyntaxSlotBuilder(targetDirectory, slotModels, context);
+            WriteSyntaxVisitor(targetDirectory, slotModels, context);
+            WriteSyntaxFactory(targetDirectory, slotModels, context);
         }
-        
+
         static GrammarInfo ReadGrammarInfo(string grammarSpec) {
 
             ICharStream stream = new AntlrInputStream(grammarSpec);
@@ -96,9 +117,9 @@ namespace Tool.GdSyntaxGenerator {
         }
 
         private static void WriteSyntaxKind(string targetDirectory,
-                                            SyntaxKindEnumModel model) {
+                                            SyntaxKindEnumModel model,
+                                            CodeGeneratorContext context) {
 
-            var context  = new CodeGeneratorContext();
             var content  = CodeGenerator.GenerateSyntaxKindEnum(model, context);
             var fullname = Path.Combine(targetDirectory, "SyntaxKind.generated.cs");
 
@@ -106,9 +127,9 @@ namespace Tool.GdSyntaxGenerator {
         }
 
         private static void WriteSyntaxSlots(string targetDirectory,
-                                             SlotModels model) {
+                                             SlotModels model,
+                                             CodeGeneratorContext context) {
 
-            var context  = new CodeGeneratorContext();
             var content  = CodeGenerator.GenerateSyntaxSlot(model, context);
             var fullname = Path.Combine(targetDirectory, "SyntaxSlot.generated.cs");
 
@@ -116,9 +137,9 @@ namespace Tool.GdSyntaxGenerator {
         }
 
         private static void WriteSyntaxNodes(string targetDirectory,
-                                             SlotModels model) {
+                                             SlotModels model,
+                                             CodeGeneratorContext context) {
 
-            var context  = new CodeGeneratorContext();
             var content  = CodeGenerator.GenerateSyntaxNode(model, context);
             var fullname = Path.Combine(targetDirectory, "Syntax.generated.cs");
 
@@ -126,20 +147,31 @@ namespace Tool.GdSyntaxGenerator {
         }
 
         private static void WriteSyntaxSlotBuilder(string targetDirectory,
-                                                   SlotModels model) {
+                                                   SlotModels model,
+                                                   CodeGeneratorContext context) {
 
-            var context  = new CodeGeneratorContext();
             var content  = CodeGenerator.GenerateSyntaxSlotBuilder(model, context);
             var fullname = Path.Combine(targetDirectory, "SyntaxSlotBuilder.generated.cs");
 
             File.WriteAllText(fullname, content, Encoding.UTF8);
         }
 
-        private static void WriteSyntaxVisitor(string targetDirectory, 
-                                               SlotModels model) {
-            var context  = new CodeGeneratorContext();
+        private static void WriteSyntaxVisitor(string targetDirectory,
+                                               SlotModels model,
+                                               CodeGeneratorContext context) {
+
             var content  = CodeGenerator.GenerateSyntaxVisitor(model, context);
             var fullname = Path.Combine(targetDirectory, "SyntaxVisitor.generated.cs");
+
+            File.WriteAllText(fullname, content, Encoding.UTF8);
+        }
+
+        private static void WriteSyntaxFactory(string targetDirectory,
+                                               SlotModels model,
+                                               CodeGeneratorContext context) {
+
+            var content  = CodeGenerator.GenerateSyntaxFactory(model, context);
+            var fullname = Path.Combine(targetDirectory, "SyntaxFactory.generated.cs");
 
             File.WriteAllText(fullname, content, Encoding.UTF8);
         }

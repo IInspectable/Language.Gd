@@ -75,7 +75,7 @@ namespace Pharmatechnik.Language.Gd.Extension.ParserService {
 
         public static ParseMethod GetParseMethod(ITextBuffer textBuffer) {
             textBuffer.Properties.TryGetProperty(ParseMethodKey, out ParseMethod parseMethod);
-            return parseMethod ?? Syntax.ParseGuiDescriptionSyntax;
+            return parseMethod ?? SyntaxFactory.ParseGuiDescriptionSyntax;
         }
 
         public static ParserService GetOrCreateSingelton(ITextBuffer textBuffer) {

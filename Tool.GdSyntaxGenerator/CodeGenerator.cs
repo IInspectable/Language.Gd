@@ -76,6 +76,16 @@ namespace Tool.GdSyntaxGenerator {
             return content;
         }
 
+        static readonly ThreadLocal<TemplateGroup> SyntaxFactoryGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.SyntaxFactoryTemplate));
+
+        public static string GenerateSyntaxFactory(SlotModels models, CodeGeneratorContext context) {
+
+            var template = GetTemplate(SyntaxFactoryGroup.Value, models, context);
+            var content  = template.Render();
+
+            return content;
+        }
+
         static TemplateGroup LoadTemplateGroup(string resourceName) {
 
             var commonTemplate = new TemplateGroupString(Resources.CommonTemplate);

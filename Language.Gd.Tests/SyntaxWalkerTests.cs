@@ -24,7 +24,7 @@ NAMESPACE Ns.a
     END USER CONTROL User
 END NAMESPACE";
 
-            var gds = Syntax.ParseGuiDescriptionSyntax(testGd);
+            var gds = SyntaxFactory.ParseGuiDescriptionSyntax(testGd);
 
             var writer = new TextWriter();
             writer.Visit(gds);

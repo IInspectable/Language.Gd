@@ -1,0 +1,32 @@
+﻿delimiters "<", ">"
+
+Begin(model, context) ::=<<
+<writeFileHeader(context)>
+using System.Threading;
+
+using Pharmatechnik.Language.Text;
+
+namespace <model.Namespace> {
+
+	public static partial class SyntaxFactory {
+
+		<writeParseMethods(model.Slots)>
+	}
+}
+>>
+
+writeParseMethods(slots) ::=<<
+<slots:writeParseMethod(); separator="\r\n">
+  
+>>
+
+writeParseMethod(slot) ::=<<
+
+public static <slot.RuleName>Syntax Parse<slot.RuleName>Syntax(string text, CancellationToken cancellationToken = default) {
+	return Parse<slot.RuleName>Syntax(SourceText.From(text), cancellationToken);
+}
+
+public static <slot.RuleName>Syntax Parse<slot.RuleName>Syntax(SourceText sourceText, CancellationToken cancellationToken = default) {
+	return (<slot.RuleName>Syntax) SyntaxTree.Parse(sourceText, treeCreator: parser => parser.<slot.RawRuleName>(), cancellationToken).Root;
+}
+>>
