@@ -5,6 +5,7 @@ using System.Collections.Immutable;
 using System.Linq;
 
 using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Imaging.Interop;
 
 using Pharmatechnik.Language.Gd.Extension.ParserService;
 
@@ -41,7 +42,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
         }
 
         protected override void VisitGuiElementSyntax(GuiElementSyntax guiElement) {
-          
+
             var sectionSyntax = guiElement as ISectionSyntax;
 
             var sectionBegin = sectionSyntax?.SectionBegin;
@@ -49,13 +50,52 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
                 // TODO Eigene Icons für die Controls
                 NavigationItems.Add(new NavigationBarItem(
-                                        displayName    : sectionBegin.GetText(),
-                                        imageMoniker   : KnownMonikers.Control,
-                                        extent         : guiElement.FullExtent,
+                                        displayName: sectionBegin.GetText(),
+                                        imageMoniker: GetImageMoniker(guiElement),
+                                        extent: guiElement.FullExtent,
                                         navigationPoint: guiElement.ExtentStart));
             }
 
             DefaultVisit(guiElement);
+
+        }
+
+        ImageMoniker GetImageMoniker(SyntaxNode guiElement) {
+
+            // TODO Bisweilen nur pseudo Code
+            if (guiElement is PanelSectionSyntax) {
+                return KnownMonikers.Panel;
+            }
+
+            if (guiElement is BarManagerSectionSyntax) {
+                return KnownMonikers.ApplicationBar;
+            }
+
+            if (guiElement is MultiViewSectionSyntax) {
+                return KnownMonikers.MultiView;
+            }
+
+            if (guiElement is ControlSectionSyntax control) {
+
+                switch (control.ControlSectionBegin?.ControlTypeToken.Text) {
+                    case "Label":                 return KnownMonikers.Label;
+                    case "UserControlReference":  return KnownMonikers.UserControl;
+                    case "PersistentPictureBox":  return KnownMonikers.PictureAndText;
+                    case "DynamicLabel":          return KnownMonikers.Label;
+                    case "Button":                return KnownMonikers.Button;
+                    case "DynamicButton":         return KnownMonikers.Button;
+                    case "DateTextbox":           return KnownMonikers.DateTimePicker;
+                    case "MaskTextbox":           return KnownMonikers.MaskedTextBox;
+                    case "Textbox":               return KnownMonikers.TextBox;
+                    case "FunctionButton":        return KnownMonikers.Button;
+                    case "DynamicFunctionButton": return KnownMonikers.Button;
+                    case "Table":                 return KnownMonikers.Table;
+                }
+
+                return KnownMonikers.Control;
+            }
+
+            return KnownMonikers.Control;
         }
 
         #if ShowMemberCombobox
