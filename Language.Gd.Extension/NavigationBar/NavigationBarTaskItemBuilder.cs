@@ -4,6 +4,8 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
+using Microsoft.VisualStudio.Imaging;
+
 using Pharmatechnik.Language.Gd.Extension.ParserService;
 
 #endregion
@@ -29,7 +31,6 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
             var builder = new NavigationBarTaskItemBuilder();
             builder.Visit(syntaxRoot);
-            // TODO Fill NavigationBar Items
 
             var items = builder.NavigationItems
                                .OrderBy(ni => ni.Start)
@@ -40,6 +41,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
         }
 
         protected override void VisitGuiElementSyntax(GuiElementSyntax guiElement) {
+          
             var sectionSyntax = guiElement as ISectionSyntax;
 
             var sectionBegin = sectionSyntax?.SectionBegin;
@@ -47,9 +49,9 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
                 // TODO Eigene Icons für die Controls
                 NavigationItems.Add(new NavigationBarItem(
-                                        displayName: sectionBegin.GetText(),
-                                        imageIndex: 1,
-                                        extent: guiElement.FullExtent,
+                                        displayName    : sectionBegin.GetText(),
+                                        imageMoniker   : KnownMonikers.Control,
+                                        extent         : guiElement.FullExtent,
                                         navigationPoint: guiElement.ExtentStart));
             }
 

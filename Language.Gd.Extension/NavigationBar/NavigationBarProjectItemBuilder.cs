@@ -2,6 +2,8 @@
 
 using System.Collections.Immutable;
 
+using Microsoft.VisualStudio.Imaging;
+
 using Pharmatechnik.Language.Gd.Extension.Common;
 using Pharmatechnik.Language.Gd.Extension.ParserService;
 using Pharmatechnik.Language.Gd.Extension.Utilities;
@@ -20,8 +22,8 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
             return new[] {
                 new NavigationBarItem(
-                    displayName: codeGenerationUnitAndSnapshot.Snapshot.TextBuffer.GetContainingProject()?.Name ?? ProjectMapper.MiscellaneousFiles,
-                    imageIndex: NavigationBarImages.Index.ProjectNode)
+                    displayName : codeGenerationUnitAndSnapshot.Snapshot.TextBuffer.GetContainingProject()?.Name ?? ProjectMapper.MiscellaneousFiles,
+                    imageMoniker: KnownMonikers.CSProjectNode)
             }.ToImmutableList();
         }
 

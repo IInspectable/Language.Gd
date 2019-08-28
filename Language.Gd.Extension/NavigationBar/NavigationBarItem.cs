@@ -6,20 +6,23 @@ using JetBrains.Annotations;
 
 using Pharmatechnik.Language.Text;
 
+using Microsoft.VisualStudio.Imaging.Interop;
+
 #endregion
 
 namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
     class NavigationBarItem {
 
-        public NavigationBarItem(string displayName, int imageIndex): this(displayName, imageIndex, null, -1) {
+        public NavigationBarItem(string displayName, ImageMoniker imageMoniker)
+            : this(displayName, imageMoniker, null, -1) {
         }
 
-        public NavigationBarItem(string displayName, int imageIndex, TextExtent? extent, int navigationPoint, ImmutableList<NavigationBarItem> children = null) {
+        public NavigationBarItem(string displayName, ImageMoniker imageMoniker, TextExtent? extent, int navigationPoint, ImmutableList<NavigationBarItem> children = null) {
             Extent          = extent;
             NavigationPoint = navigationPoint;
             DisplayName     = displayName;
-            ImageIndex      = imageIndex;
+            ImageMoniker  = imageMoniker;
             Children        = children ?? ImmutableList<NavigationBarItem>.Empty;
         }
 
@@ -29,9 +32,9 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
         public string DisplayName { get; }
 
         /// <summary>
-        /// Liefert den Image Index für das item.
+        /// Liefert den Moniker für das anzuzeigende Icon
         /// </summary>
-        public int ImageIndex { get; }
+        public ImageMoniker ImageMoniker { get; }
 
         /// <summary>
         /// Gibt den gesamte Bereich des Items an, oder null, falls es keinen definierten Bereich gibt (z.B. Projekt Items)

@@ -66,7 +66,6 @@
     <Compile Include="Common\WpfTextViewExtensions.cs" />
     <Compile Include="GdLanguageContentDefinitions.cs" />
     <Compile Include="HACK_ThemeColorFixer.cs" />
-    <Compile Include="Images\ImageMonikerImageList.cs" />
     <Compile Include="LanguageService\LanguageServiceOptionRegistrationAttribute.cs" />
     <Compile Include="LanguageService\GdCodeWindowManager.cs" />
     <Compile Include="LanguageService\GdLanguagePreferences.cs" />
@@ -74,7 +73,6 @@
     <Compile Include="LanguageService\ProvideShowBraceCompletionAttribute.cs" />
     <Compile Include="LanguageService\ProvideShowDropdownBarOptionAttribute.cs" />
     <Compile Include="Logging\Logger.cs" />
-    <Compile Include="NavigationBar\NavigationBarImages.cs" />
     <Compile Include="NavigationBar\NavigationBarItem.cs" />
     <Compile Include="NavigationBar\NavigationBarProjectItemBuilder.cs" />
     <Compile Include="NavigationBar\NavigationBarTaskItemBuilder.cs" />
