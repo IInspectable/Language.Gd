@@ -42,8 +42,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
         readonly Dictionary<IVsTextView, IWpfTextView> _trackedViews;
         readonly IDisposable                           _comEventSink;
 
-        [CanBeNull]
-        Workspace _workspace;
+        [CanBeNull] Workspace _workspace;
 
         IVsDropdownBar _dropdownBar;
         int            _focusedCombo;
@@ -466,7 +465,10 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
             if (items.Any()) {
 
                 var caretPosition = GetCurrentView().Caret.Position.BufferPosition.Position;
-                var activeItem    = items.FirstOrDefault(entry => caretPosition >= entry.Start && caretPosition <= entry.End);
+                // finde erstes Item mit dem kleinsten definierten Bereich
+                var activeItem = items.Where(entry => entry.Contains(caretPosition))
+                                      .OrderBy(e => e.Extent?.Length ?? 0)
+                                      .FirstOrDefault();
 
                 if (activeItem != null) {
                     newIndex = items.IndexOf(activeItem);

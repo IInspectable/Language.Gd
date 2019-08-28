@@ -10,7 +10,7 @@ using Pharmatechnik.Language.Gd.Extension.ParserService;
 
 namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
-    class NavigationBarTaskItemBuilder: SyntaxVisitor {
+    class NavigationBarTaskItemBuilder: SyntaxListener {
 
         protected NavigationBarTaskItemBuilder() {
             NavigationItems = new List<NavigationBarItem>();
@@ -28,17 +28,32 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
             }
 
             var builder = new NavigationBarTaskItemBuilder();
-
+            builder.Visit(syntaxRoot);
             // TODO Fill NavigationBar Items
-            foreach (var symbol in syntaxRoot.DescendantNodesAndSelf().Where(s => s is ISectionSyntax)) {
-                builder.Visit(symbol);
-            }
 
             var items = builder.NavigationItems
                                .OrderBy(ni => ni.Start)
                                .ToImmutableList();
 
             return items;
+
+        }
+
+        protected override void VisitGuiElementSyntax(GuiElementSyntax guiElement) {
+            var sectionSyntax = guiElement as ISectionSyntax;
+
+            var sectionBegin = sectionSyntax?.SectionBegin;
+            if (sectionBegin != null) {
+
+                // TODO Eigene Icons für die Controls
+                NavigationItems.Add(new NavigationBarItem(
+                                        displayName: sectionBegin.GetText(),
+                                        imageIndex: 1,
+                                        extent: guiElement.FullExtent,
+                                        navigationPoint: guiElement.ExtentStart));
+            }
+
+            DefaultVisit(guiElement);
         }
 
         #if ShowMemberCombobox

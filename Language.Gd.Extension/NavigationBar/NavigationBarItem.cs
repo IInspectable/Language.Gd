@@ -15,8 +15,8 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
         public NavigationBarItem(string displayName, int imageIndex): this(displayName, imageIndex, null, -1) {
         }
 
-        public NavigationBarItem(string displayName, int imageIndex, [CanBeNull] Location location, int navigationPoint, ImmutableList<NavigationBarItem> children = null) {
-            Extent          = location?.Extent;
+        public NavigationBarItem(string displayName, int imageIndex, TextExtent? extent, int navigationPoint, ImmutableList<NavigationBarItem> children = null) {
+            Extent          = extent;
             NavigationPoint = navigationPoint;
             DisplayName     = displayName;
             ImageIndex      = imageIndex;
@@ -38,6 +38,14 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
         /// </summary>
         [CanBeNull]
         public TextExtent? Extent { get; }
+
+        /// <summary>
+        /// Gibt an, ob der angegebene Punkt innerhalb des Bereichs des Items liegt.
+        /// Liefert false, falls es keinen definierten Bereich gibt (z.B. Projekt Items)
+        /// </summary>
+        public bool Contains(int position) {
+            return Extent?.Contains(position) ?? false;
+        }
 
         /// <summary>
         /// Gibt den Startpunkt des Bereichs an.

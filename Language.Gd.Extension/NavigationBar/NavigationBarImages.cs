@@ -46,7 +46,8 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
             
             // TODO Images hinzufügen!
             var imageList = new ImageMonikerImageList(
-                KnownMonikers.CSProjectNode);
+                KnownMonikers.CSProjectNode,
+                KnownMonikers.Control);
 
             _imageListHandle = imageService.AddCustomImageList(imageList);
         }

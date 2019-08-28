@@ -56,7 +56,7 @@ namespace Pharmatechnik.Language.Text {
         }
 
         public bool Contains(int position) {
-            return position - Start < Length;
+            return position >= Start && position < End;
         }
 
         /// <summary>
@@ -68,8 +68,7 @@ namespace Pharmatechnik.Language.Text {
             return extent.Start <= End && extent.End >= Start;
         }
 
-        public bool OverlapsWith(TextExtent span)
-        {
+        public bool OverlapsWith(TextExtent span) {
             int overlapStart = Math.Max(Start, span.Start);
             int overlapEnd   = Math.Min(this.End, span.End);
 
