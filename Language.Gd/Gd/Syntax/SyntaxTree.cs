@@ -1,7 +1,12 @@
 ﻿#region Using Directives
 
+using System;
 using System.Threading;
 using System.Collections.Immutable;
+
+using Antlr4.Runtime;
+
+using JetBrains.Annotations;
 
 using Pharmatechnik.Language.Gd.Antlr;
 using Pharmatechnik.Language.Gd.Internal;
@@ -41,7 +46,19 @@ namespace Pharmatechnik.Language.Gd {
         public SourceText                 SourceText  { get; }
         public ImmutableArray<Diagnostic> Diagnostics { get; }
 
-        public static SyntaxTree Parse(SourceText sourceText) {
+        public static SyntaxTree Parse(SourceText sourceText, CancellationToken cancellationToken = default) {
+            return ParseInternal(sourceText, treeCreator: null, cancellationToken);
+        }
+
+        internal static SyntaxTree Parse(SourceText sourceText, Func<GdGrammar, ParserRuleContext> treeCreator, CancellationToken cancellationToken = default) {
+            return ParseInternal(sourceText, treeCreator, cancellationToken);
+        }
+
+        static SyntaxTree ParseInternal(SourceText sourceText,
+                                        [CanBeNull] Func<GdGrammar, ParserRuleContext> treeCreator,
+                                        CancellationToken cancellationToken) {
+
+            treeCreator = treeCreator ?? (p => p.guiDescription());
 
             var diagnostics = ImmutableArray.CreateBuilder<Diagnostic>();
 
@@ -59,10 +76,14 @@ namespace Pharmatechnik.Language.Gd {
             parser.RemoveErrorListeners();
             parser.AddErrorListener(parserErrorListener);
 
-            var tree = parser.guiDescription();
+            var tree = treeCreator(parser);
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             var errorNodes = new ErrorNodeVisitor();
             errorNodes.Visit(tree);
+
+            cancellationToken.ThrowIfCancellationRequested();
 
             var tokens  = TokenFactory.CreateTokens(cts, errorNodes.ErrorNodes);
             var visitor = new GdSyntaxSlotBuilder(tokens);

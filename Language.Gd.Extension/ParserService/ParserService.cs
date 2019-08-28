@@ -11,6 +11,7 @@ using Microsoft.VisualStudio.Text;
 
 using Pharmatechnik.Language.Gd.Extension.Common;
 using Pharmatechnik.Language.Gd.Extension.Logging;
+using Pharmatechnik.Language.Text;
 
 using Task = System.Threading.Tasks.Task;
 
@@ -18,7 +19,7 @@ using Task = System.Threading.Tasks.Task;
 
 namespace Pharmatechnik.Language.Gd.Extension.ParserService {
 
-    public delegate SyntaxNode ParseMethod(string text, string filePath = null, CancellationToken cancellationToken = default);
+    public delegate SyntaxNode ParseMethod(SourceText sourceText,CancellationToken cancellationToken = default);
 
     sealed class ParserService: IDisposable {
 
@@ -131,8 +132,7 @@ namespace Pharmatechnik.Language.Gd.Extension.ParserService {
         struct BuildResultArgs {
 
             public ITextSnapshot Snapshot    { get; set; }
-            public string        Text        { get; set; }
-            public string        FilePath    { get; set; }
+            public SourceText    SourceText  { get; set; }
             public ParseMethod   ParseMethod { get; set; }
 
         }
@@ -143,8 +143,7 @@ namespace Pharmatechnik.Language.Gd.Extension.ParserService {
         BuildResultArgs CreateBuildResultArgs() {
             var args = new BuildResultArgs {
                 Snapshot    = TextBuffer.CurrentSnapshot,
-                Text        = TextBuffer.CurrentSnapshot.GetText(),
-                FilePath    = TextBuffer.GetTextDocument()?.FilePath,
+                SourceText  = SourceText.From(TextBuffer.CurrentSnapshot.GetText(), TextBuffer.GetTextDocument()?.FilePath),
                 ParseMethod = GetParseMethod(TextBuffer)
             };
 
@@ -168,7 +167,7 @@ namespace Pharmatechnik.Language.Gd.Extension.ParserService {
 
         static SyntaxTreeAndSnapshot BuildSynchronously(BuildResultArgs args, CancellationToken cancellationToken) {
 
-            var syntaxTree = args.ParseMethod(args.Text, args.FilePath, cancellationToken).SyntaxTree;
+            var syntaxTree = args.ParseMethod(args.SourceText, cancellationToken).SyntaxTree;
 
             return new SyntaxTreeAndSnapshot(syntaxTree, args.Snapshot);
         }
