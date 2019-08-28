@@ -53,7 +53,9 @@
     <Compile Include="Classification\SyntacticClassificationTaggerProvider.cs" />
     <Compile Include="Common\AndSnapshot.cs" />
     <Compile Include="Common\CodeContentControlProvider.cs" />
+    <Compile Include="Common\ComEventSink.cs" />
     <Compile Include="Common\ServiceProperties.cs" />
+    <Compile Include="Common\ServiceProviderExtensions.cs" />
     <Compile Include="Common\StringExtensions.cs" />
     <Compile Include="Common\TextBufferExtensions.cs" />
     <Compile Include="Common\TextBufferScopedTagger.cs" />
@@ -64,7 +66,19 @@
     <Compile Include="Common\WpfTextViewExtensions.cs" />
     <Compile Include="GdLanguageContentDefinitions.cs" />
     <Compile Include="HACK_ThemeColorFixer.cs" />
+    <Compile Include="Images\ImageMonikerImageList.cs" />
+    <Compile Include="LanguageService\LanguageServiceOptionRegistrationAttribute.cs" />
+    <Compile Include="LanguageService\GdCodeWindowManager.cs" />
+    <Compile Include="LanguageService\GdLanguagePreferences.cs" />
+    <Compile Include="LanguageService\GdLanguageService.cs" />
+    <Compile Include="LanguageService\ProvideShowBraceCompletionAttribute.cs" />
+    <Compile Include="LanguageService\ProvideShowDropdownBarOptionAttribute.cs" />
     <Compile Include="Logging\Logger.cs" />
+    <Compile Include="NavigationBar\NavigationBarImages.cs" />
+    <Compile Include="NavigationBar\NavigationBarItem.cs" />
+    <Compile Include="NavigationBar\NavigationBarProjectItemBuilder.cs" />
+    <Compile Include="NavigationBar\NavigationBarTaskItemBuilder.cs" />
+    <Compile Include="NavigationBar\NavNavigationBar.cs" />
     <Compile Include="Outlining\OutliningTagger.cs" />
     <Compile Include="Outlining\OutliningTaggerProvider.cs" />
     <Compile Include="ParserService\ParserService.cs" />
@@ -73,6 +87,9 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GdLanguagePackage.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
+    <Compile Include="Utilities\ProjectInfo.cs" />
+    <Compile Include="Utilities\ProjectMapper.cs" />
+    <Compile Include="Utilities\UriBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CustomBuild.targets" />
@@ -85,6 +102,7 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Windows" />
     <Reference Include="System.Xaml" />
     <Reference Include="WindowsBase" />
@@ -96,6 +114,9 @@
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>
     <PackageReference Include="Microsoft.CodeAnalysis.EditorFeatures.Text">
+      <Version>3.2.1</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.LanguageServices">
       <Version>3.2.1</Version>
     </PackageReference>
     <PackageReference Include="Microsoft.VisualStudio.SDK" Version="16.0.200" ExcludeAssets="runtime" />
