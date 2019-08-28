@@ -39,14 +39,14 @@ namespace Pharmatechnik.Language.Gd {
         public TextExtent FullExtent => new TextExtent(start: Position, length: FullLength);
         public TextExtent Extent     => new TextExtent(start: Start,    length: Length);
 
-        public string GetText() => SyntaxTree?.SourceText.Substring(Extent) ?? String.Empty;
+        public string Text => SyntaxTree?.SourceText.Substring(Extent) ?? String.Empty;
 
         public Location GetLocation() {
             return SyntaxTree?.GetLocation(Extent) ?? Location.None;
         }
 
         public override string ToString() {
-            return $"Tr: {Kind}: {GetText()}";
+            return $"Tr: {Kind}: {Text}";
         }
 
     }

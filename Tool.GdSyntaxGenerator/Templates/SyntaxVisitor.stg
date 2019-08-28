@@ -1,0 +1,79 @@
+﻿delimiters "<", ">"
+
+Begin(model, context) ::=<<
+<writeFileHeader(context)>
+
+namespace <model.Namespace> {
+
+	<writeSyntaxVisitor(model)>
+
+	<writeSyntaxVisitorOfT(model)>
+}
+>>
+
+writeSyntaxVisitor(model)  ::=<<
+public abstract partial class SyntaxVisitor {
+
+	<writeAbstractSlots(model.AbstractSlots)>
+	<writeSlots(model.Slots)>
+}
+>>
+
+writeAbstractSlots(abstractSlots) ::=<<
+<abstractSlots:writeAbstractSlot(); separator="\r\n">
+>>
+
+writeAbstractSlot(abstractSlot) ::=<<   
+protected internal virtual void Visit<abstractSlot.RuleName>Syntax(<abstractSlot.RuleName>Syntax <abstractSlot.RuleNameParameter>) {
+	DefaultVisit(<abstractSlot.RuleNameParameter>);
+}
+>>
+
+
+writeSlots(slots) ::=<<
+<slots:writeSlot(); separator="\r\n">
+  
+>>
+
+writeSlot(slot) ::=<<
+
+protected internal virtual void Visit<slot.RuleName>Syntax(<slot.RuleName>Syntax <slot.RuleNameParameter>) {
+	<if(slot.BaseRuleName)>Visit<slot.BaseRuleName>Syntax<else>DefaultVisit<endif>(<slot.RuleNameParameter>);
+}
+
+>>
+
+// Of T
+
+writeSyntaxVisitorOfT(model)  ::=<<
+public abstract partial class SyntaxVisitor\<TResult> {
+
+	
+	<writeAbstractSlotsOfT(model.AbstractSlots)>
+	<writeSlotsOfT(model.Slots)>
+}
+>>
+
+writeAbstractSlotsOfT(abstractSlots) ::=<<
+<abstractSlots:writeAbstractSlotOfT(); separator="\r\n">
+>>
+
+writeAbstractSlotOfT(abstractSlot) ::=<<   
+protected internal virtual TResult Visit<abstractSlot.RuleName>Syntax(<abstractSlot.RuleName>Syntax <abstractSlot.RuleNameParameter>) {
+	return DefaultVisit(<abstractSlot.RuleNameParameter>);
+}
+>>
+
+
+writeSlotsOfT(slots) ::=<<
+<slots:writeSlotOfT(); separator="\r\n">
+  
+>>
+
+writeSlotOfT(slot) ::=<<
+
+protected internal virtual TResult Visit<slot.RuleName>Syntax(<slot.RuleName>Syntax <slot.RuleNameParameter>) {
+	return <if(slot.BaseRuleName)>Visit<slot.BaseRuleName>Syntax<else>DefaultVisit<endif>(<slot.RuleNameParameter>);
+}
+
+>>

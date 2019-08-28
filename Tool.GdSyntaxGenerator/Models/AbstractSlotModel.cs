@@ -15,6 +15,8 @@ namespace Tool.GdSyntaxGenerator.Models {
         public string RawRuleName   { get; }
         public string BaseNamespace { get; }
 
+        public string RuleNameParameter => RuleName.ToCamelcase();
+
     }
 
 }

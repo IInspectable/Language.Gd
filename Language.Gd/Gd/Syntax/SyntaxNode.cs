@@ -50,8 +50,16 @@ namespace Pharmatechnik.Language.Gd {
         internal bool IsList    => Slot.IsList;
         internal int  SlotCount => Slot.SlotCount;
 
+        public string GetText() {
+            return SyntaxTree.SourceText.Substring(Extent);
+        }
+
+        public string GetFullText() {
+            return SyntaxTree.SourceText.Substring(FullExtent);
+        }
+
         public override string ToString() {
-            return $"N: {Kind}: {SyntaxTree.SourceText.Substring(Extent)}";
+            return $"N: {Kind}: {GetText()}";
         }
 
         public Location GetLocation() {
@@ -59,8 +67,6 @@ namespace Pharmatechnik.Language.Gd {
         }
 
         // TODO Descendants Childs etc...
-
-        // TODO LastToken FirstToken
 
         public SyntaxToken LastToken() {
 
@@ -344,6 +350,9 @@ namespace Pharmatechnik.Language.Gd {
 
             return Position + offset;
         }
+
+        public abstract void Accept(SyntaxVisitor visitor);
+        public abstract TResult Accept<TResult>(SyntaxVisitor<TResult> visitor);
 
     }
 

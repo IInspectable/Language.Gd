@@ -1,4 +1,10 @@
-﻿using Pharmatechnik.Language.Gd.Internal;
+﻿#region Using Directives
+
+using System;
+
+using Pharmatechnik.Language.Gd.Internal;
+
+#endregion
 
 namespace Pharmatechnik.Language.Gd {
 
@@ -18,6 +24,14 @@ namespace Pharmatechnik.Language.Gd {
         internal override SyntaxNode GetSyntaxNode(int index) {
             return GetSyntaxNodeElement(ref _children[index], index: index);
 
+        }
+
+        public override void Accept(SyntaxVisitor visitor) {
+            throw new InvalidOperationException();
+        }
+
+        public override TResult Accept<TResult>(SyntaxVisitor<TResult> visitor) {
+            throw new InvalidOperationException();
         }
 
     }

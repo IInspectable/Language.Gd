@@ -67,6 +67,8 @@ public partial class <slot.RuleName>Syntax : <if(slot.BaseRuleName)><slot.BaseRu
 	<writeGetCachedSyntaxNodeMethod(slot.Slots)>
 
 	<writeSectionSyntaxImplementation(slot)>
+
+	<writeVisitorImplementation(slot)>
 	    
 	[NotNull]
     internal new <slot.RuleName>SyntaxSlot Slot => (<slot.RuleName>SyntaxSlot) base.Slot;
@@ -174,4 +176,14 @@ SyntaxNode ISectionSyntax.SectionEnd => SectionEnd;
 
 SyntaxToken? INamedSectionSyntax.NameBegin => SectionBegin?.<slot.NamedSectionIdentifierName>Token;
 SyntaxToken? INamedSectionSyntax.NameEnd   => SectionEnd?.<slot.NamedSectionIdentifierName>Token;<endif>
+>>
+
+writeVisitorImplementation(slot) ::=<<
+public override void Accept(SyntaxVisitor visitor) {
+	visitor.Visit<slot.RuleName>Syntax(this);
+}
+
+public override TResult Accept\<TResult>(SyntaxVisitor\<TResult> visitor) {
+	return visitor.Visit<slot.RuleName>Syntax(this);
+}
 >>

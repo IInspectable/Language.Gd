@@ -59,8 +59,9 @@ namespace Tool.GdSyntaxGenerator {
             WriteSyntaxSlots(targetDirectory, slotModels);
             WriteSyntaxNodes(targetDirectory, slotModels);
             WriteSyntaxSlotBuilder(targetDirectory, slotModels);
+            WriteSyntaxVisitor(targetDirectory, slotModels);
         }
-
+        
         static GrammarInfo ReadGrammarInfo(string grammarSpec) {
 
             ICharStream stream = new AntlrInputStream(grammarSpec);
@@ -130,6 +131,15 @@ namespace Tool.GdSyntaxGenerator {
             var context  = new CodeGeneratorContext();
             var content  = CodeGenerator.GenerateSyntaxSlotBuilder(model, context);
             var fullname = Path.Combine(targetDirectory, "SyntaxSlotBuilder.generated.cs");
+
+            File.WriteAllText(fullname, content, Encoding.UTF8);
+        }
+
+        private static void WriteSyntaxVisitor(string targetDirectory, 
+                                               SlotModels model) {
+            var context  = new CodeGeneratorContext();
+            var content  = CodeGenerator.GenerateSyntaxVisitor(model, context);
+            var fullname = Path.Combine(targetDirectory, "SyntaxVisitor.generated.cs");
 
             File.WriteAllText(fullname, content, Encoding.UTF8);
         }

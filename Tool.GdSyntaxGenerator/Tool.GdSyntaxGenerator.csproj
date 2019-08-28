@@ -27,15 +27,17 @@
     <None Remove="Templates\SyntaxNode.stg" />
     <None Remove="Templates\SyntaxSlot.stg" />
     <None Remove="Templates\SyntaxSlotBuilder.stg" />
+    <None Remove="Templates\SyntaxVisitor.stg" />
   </ItemGroup>
 
   <ItemGroup>
-    <EmbeddedResource Include="..\Language.Gd\Gd\Grammar\GdGrammar.g4" Link="Grammar\GdGrammar.g4"/>
-    <EmbeddedResource Include="..\Language.Gd\Gd\Grammar\GdTokens.g4" Link="Grammar\GdTokens.g4"/>
+    <EmbeddedResource Include="..\Language.Gd\Gd\Grammar\GdGrammar.g4" Link="Grammar\GdGrammar.g4" />
+    <EmbeddedResource Include="..\Language.Gd\Gd\Grammar\GdTokens.g4" Link="Grammar\GdTokens.g4" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="Templates\Common.stg" />
+    <EmbeddedResource Include="Templates\SyntaxVisitor.stg" />
     <EmbeddedResource Include="Templates\SyntaxSlotBuilder.stg" />
     <EmbeddedResource Include="Templates\SyntaxNode.stg" />
     <EmbeddedResource Include="Templates\SyntaxSlot.stg" />
