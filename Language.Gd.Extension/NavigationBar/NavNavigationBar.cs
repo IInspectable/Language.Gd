@@ -4,8 +4,6 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Runtime.InteropServices;
 
 using JetBrains.Annotations;
 
@@ -14,7 +12,6 @@ using Microsoft.CodeAnalysis.Text;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Editor;
-using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
@@ -27,27 +24,6 @@ using Pharmatechnik.Language.Gd.Extension.Logging;
 using Pharmatechnik.Language.Gd.Extension.ParserService;
 
 using Control = System.Windows.Controls.Control;
-
-#endregion
-
-#region IVsDropdownBarClient4 - bis es offiziel angeboten wird
-
-[assembly: ImportedFromTypeLib("")]
-
-namespace Microsoft.VisualStudio.TextManager.Interop {
-
-    [Guid("38002213-5C24-4970-BD9D-C45491879A75")]
-    [InterfaceType(ComInterfaceType.InterfaceIsIUnknown)]
-    [ComImport]
-    public interface IVsDropdownBarClient4 {
-
-        [MethodImpl(MethodImplOptions.InternalCall, MethodCodeType = MethodCodeType.Runtime)]
-        [return: ComAliasName("ImageParameters140.ImageMoniker")]
-        ImageMoniker GetEntryImage([In] int iCombo, [In] int iIndex);
-
-    }
-
-}
 
 #endregion
 
@@ -237,7 +213,6 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
             // ReSharper disable BitwiseOperatorOnEnumWithoutFlags
             puEntryType = (uint) (DROPDOWNENTRYTYPE.ENTRY_TEXT | DROPDOWNENTRYTYPE.ENTRY_ATTR | DROPDOWNENTRYTYPE.ENTRY_IMAGE);
             // ReSharper restore BitwiseOperatorOnEnumWithoutFlags
-            //phImageList = _imageListHandle;
             phImageList = IntPtr.Zero;
             pcEntries   = (uint) GetItems(iCombo).Count;
 
@@ -281,7 +256,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
         ImageMoniker IVsDropdownBarClient4.GetEntryImage(int iCombo, int iIndex) {
             var items   = GetItems(iCombo);
-            var moniker = iIndex >= items.Count ? KnownMonikers.None : items[iIndex].ImageMoniker;
+            var moniker = iIndex >= items.Count ? default : items[iIndex].ImageMoniker;
             return moniker;
         }
 

@@ -1,0 +1,1851 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- edited with XMLSpy v2009 sp1 (http://www.altova.com) by Pharmatechnik (Pharmatechnik GmbH & Co. KG) -->
+<!-- Mit XMLSpy v2017 sp2 (x64) (http://www.altova.com) von Martin Mitterer (Pharmatechnik GmbH & Co KG) bearbeitet -->
+<!-- Das ensprechende .cs-File ist per folgendem Aufruf in der Commandline zu generieren (im gleichen Ordner wie dieses File):
+      xsd .\GuiMetaModel.xsd /c /namespace:Pharmatechnik.Apotheke.XTplus.Framework.Tools.Generators.GuiModelGenerator.GuiMetaModel
+-->
+<xs:schema xmlns="http://www.pharmatechnik.de/GuiMetaModel" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.pharmatechnik.de/GuiMetaModel" elementFormDefault="qualified" attributeFormDefault="unqualified">
+	<xs:import/>
+	<xs:import/>
+	<xs:complexType name="GuiDescription">
+		<xs:sequence>
+			<xs:element name="Containers">
+				<xs:complexType>
+					<xs:sequence minOccurs="0" maxOccurs="unbounded">
+						<xs:element ref="Container"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="IsDemo" type="xs:boolean"/>
+		<xs:attribute name="LastWriteTime" type="xs:dateTime" use="required"/>
+		<xs:attribute name="Name" type="xs:string"/>
+		<xs:attribute name="Namespace" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="GuiElement" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The common base class for all GUI elements.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="LayoutInfo"/>
+			<xs:element name="Description" type="xs:string" minOccurs="0"/>
+			<xs:element name="HotKeys" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="AddHotKey" type="HotKey" minOccurs="0"/>
+						<xs:element name="RemoveHotKey" type="HotKey" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="TabIndex" type="xs:int" default="-1" minOccurs="0"/>
+			<xs:element name="ContextMenu" type="ContextMenu" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="Name" type="xs:string"/>
+		<xs:attribute name="Style" type="xs:string" default="Default"/>
+	</xs:complexType>
+	<xs:complexType name="Container" abstract="true">
+		<xs:annotation>
+			<xs:documentation>A container is a GUI element that may have child elements. It has a layout specified.</xs:documentation>
+		</xs:annotation>
+		<xs:sequence>
+			<xs:element ref="Layout"/>
+			<xs:element name="GuiElements">
+				<xs:complexType>
+					<xs:sequence minOccurs="0" maxOccurs="unbounded">
+						<xs:element ref="GuiElements"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UserControlReference" type="xs:string" minOccurs="0"/>
+			<xs:element name="HotKeys" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence minOccurs="0" maxOccurs="unbounded">
+						<xs:element name="AddHotKey" type="HotKey" minOccurs="0"/>
+						<xs:element name="RemoveHotKey" type="HotKey" minOccurs="0"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="UniqueKey" type="xs:string" default="" nillable="true" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="CachedInstancesAtStartup" type="xs:int" default="0"/>
+		<xs:attribute name="ExternWFS" type="xs:string"/>
+		<xs:attribute name="Name" type="xs:string"/>
+		<xs:attribute name="Width" default="1020">
+			<xs:annotation>
+				<xs:documentation>Width of the container.</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:int">
+					<xs:minInclusive value="50"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Height" default="665">
+			<xs:annotation>
+				<xs:documentation>Height of the container.</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:int">
+					<xs:minInclusive value="50"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="WFSInterface" type="xs:string"/>
+		<xs:attribute name="Help" type="xs:string"/>
+		<xs:attribute name="Title" type="xs:string"/>
+		<xs:attribute name="EnableChangeTracking" type="xs:boolean" default="false"/>
+		<xs:attribute name="Pooled" type="xs:boolean" default="false"/>
+		<xs:attribute name="ProcessAnyKeyControl" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="Form">
+		<xs:annotation>
+			<xs:documentation>A whole window (or a part of a window if it's a partial form).</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Container"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="Dialog">
+		<xs:annotation>
+			<xs:documentation>A dialog description</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Container"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="UserControl">
+		<xs:annotation>
+			<xs:documentation>A user control description</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Container"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="LayoutInfo" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The layout data that is used by the layout manager of the parent container.</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:element name="GridLayoutInfo" substitutionGroup="LayoutInfo">
+		<xs:annotation>
+			<xs:documentation>A grid layout</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="LayoutInfo">
+					<xs:attribute name="Row" default="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:int">
+								<xs:minInclusive value="0"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="Col" default="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:int">
+								<xs:minInclusive value="0"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="RowSpan" default="1">
+						<xs:simpleType>
+							<xs:restriction base="xs:int">
+								<xs:minInclusive value="1"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="ColSpan" default="1">
+						<xs:simpleType>
+							<xs:restriction base="xs:int">
+								<xs:minInclusive value="1"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="ColMode" default="Fill">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Fixed"/>
+								<xs:enumeration value="Fill"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="Width" type="xs:int" default="0"/>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="GridLayoutConstraint">
+		<xs:attribute name="Mode" default="Variable">
+			<xs:annotation>
+				<xs:documentation>Mode definiert die Ausbreitung der Zeile/Spalte. Fixed heisst fester Wert, Variable heisst, dass sich der Wert bei Größenänderung anpasst.</xs:documentation>
+			</xs:annotation>
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Fixed"/>
+					<xs:enumeration value="Variable"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Value" type="xs:int" use="optional" default="100">
+			<xs:annotation>
+				<xs:documentation>Optionaler Wert, der den Mode genauer beschreibt. Bei Fixed gibt Value den absoluten Wert in Pixel an. Bei Variable gibt Value den Wert im Verhältnis an (z.B. in Prozent).</xs:documentation>
+			</xs:annotation>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:element name="AbsolutLayoutInfo" substitutionGroup="LayoutInfo">
+		<xs:annotation>
+			<xs:documentation>An absolute layout</xs:documentation>
+		</xs:annotation>
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="LayoutInfo">
+					<xs:attribute name="X">
+						<xs:simpleType>
+							<xs:restriction base="xs:int">
+								<xs:minInclusive value="1"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="Y" default="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:int">
+								<xs:minInclusive value="0"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="Width" default="-1">
+						<xs:simpleType>
+							<xs:restriction base="xs:int">
+								<xs:minInclusive value="-1"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="Height" default="-1">
+						<xs:simpleType>
+							<xs:restriction base="xs:int">
+								<xs:minInclusive value="-1"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+				</xs:extension>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:complexType name="Control">
+		<xs:annotation>
+			<xs:documentation>A control is a leaf GUI element that may not contain other elements.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="GuiElement">
+				<xs:sequence>
+					<xs:element name="Events">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Event" type="Event" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ForeColor" type="xs:string" nillable="false" minOccurs="0"/>
+					<xs:element name="BackColor" type="xs:string" nillable="false" minOccurs="0"/>
+					<xs:element name="Visible" type="BooleanControlState" default="UndefinedControlState" nillable="false" minOccurs="0"/>
+					<xs:element name="IgnoreTO" type="xs:boolean" default="false" nillable="false" minOccurs="0"/>
+					<xs:element name="Focus" type="BooleanControlState" default="UndefinedControlState" nillable="false" minOccurs="0"/>
+					<xs:element name="TabStop" type="BooleanControlState" default="UndefinedControlState" nillable="false" minOccurs="0"/>
+					<xs:element name="UniqueKey" type="xs:string" default="" nillable="true" minOccurs="0"/>
+					<xs:element name="NullText" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="AllowDrop" type="xs:boolean"/>
+				<xs:attribute name="Height" type="xs:int" use="optional" default="0"/>
+				<xs:attribute name="Enabled" type="BooleanControlState" default="UndefinedControlState"/>
+				<xs:attribute name="ToolTip" type="xs:string"/>
+				<xs:attribute name="DataBinding" type="BooleanControlState" default="UndefinedControlState"/>
+				<xs:attribute name="EnableChangeTracking" default="undefined">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="true"/>
+							<xs:enumeration value="false"/>
+							<xs:enumeration value="undefined"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="EnableLizenz" type="xs:string"/>
+				<xs:attribute name="VisibleLizenz" type="xs:string"/>
+				<xs:attribute name="MaxDropDownItems" type="xs:int" use="optional" default="0"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Control" type="Control" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Panel">
+		<xs:annotation>
+			<xs:documentation>A panel is a container element that may have child elements. However, it cannot be a root element.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="GuiElement">
+				<xs:sequence>
+					<xs:element name="GuiElements" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence minOccurs="0" maxOccurs="unbounded">
+								<xs:element ref="GuiElements"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element ref="Layout"/>
+				</xs:sequence>
+				<xs:attribute name="BorderStyle" default="None">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="None"/>
+							<xs:enumeration value="Standard"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Panel" type="Panel" substitutionGroup="GuiElements"/>
+	<xs:complexType name="TabNavigation">
+		<xs:annotation>
+			<xs:documentation>A panel is a container element that may have child elements. However, it cannot be a root element.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="TabPages" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="TabPage" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="NavigationType" default="Default" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Default"/>
+								<xs:enumeration value="Menu"/>
+								<xs:enumeration value="Advanced"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="SharedControls" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="GuiElement" type="GuiElement" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="TabPosition" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Left"/>
+								<xs:enumeration value="Center"/>
+								<xs:enumeration value="Right"/>
+								<xs:enumeration value="LeftRight"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="TabWidth" type="xs:int" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="TabNavigation" type="TabNavigation" substitutionGroup="GuiElements"/>
+	<xs:complexType name="TabPage">
+		<xs:annotation>
+			<xs:documentation>A panel is a container element that may have child elements. However, it cannot be a root element.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="GuiElements" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="GuiElement" type="GuiElement" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Caption" type="xs:string" minOccurs="0"/>
+					<xs:element name="ImageLibrary" type="xs:string" minOccurs="0"/>
+					<xs:element name="ImageKey" type="xs:string" minOccurs="0"/>
+					<xs:element name="ImageKeyRight" type="xs:string" minOccurs="0"/>
+					<xs:element name="LeftCaption" type="xs:string" minOccurs="0"/>
+					<xs:element name="RightCaption" type="xs:string" minOccurs="0"/>
+					<xs:element name="NewGroup" type="xs:boolean" minOccurs="0"/>
+					<xs:element name="Shared" type="xs:boolean" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="TabPage" type="TabPage" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Layout" abstract="true">
+		<xs:annotation>
+			<xs:documentation>The layout of a container element.</xs:documentation>
+		</xs:annotation>
+	</xs:complexType>
+	<xs:element name="Layout" type="Layout"/>
+	<xs:complexType name="GridLayout">
+		<xs:complexContent>
+			<xs:extension base="Layout">
+				<xs:sequence>
+					<xs:element name="RowInfos" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="RowInfo" type="GridLayoutConstraint" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ColumnInfos" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ColumnInfo" type="GridLayoutConstraint" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="Columns" default="1">
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="Rows" default="1">
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="Type" default="None">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="None"/>
+							<xs:enumeration value="Header"/>
+							<xs:enumeration value="Content"/>
+							<xs:enumeration value="Footer"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="GridLayout" type="GridLayout" substitutionGroup="Layout"/>
+	<xs:complexType name="AbsolutLayout">
+		<xs:complexContent>
+			<xs:extension base="Layout"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AbsolutLayout" type="AbsolutLayout" substitutionGroup="Layout"/>
+	<xs:complexType name="SplitLayout">
+		<xs:complexContent>
+			<xs:extension base="Layout">
+				<xs:attribute name="SplitterMode" default="Default">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Default"/>
+							<xs:enumeration value="Panel1"/>
+							<xs:enumeration value="Panel2"/>
+							<xs:enumeration value="Percent"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="FixedPanel" default="None">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="None"/>
+							<xs:enumeration value="Panel1"/>
+							<xs:enumeration value="Panel2"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="SplitterDistance" type="xs:int" use="required"/>
+				<xs:attribute name="SplitterWidth" type="xs:int" default="4"/>
+				<xs:attribute name="SplitterIncrement" type="xs:int" default="1"/>
+				<xs:attribute name="Panel1Collapsed" default="false">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="false"/>
+							<xs:enumeration value="true"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="Panel1MinSize" type="xs:int" default="25"/>
+				<xs:attribute name="Panel2Collapsed" default="false">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="false"/>
+							<xs:enumeration value="true"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="Panel2MinSize" type="xs:int" default="25"/>
+				<xs:attribute name="SplitterOrientation" use="required">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Horizontal"/>
+							<xs:enumeration value="Vertical"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="IsSplitterFixed" default="false">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="false"/>
+							<xs:enumeration value="true"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="SplitLayout" type="SplitLayout" substitutionGroup="Layout"/>
+	<xs:element name="GuiDescription" type="GuiDescription"/>
+	<xs:element name="LayoutInfo" type="LayoutInfo"/>
+	<xs:element name="Container" type="Container"/>
+	<xs:element name="Form" substitutionGroup="Container">
+		<xs:complexType>
+			<xs:complexContent>
+				<xs:extension base="Form"/>
+			</xs:complexContent>
+		</xs:complexType>
+	</xs:element>
+	<xs:element name="Dialog" type="Dialog" substitutionGroup="Container"/>
+	<xs:element name="UserControl" type="UserControl" substitutionGroup="Container"/>
+	<xs:element name="GuiElements" type="GuiElement"/>
+	<xs:complexType name="Combobox">
+		<xs:annotation>
+			<xs:documentation>A combobox that represents a drop down list of items.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="InfoButtonVisible" default="false" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="true"/>
+								<xs:enumeration value="false"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="MaxLength" type="xs:int" default="-1" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Combobox" type="Combobox" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Dropdownbox">
+		<xs:annotation>
+			<xs:documentation>A combobox that represents a drop down list of items.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Combobox"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Dropdownbox" type="Dropdownbox" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Label">
+		<xs:annotation>
+			<xs:documentation>A text label that holds a text that is displayed using a defined style.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Text" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Label" type="Label" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Textbox">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Text" type="xs:string" minOccurs="0"/>
+					<xs:element name="ValidatingExpression" type="xs:string" minOccurs="0"/>
+					<xs:element name="ImageKey" type="xs:string" minOccurs="0"/>
+					<xs:element name="ImageLibrary" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="AutoCapitalizeFirstCharacter" type="xs:boolean" default="false"/>
+				<xs:attribute name="Multiline" type="xs:boolean" default="false"/>
+				<xs:attribute name="Length" default="32700">
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="ReadOnly" type="xs:boolean" default="false"/>
+				<xs:attribute name="Password" type="xs:boolean" default="false"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Textbox" type="Textbox" substitutionGroup="GuiElements"/>
+	<xs:complexType name="UserControlReference">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="TypeName" type="xs:string"/>
+					<xs:element name="TypeNameTO" type="xs:string" minOccurs="0"/>
+					<xs:element name="SetPrefix" type="xs:boolean" default="true" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="Multiline" type="xs:boolean" default="false"/>
+				<xs:attribute name="Length" default="32700">
+					<xs:simpleType>
+						<xs:restriction base="xs:int">
+							<xs:minInclusive value="1"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="ReadOnly" type="xs:boolean" default="false"/>
+				<xs:attribute name="NoGdRef" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="UserControlReference" type="UserControlReference" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Picturebox">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="ScaleImage" default="OnlyWhenNeeded" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Never"/>
+								<xs:enumeration value="Always"/>
+								<xs:enumeration value="OnlyWhenNeeded"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="Enable3DEffekt" type="BooleanControlState" default="true"/>
+				<xs:attribute name="ImageLibrary" type="xs:string"/>
+				<xs:attribute name="ImageKey" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Picturebox" type="Picturebox" substitutionGroup="GuiElements"/>
+	<xs:complexType name="PersistentPictureBox">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="ScaleImage" type="xs:boolean" default="true" minOccurs="0"/>
+					<xs:element name="ScaleImageOnlyDownsize" type="xs:boolean" default="true" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="PersistentPictureBox" type="PersistentPictureBox" substitutionGroup="GuiElements"/>
+	<xs:complexType name="BrowsableTextbox">
+		<xs:annotation>
+			<xs:documentation>A text box with an additional browse button.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Textbox">
+				<xs:sequence>
+					<xs:element name="ButtonText" type="xs:string" minOccurs="0"/>
+					<xs:element name="InfoButtonVisible" default="false" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="true"/>
+								<xs:enumeration value="false"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="BrowseButtonVisible" default="true" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="true"/>
+								<xs:enumeration value="false"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="BrowsableTextbox" type="BrowsableTextbox" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Event">
+		<xs:attribute name="Name" type="xs:string" use="required"/>
+		<xs:attribute name="Method" type="xs:string" use="required"/>
+		<xs:attribute name="BaseEventName" type="xs:string"/>
+		<xs:attribute name="BaseControlName" type="xs:string"/>
+		<xs:attribute name="Guarded" type="xs:boolean" default="true"/>
+		<xs:attribute name="SenderControlName" type="xs:string"/>
+		<xs:attribute name="AutoWriteTOValue" type="xs:boolean" default="true"/>
+		<xs:attribute name="CallType" type="CallType" default="WFSCall"/>
+	</xs:complexType>
+	<xs:complexType name="DynamicButton">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Text" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="DynamicButton" type="DynamicButton" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Checkbox">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Text" type="xs:string"/>
+				</xs:sequence>
+				<xs:attribute name="Checked" default="false">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="false"/>
+							<xs:enumeration value="true"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Checkbox" type="Checkbox" substitutionGroup="GuiElements"/>
+	<xs:complexType name="RadiobuttonGroup">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Radiobuttons">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Radiobutton" type="RadiobuttonGroupItem" minOccurs="2" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="RadiobuttonGroup" type="RadiobuttonGroup" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Listbox">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Sorted" type="xs:boolean" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Listbox" type="Listbox" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Table">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Caption" type="xs:string" minOccurs="0"/>
+					<xs:element name="ColumnInfos" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ColumnInfo" type="ColumnInfoType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="DefaultColWidth" type="xs:string" default="-1" minOccurs="0"/>
+					<xs:element name="DefaultRowHeight" type="xs:int" default="-1" minOccurs="0"/>
+					<xs:element name="MinRowHeight" type="xs:int" default="-1" minOccurs="0"/>
+					<xs:element name="BandInfos" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="BandInfo" type="BandInfoType" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ColumnType" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="None"/>
+								<xs:enumeration value="Combobox"/>
+								<xs:enumeration value="Dropdownbox"/>
+								<xs:enumeration value="Checkbox"/>
+								<xs:enumeration value="Button"/>
+								<xs:enumeration value="AmountTextbox"/>
+								<xs:enumeration value="Percent"/>
+								<xs:enumeration value="BrowsableTextbox"/>
+								<xs:enumeration value="Icon"/>
+								<xs:enumeration value="Date"/>
+								<xs:enumeration value="Time"/>
+								<xs:enumeration value="Numeric"/>
+								<xs:enumeration value="REAL"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="RowSelectionMode" default="Single" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Default"/>
+								<xs:enumeration value="None"/>
+								<xs:enumeration value="Single"/>
+								<xs:enumeration value="Extended"/>
+								<xs:enumeration value="ExtendedAutoDrag"/>
+								<xs:enumeration value="SingleAutoDrag"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="AddNewRowText" default="Neuer Eintrag" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string"/>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="AllowAddNewRow" type="AllowAddNewRow" default="Default" minOccurs="0"/>
+					<xs:element name="ColHeadersVisible" type="xs:boolean" nillable="true" minOccurs="0"/>
+					<xs:element name="ShowRowSelector" default="False" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Default"/>
+								<xs:enumeration value="True"/>
+								<xs:enumeration value="False"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="Behavior" type="GridColumnBehavior" default="Default" minOccurs="0"/>
+					<xs:element name="CellLinesCount" type="xs:int" default="1" minOccurs="0"/>
+					<xs:element name="HotKeyUpDownLoop" type="xs:boolean" default="0" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="DragAndDrop" type="xs:boolean"/>
+				<xs:attribute name="Paging" type="xs:boolean" default="false"/>
+				<xs:attribute name="CachePageCount" type="xs:int" default="2"/>
+				<xs:attribute name="AutoFitStyle" default="None">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="None"/>
+							<xs:enumeration value="ResizeAllColumns"/>
+							<xs:enumeration value="ExtendLastColumn"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="ColHeadersVisible" default="true">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="true"/>
+							<xs:enumeration value="false"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="Sortable" type="xs:boolean" default="false"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Table" type="Table" substitutionGroup="GuiElements"/>
+	<xs:complexType name="SelectionList">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Caption" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="AutoFitStyle" default="None">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="None"/>
+							<xs:enumeration value="ResizeAllColumns"/>
+							<xs:enumeration value="ExtendLastColumn"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="ColHeadersVisible" default="true">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="true"/>
+							<xs:enumeration value="false"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="SelectionList" type="SelectionList" substitutionGroup="GuiElements"/>
+	<xs:complexType name="HeaderScroller">
+		<xs:complexContent>
+			<xs:extension base="Table">
+				<xs:attribute name="HideSpinButtons" default="false">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="true"/>
+							<xs:enumeration value="false"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="HeaderScroller" type="HeaderScroller" substitutionGroup="GuiElements"/>
+	<xs:complexType name="DynamicLabel">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Text" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="DynamicLabel" type="DynamicLabel" substitutionGroup="GuiElements"/>
+	<xs:complexType name="NumericTextbox">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Value" type="xs:string" minOccurs="0"/>
+					<xs:element name="MinValue" type="xs:string" default="-2147483648" minOccurs="0"/>
+					<xs:element name="MaxValue" type="xs:string" default="2147483647" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="Nullable" type="xs:boolean" default="true"/>
+				<xs:attribute name="MaskInput" type="xs:string"/>
+				<xs:attribute name="ReadOnly" type="xs:boolean" default="false"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="NumericTextbox" type="NumericTextbox" substitutionGroup="GuiElements"/>
+	<xs:complexType name="DateTextbox">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="MinDate" type="xs:string" default="01.01.1753" minOccurs="0"/>
+					<xs:element name="MaxDate" type="xs:string" default="31.12.9998" minOccurs="0"/>
+					<xs:element name="Mask" default="DDMMYYYY" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="DDMMYYYY"/>
+								<xs:enumeration value="DDMMYY"/>
+								<xs:enumeration value="MMYYYY"/>
+								<xs:enumeration value="MMYY"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="Value" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="ReadOnly" type="xs:boolean" default="false"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="DateTextbox" type="DateTextbox" substitutionGroup="GuiElements"/>
+	<xs:complexType name="MaskTextbox">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Value" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="ReadOnly" type="xs:boolean" default="false"/>
+				<xs:attribute name="MaskInput" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="MaskTextbox" type="MaskTextbox" substitutionGroup="GuiElements"/>
+	<xs:complexType name="AmountTextbox">
+		<xs:complexContent>
+			<xs:extension base="NumericTextbox">
+				<xs:attribute name="ShowCurrency" type="xs:boolean" default="true"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="AmountTextbox" type="AmountTextbox" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Button">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Text" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="DefaultButton" default="Undefined">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Accept"/>
+							<xs:enumeration value="Cancel"/>
+							<xs:enumeration value="Undefined"/>
+							<xs:enumeration value="AcceptCancel"/>
+							<xs:enumeration value="OnlyCancel"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="ImageLibrary" type="xs:string"/>
+				<xs:attribute name="ImageKey" type="xs:string"/>
+				<xs:attribute name="ImageSize" type="xs:int"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Button" type="Button" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Radiobutton">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:attribute name="Key" type="xs:string"/>
+				<xs:attribute name="GroupName" type="xs:string" default=""/>
+				<xs:attribute name="Text" type="xs:string" default=""/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Radiobutton" type="Radiobutton" substitutionGroup="GuiElements"/>
+	<xs:complexType name="RadiobuttonGroupItem">
+		<xs:attribute name="Text" type="xs:string" default=""/>
+		<xs:attribute name="Key" type="xs:string" use="required"/>
+	</xs:complexType>
+	<xs:complexType name="FunctionButton">
+		<xs:complexContent>
+			<xs:extension base="Button">
+				<xs:sequence>
+					<xs:element name="Align" default="Left" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Left"/>
+								<xs:enumeration value="Right"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="ButtonBarName" type="xs:string" minOccurs="0"/>
+					<xs:element name="ButtonBarHotKey" type="BarHotKey" default="NotDefined" minOccurs="0"/>
+					<xs:element name="Position" type="xs:int" default="-1" minOccurs="0"/>
+					<xs:element name="BeginGroup" type="xs:boolean" default="false" minOccurs="0"/>
+					<xs:element name="HotKeyText" type="xs:string" default="" nillable="false" minOccurs="0"/>
+					<xs:element name="WordWrap" default="false" nillable="false" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="true"/>
+								<xs:enumeration value="false"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="IgnoreValidation" type="xs:boolean" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="FunctionButton" type="FunctionButton" substitutionGroup="GuiElements"/>
+	<xs:complexType name="DynamicFunctionButton">
+		<xs:complexContent>
+			<xs:extension base="FunctionButton"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="DynamicFunctionButton" type="DynamicFunctionButton" substitutionGroup="GuiElements"/>
+	<xs:complexType name="FunctionButtonBar">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="FunctionButtons" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="FunctionButton" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="Alignment" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Left"/>
+								<xs:enumeration value="Middle"/>
+								<xs:enumeration value="Right"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="ParentFormStyle" default="ModalForm" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Form"/>
+								<xs:enumeration value="ModalForm"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="DefaultButtonsCount" type="xs:int" default="12" minOccurs="0"/>
+					<xs:element name="IsSelected" type="xs:boolean" default="false" minOccurs="0"/>
+					<xs:element name="ButtonBarHotKey" type="BarHotKey" default="NotDefined" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="FunctionButtonBar" type="FunctionButtonBar" substitutionGroup="GuiElements"/>
+	<xs:complexType name="ButtonBarManager">
+		<xs:complexContent>
+			<xs:extension base="GuiElement">
+				<xs:sequence>
+					<xs:element name="FunctionButtonBars" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element ref="FunctionButtonBar" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="ButtonBarManager" type="ButtonBarManager" substitutionGroup="GuiElements"/>
+	<xs:complexType name="TabStrip">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="TabInfos" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="TabInfo" maxOccurs="unbounded">
+									<xs:complexType>
+										<xs:attribute name="Key" type="xs:string" use="required"/>
+										<xs:attribute name="Caption" type="xs:string" use="required"/>
+										<xs:attribute name="Width" type="xs:int" default="-1"/>
+										<xs:attribute name="Hidden" default="false">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="true"/>
+													<xs:enumeration value="false"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:attribute>
+										<xs:attribute name="TextAlign" default="Left">
+											<xs:simpleType>
+												<xs:restriction base="xs:string">
+													<xs:enumeration value="Left"/>
+													<xs:enumeration value="Right"/>
+												</xs:restriction>
+											</xs:simpleType>
+										</xs:attribute>
+										<xs:attribute name="UserControlReference">
+											<xs:simpleType>
+												<xs:restriction base="xs:string"/>
+											</xs:simpleType>
+										</xs:attribute>
+									</xs:complexType>
+								</xs:element>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="TabStrip" type="TabStrip" substitutionGroup="GuiElements"/>
+	<xs:element name="Tree" type="Tree" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Tree">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="EnableDragDrop" type="xs:boolean" default="false" nillable="false" minOccurs="0"/>
+					<xs:element name="NodeInfos" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="NodeInfo" type="NodeInfo"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+					<xs:element name="ImageLibrary" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="NodeInfo">
+		<xs:sequence>
+			<xs:element name="NodeInfos" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="NodeInfo" type="NodeInfo" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Key" type="xs:string" use="required"/>
+		<xs:attribute name="Text" type="xs:string" use="required"/>
+		<xs:attribute name="Hidden" default="false">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="true"/>
+					<xs:enumeration value="false"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="HotKey">
+		<xs:sequence minOccurs="0" maxOccurs="unbounded">
+			<xs:element name="RequiredAddKeys" type="xs:string" minOccurs="0"/>
+			<xs:element name="DisabledAddKeys" type="xs:string" minOccurs="0"/>
+		</xs:sequence>
+		<xs:attribute name="WFSMethodName" type="xs:string"/>
+		<xs:attribute name="Key"/>
+		<xs:attribute name="CallType" type="CallType" default="WFSCall"/>
+	</xs:complexType>
+	<xs:simpleType name="BarHotKey">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="NotDefined"/>
+			<xs:enumeration value="Alt"/>
+			<xs:enumeration value="Ctrl"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="AllowAddNewRow">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Default"/>
+			<xs:enumeration value="Yes"/>
+			<xs:enumeration value="No"/>
+			<xs:enumeration value="TabRepeat"/>
+			<xs:enumeration value="TemplateOnTop"/>
+			<xs:enumeration value="TemplateOnTopWithTabRepeat"/>
+			<xs:enumeration value="TemplateOnBottom"/>
+			<xs:enumeration value="FixedAddRowOnTop"/>
+			<xs:enumeration value="FixedAddRowOnBottom"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="TextAlignment">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Right"/>
+			<xs:enumeration value="Left"/>
+			<xs:enumeration value="Center"/>
+			<xs:enumeration value="Default"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="GridColumn" abstract="true">
+		<xs:sequence>
+			<xs:element name="ColumnInfo" maxOccurs="unbounded">
+				<xs:complexType>
+					<xs:attribute name="Band" type="xs:string"/>
+					<xs:attribute name="Key" type="xs:string" use="required"/>
+					<xs:attribute name="Caption" type="xs:string"/>
+					<xs:attribute name="Type" default="None">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="None"/>
+								<xs:enumeration value="Combobox"/>
+								<xs:enumeration value="Dropdownbox"/>
+								<xs:enumeration value="Checkbox"/>
+								<xs:enumeration value="Button"/>
+								<xs:enumeration value="AmountTextbox"/>
+								<xs:enumeration value="Percent"/>
+								<xs:enumeration value="BrowsableTextbox"/>
+								<xs:enumeration value="Icon"/>
+								<xs:enumeration value="Date"/>
+								<xs:enumeration value="Time"/>
+								<xs:enumeration value="Numeric"/>
+								<xs:enumeration value="REAL"/>
+								<xs:enumeration value="Double"/>
+								<xs:enumeration value="Integer"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="Width" type="xs:int" default="-1"/>
+					<xs:attribute name="MinWidth" type="xs:int" default="-1"/>
+					<xs:attribute name="MaxWidth" type="xs:int" default="-1"/>
+					<xs:attribute name="Hidden" default="false">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="true"/>
+								<xs:enumeration value="false"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="CellMultiLine" default="Default">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Default"/>
+								<xs:enumeration value="True"/>
+								<xs:enumeration value="False"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="CellClickAction">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Default"/>
+								<xs:enumeration value="Edit"/>
+								<xs:enumeration value="RowSelect"/>
+								<xs:enumeration value="CellSelect"/>
+								<xs:enumeration value="EditAndSelectText"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="CellActivation" default="AllowEdit">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="AllowEdit"/>
+								<xs:enumeration value="ActivateOnly"/>
+								<xs:enumeration value="Disabled"/>
+								<xs:enumeration value="NoEdit"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="TextAlign" default="Left">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Left"/>
+								<xs:enumeration value="Right"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="PictureLibrary" type="xs:string"/>
+					<xs:attribute name="DefaultImageKey" type="xs:string"/>
+					<xs:attribute name="ImageHAlign" default="Center">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Center"/>
+								<xs:enumeration value="Default"/>
+								<xs:enumeration value="Left"/>
+								<xs:enumeration value="Right"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="ImageVAlign" default="Middle">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="Middle"/>
+								<xs:enumeration value="Default"/>
+								<xs:enumeration value="Top"/>
+								<xs:enumeration value="Bottom"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:attribute>
+					<xs:attribute name="Editable" type="xs:boolean" default="false"/>
+					<xs:attribute name="MaskInput" type="xs:string"/>
+					<xs:attribute name="FormatInput" type="xs:string"/>
+					<xs:attribute name="Style" type="xs:string" default="Standard"/>
+				</xs:complexType>
+			</xs:element>
+			<xs:element name="Key" type="xs:string"/>
+			<xs:element name="Band" type="xs:string" minOccurs="0"/>
+			<xs:element name="Caption" type="xs:string" minOccurs="0"/>
+			<xs:element name="TypeName" type="xs:string" minOccurs="0"/>
+			<xs:element name="MinWidth" type="xs:int" default="-1" minOccurs="0"/>
+			<xs:element name="MaxWidth" type="xs:string" minOccurs="0"/>
+			<xs:element name="Editable" type="xs:boolean" default="false" minOccurs="0"/>
+			<xs:element name="Hidden" type="xs:boolean" default="false" minOccurs="0"/>
+		</xs:sequence>
+	</xs:complexType>
+	<xs:element name="GridColumn" type="GridColumn"/>
+	<xs:complexType name="GridColumnWithRange">
+		<xs:complexContent>
+			<xs:extension base="GridColumn">
+				<xs:sequence>
+					<xs:element name="MinValue" type="xs:int" minOccurs="0"/>
+					<xs:element name="MaxValue" type="xs:int" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="GridColumnWithRange" type="GridColumnWithRange"/>
+	<xs:complexType name="GridColumnInteger">
+		<xs:complexContent>
+			<xs:extension base="GridColumnWithRange"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="GridColumnDouble">
+		<xs:complexContent>
+			<xs:extension base="GridColumnWithRange"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="GridColumnTime">
+		<xs:complexContent>
+			<xs:extension base="GridColumnWithRange"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:complexType name="GridColumnDate">
+		<xs:complexContent>
+			<xs:extension base="GridColumnWithRange"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:simpleType name="BooleanControlState">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="true"/>
+			<xs:enumeration value="false"/>
+			<xs:enumeration value="UndefinedControlState"/>
+			<xs:enumeration value="modified"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:simpleType name="CallType">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="WFSCall"/>
+			<xs:enumeration value="CustomCall"/>
+			<xs:enumeration value="CustomWFS"/>
+			<xs:enumeration value="ModifiedCall"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="EditorUIControl">
+		<xs:complexContent>
+			<xs:extension base="Control"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="EditorUIControl" type="EditorUIControl"/>
+	<xs:complexType name="ComboBoxEditorUI">
+		<xs:complexContent>
+			<xs:extension base="EditorUIControl"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="ComboBoxEditorUI" type="ComboBoxEditorUI"/>
+	<xs:complexType name="BrowseEditorUI">
+		<xs:complexContent>
+			<xs:extension base="EditorUIControl"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="BrowseEditorUI" type="BrowseEditorUI"/>
+	<xs:complexType name="TimeEditorUI">
+		<xs:complexContent>
+			<xs:extension base="EditorUIControl"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="TimeEditorUI" type="TimeEditorUI"/>
+	<xs:complexType name="DefaultEditorUI">
+		<xs:complexContent>
+			<xs:extension base="EditorUIControl"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="DefaultEditorUI" type="DefaultEditorUI"/>
+	<xs:complexType name="MultiViewContainer">
+		<xs:annotation>
+			<xs:documentation>A MultiViewContainer is a container element that may have child elements. However, it cannot be a root element.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="ExtendedControl"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="MultiViewContainer" type="MultiViewContainer" substitutionGroup="GuiElements"/>
+	<xs:complexType name="ExtendedControl">
+		<xs:annotation>
+			<xs:documentation>A control is a leaf GUI element that may not contain other elements.</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="GuiElements" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence minOccurs="0" maxOccurs="unbounded">
+								<xs:element ref="GuiElements"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="ExtendedControl" type="ExtendedControl" substitutionGroup="GuiElements"/>
+	<xs:complexType name="PhoneTextbox">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="AreaCode" type="xs:string" minOccurs="0"/>
+					<xs:element name="CityCode" type="xs:string" minOccurs="0"/>
+					<xs:element name="CountryCode" type="xs:string" minOccurs="0"/>
+					<xs:element name="BrowseButtonVisible" type="xs:boolean" default="true" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="PhoneTextbox" type="PhoneTextbox"/>
+	<xs:complexType name="PhoneEditorUI">
+		<xs:complexContent>
+			<xs:extension base="EditorUIControl"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="PhoneEditorUI" type="PhoneEditorUI"/>
+	<xs:simpleType name="GridColumnBehavior">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Editable"/>
+			<xs:enumeration value="ReadOnly"/>
+			<xs:enumeration value="Default"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="DetailsPanel">
+		<xs:complexContent>
+			<xs:extension base="Panel">
+				<xs:sequence>
+					<xs:element name="DetailText" type="xs:string" default="Details" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="DetailsPanel" type="DetailsPanel" substitutionGroup="GuiElements"/>
+	<xs:simpleType name="TextVAlignment">
+		<xs:restriction base="xs:string">
+			<xs:enumeration value="Top"/>
+			<xs:enumeration value="Middle"/>
+			<xs:enumeration value="Bottom"/>
+		</xs:restriction>
+	</xs:simpleType>
+	<xs:complexType name="RadiobuttonContainer">
+		<xs:complexContent>
+			<xs:extension base="GuiElement">
+				<xs:sequence>
+					<xs:element name="Radiobuttons">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="Radiobutton" type="Radiobutton" minOccurs="0" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="RadiobuttonContainer" type="RadiobuttonContainer" substitutionGroup="GuiElements"/>
+	<xs:complexType name="FormattedLabel">
+		<xs:annotation>
+			<xs:documentation>Stellt formattierten Text dar</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Text" type="xs:string"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="FormattedLabel" type="FormattedLabel" substitutionGroup="GuiElements"/>
+	<xs:complexType name="FormattedTextbox">
+		<xs:annotation>
+			<xs:documentation>Stellt formattierten Text dar</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Text" type="xs:string"/>
+				</xs:sequence>
+				<xs:attribute name="ReadOnly" type="xs:boolean"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="FormattedTextbox" type="FormattedTextbox" substitutionGroup="GuiElements"/>
+	<xs:complexType name="ReportPreview">
+		<xs:annotation>
+			<xs:documentation>Preview von Reports</xs:documentation>
+		</xs:annotation>
+		<xs:complexContent>
+			<xs:extension base="Control"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="ReportPreview" type="ReportPreview" substitutionGroup="GuiElements"/>
+	<xs:complexType name="TimeTextbox">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="Mask" default="HHMMSS" minOccurs="0">
+						<xs:simpleType>
+							<xs:restriction base="xs:string">
+								<xs:enumeration value="HHMM"/>
+								<xs:enumeration value="HHMMSS"/>
+							</xs:restriction>
+						</xs:simpleType>
+					</xs:element>
+					<xs:element name="Value" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+				<xs:attribute name="ReadOnly" type="xs:boolean" default="false"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="TimeTextbox" type="TimeTextbox" substitutionGroup="GuiElements"/>
+	<xs:complexType name="ColumnInfoType">
+		<xs:sequence minOccurs="0">
+			<xs:element ref="EditorUIControl"/>
+		</xs:sequence>
+		<xs:attribute name="DefaultCellValue" type="xs:string"/>
+		<xs:attribute name="Managed" type="xs:boolean" default="false"/>
+		<xs:attribute name="ColumnMode" default="None">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="None"/>
+					<xs:enumeration value="ActivatableIcon"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="EnableChangeTracking" type="xs:boolean" default="true"/>
+		<xs:attribute name="NullText" type="xs:string"/>
+		<xs:attribute name="MaxLength" type="xs:int"/>
+		<xs:attribute name="Nullable" default="undefined">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="true"/>
+					<xs:enumeration value="false"/>
+					<xs:enumeration value="undefined"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Sortable" type="xs:boolean" default="true"/>
+		<xs:attribute name="Band" type="xs:string"/>
+		<xs:attribute name="Key" type="xs:string" use="required"/>
+		<xs:attribute name="Caption" type="xs:string"/>
+		<xs:attribute name="Type" default="None">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="None"/>
+					<xs:enumeration value="Combobox"/>
+					<xs:enumeration value="Dropdownbox"/>
+					<xs:enumeration value="Checkbox"/>
+					<xs:enumeration value="Button"/>
+					<xs:enumeration value="AmountTextbox"/>
+					<xs:enumeration value="Percent"/>
+					<xs:enumeration value="BrowsableTextbox"/>
+					<xs:enumeration value="Icon"/>
+					<xs:enumeration value="Date"/>
+					<xs:enumeration value="Time"/>
+					<xs:enumeration value="Numeric"/>
+					<xs:enumeration value="REAL"/>
+					<xs:enumeration value="Double"/>
+					<xs:enumeration value="Integer"/>
+					<xs:enumeration value="Phone"/>
+					<xs:enumeration value="MaskedTextbox"/>
+					<xs:enumeration value="URL"/>
+					<xs:enumeration value="FormattedLabel"/>
+					<xs:enumeration value="FormattedTextbox"/>
+					<xs:enumeration value="ImageTextEditor"/>
+					<xs:enumeration value="AutoSuggestion"/>
+					<xs:enumeration value="PZN"/>
+					<xs:enumeration value="BORef"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="SubControlCount" type="xs:int" default="0"/>
+		<xs:attribute name="Width" type="xs:int" default="-1"/>
+		<xs:attribute name="MinWidth" type="xs:int" default="-1"/>
+		<xs:attribute name="MaxWidth" type="xs:int" default="-1"/>
+		<xs:attribute name="Hidden" default="false">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="true"/>
+					<xs:enumeration value="false"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="CellMultiLine" default="Default">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Default"/>
+					<xs:enumeration value="True"/>
+					<xs:enumeration value="False"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="PictureLibrary" type="xs:string"/>
+		<xs:attribute name="DefaultImageKey" type="xs:string"/>
+		<xs:attribute name="ImageHAlign" default="Center">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Center"/>
+					<xs:enumeration value="Default"/>
+					<xs:enumeration value="Left"/>
+					<xs:enumeration value="Right"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="ImageVAlign" default="Middle">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Middle"/>
+					<xs:enumeration value="Default"/>
+					<xs:enumeration value="Top"/>
+					<xs:enumeration value="Bottom"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Editable" type="xs:boolean" default="false"/>
+		<xs:attribute name="MaskInput" type="xs:string"/>
+		<xs:attribute name="FormatInput" type="xs:string"/>
+		<xs:attribute name="CaptionHAlign" type="TextAlignment" default="Default"/>
+		<xs:attribute name="Behavior" type="GridColumnBehavior" default="Default"/>
+		<xs:attribute name="TextHAlign" type="TextAlignment" default="Left"/>
+		<xs:attribute name="TextVAlign" type="TextVAlignment" default="Top"/>
+		<xs:attribute name="Style" type="xs:string" default="Standard"/>
+		<xs:attribute name="MinValue" type="xs:string"/>
+		<xs:attribute name="MaxValue" type="xs:string"/>
+		<xs:attribute name="TableConfigCaption" type="xs:string"/>
+		<xs:attribute name="TableConfigMoveable" type="xs:boolean" default="true"/>
+		<xs:attribute name="TableConfigHideable" type="xs:boolean" default="true"/>
+		<xs:attribute name="TableConfigAllowed" type="xs:boolean" default="true"/>
+		<xs:attribute name="MaxVisibleDropDownItems" type="xs:int" default="-1"/>
+		<xs:attribute name="ColSpan" default="1">
+			<xs:simpleType>
+				<xs:restriction base="xs:int">
+					<xs:minInclusive value="1"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="BandInfoType">
+		<xs:attribute name="Key" type="xs:string" use="required"/>
+		<xs:attribute name="ParentBand" type="xs:string"/>
+		<xs:attribute name="ColHeadersVisible" default="true">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="true"/>
+					<xs:enumeration value="false"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="AllowUpdate" default="Default">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Default"/>
+					<xs:enumeration value="True"/>
+					<xs:enumeration value="False"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="AllowAddNew" type="AllowAddNewRow" default="Default"/>
+		<xs:attribute name="AllowDelete" default="Default">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Default"/>
+					<xs:enumeration value="True"/>
+					<xs:enumeration value="False"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="AllowColSizing" default="Default">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Default"/>
+					<xs:enumeration value="None"/>
+					<xs:enumeration value="Synchronized"/>
+					<xs:enumeration value="Free"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Behavior" type="GridColumnBehavior" default="Default"/>
+		<xs:attribute name="Inherits" type="xs:string"/>
+	</xs:complexType>
+	<xs:complexType name="ExplorerBar">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="ImageLibrary" type="xs:string"/>
+					<xs:element name="Text" type="xs:string" minOccurs="0"/>
+				</xs:sequence>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="ExplorerBar" type="ExplorerBar" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Cave">
+		<xs:complexContent>
+			<xs:extension base="Control"/>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Cave" type="Cave" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Scanner">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:attribute name="DecodedType">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="None"/>
+							<xs:enumeration value="PZN"/>
+							<xs:enumeration value="EAN13"/>
+							<xs:enumeration value="EAN8"/>
+							<xs:enumeration value="Unknown"/>
+							<xs:enumeration value="All"/>
+							<xs:enumeration value="Gesundheitskarte"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Scanner" type="Scanner" substitutionGroup="GuiElements"/>
+	<xs:complexType name="WebBrowser">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:attribute name="Text" type="xs:string"/>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="WebBrowser" type="WebBrowser" substitutionGroup="GuiElements"/>
+	<xs:complexType name="Chart">
+		<xs:complexContent>
+			<xs:extension base="Control">
+				<xs:sequence>
+					<xs:element name="ColumnInfos" minOccurs="0">
+						<xs:complexType>
+							<xs:sequence>
+								<xs:element name="ColumnInfo" type="ChartColumnType" maxOccurs="unbounded"/>
+							</xs:sequence>
+						</xs:complexType>
+					</xs:element>
+				</xs:sequence>
+				<xs:attribute name="SwapRowsAndColumns" default="false">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="true"/>
+							<xs:enumeration value="false"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="Legend" default="true">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="false"/>
+							<xs:enumeration value="true"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="Title" type="xs:string"/>
+				<xs:attribute name="LegendSpanPercentage" type="xs:int" default="-1"/>
+				<xs:attribute name="XSeriesLabelFormat" type="xs:string"/>
+				<xs:attribute name="YSeriesLabelFormat" type="xs:string"/>
+				<xs:attribute name="XItemLabelFormat" type="xs:string"/>
+				<xs:attribute name="YItemLabelFormat" type="xs:string"/>
+				<xs:attribute name="YRangeRounding" type="xs:int" default="0"/>
+				<xs:attribute name="YRangeDataMinFaktor" type="xs:int" default="0"/>
+				<xs:attribute name="YRangeDataMaxFaktor" type="xs:int" default="0"/>
+				<xs:attribute name="XItemLabelHeight" type="xs:int" default="-1"/>
+				<xs:attribute name="YItemLabelWidth" type="xs:int" default="30"/>
+				<xs:attribute name="ShowBorder" type="xs:boolean" default="true"/>
+				<xs:attribute name="LegendShowBorder" type="xs:boolean" default="true"/>
+				<xs:attribute name="Backgroundcolor" type="xs:string"/>
+				<xs:attribute name="ColumnColorPalette" type="xs:string"/>
+				<xs:attribute name="LegendLocation" default="Right">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Top"/>
+							<xs:enumeration value="Bottom"/>
+							<xs:enumeration value="Left"/>
+							<xs:enumeration value="Right"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+				<xs:attribute name="TitleStyle" default="Standard">
+					<xs:simpleType>
+						<xs:restriction base="xs:string">
+							<xs:enumeration value="Standard"/>
+							<xs:enumeration value="Standard_Fett"/>
+						</xs:restriction>
+					</xs:simpleType>
+				</xs:attribute>
+			</xs:extension>
+		</xs:complexContent>
+	</xs:complexType>
+	<xs:element name="Chart" type="Chart" substitutionGroup="GuiElements"/>
+	<xs:complexType name="ChartColumnType">
+		<xs:attribute name="Key" type="xs:string" use="required"/>
+		<xs:attribute name="Type" use="required">
+			<xs:simpleType>
+				<xs:restriction base="xs:string"/>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="Caption" type="xs:string"/>
+		<xs:attribute name="IsTooltipColumn" type="xs:boolean" default="false"/>
+		<xs:attribute name="IsIdColumn" type="xs:boolean"/>
+		<xs:attribute name="IsTaskTitleColumn" type="xs:boolean" default="false"/>
+		<xs:attribute name="Legend" default="true">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="true"/>
+					<xs:enumeration value="false"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+	</xs:complexType>
+	<xs:complexType name="ContextMenu">
+		<xs:sequence>
+			<xs:element name="ToolItems" minOccurs="0">
+				<xs:complexType>
+					<xs:sequence>
+						<xs:element name="Toolitem" type="ToolItemType" maxOccurs="unbounded"/>
+					</xs:sequence>
+				</xs:complexType>
+			</xs:element>
+		</xs:sequence>
+		<xs:attribute name="Style" type="xs:string"/>
+	</xs:complexType>
+	<xs:element name="ContextMenu" type="ContextMenu"/>
+	<xs:complexType name="ToolItemType">
+		<xs:sequence minOccurs="0">
+			<xs:element name="ToolItems" type="ToolItemType" minOccurs="0" maxOccurs="unbounded"/>
+		</xs:sequence>
+		<xs:attribute name="Caption" type="xs:string"/>
+		<xs:attribute name="Type" default="Button">
+			<xs:simpleType>
+				<xs:restriction base="xs:string">
+					<xs:enumeration value="Button"/>
+					<xs:enumeration value="Popup"/>
+				</xs:restriction>
+			</xs:simpleType>
+		</xs:attribute>
+		<xs:attribute name="ImageLibrary" type="xs:string"/>
+		<xs:attribute name="ToolClick" type="xs:string"/>
+		<xs:attribute name="Key" use="required"/>
+		<xs:attribute name="Shortcut" type="xs:string"/>
+		<xs:attribute name="ImageKey" type="xs:string"/>
+		<xs:attribute name="IsFirstInGroup" type="xs:boolean" default="false"/>
+		<xs:attribute name="Enabled" type="xs:boolean" default="true"/>
+		<xs:attribute name="Visible" type="xs:boolean" default="true"/>
+	</xs:complexType>
+</xs:schema>

@@ -8,6 +8,7 @@ using System.Linq;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Imaging.Interop;
 
+using Pharmatechnik.Language.Text;
 using Pharmatechnik.Language.Gd.Extension.ParserService;
 
 #endregion
@@ -56,16 +57,28 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
             var section      = sectionSyntax as ISectionSyntax;
             var sectionBegin = section?.SectionBegin;
+            var sectionEnd   = section?.SectionEnd;
 
-            if (sectionBegin == null) {
+            if (sectionBegin == null || sectionBegin.IsMissing ||
+                sectionEnd   == null || sectionEnd.IsMissing) {
+                return;
+            }
+
+            var displayName = GetDisplayName(sectionBegin);
+            if (displayName.IsNullOrEmpty()) {
                 return;
             }
 
             NavigationItems.Add(new NavigationBarItem(
-                                    displayName: sectionBegin.GetText(),
-                                    imageMoniker: GetImageMoniker(sectionSyntax),
-                                    extent: sectionSyntax.FullExtent,
+                                    displayName    : displayName,
+                                    imageMoniker   : GetImageMoniker(sectionSyntax),
+                                    extent         : sectionSyntax.FullExtent,
                                     navigationPoint: sectionSyntax.ExtentStart));
+        }
+
+        string GetDisplayName(SyntaxNode node) {
+            var tokens = node.DescendantTokens().Select(t => t.Text);
+            return String.Join(" ", tokens);
         }
 
         ImageMoniker GetImageMoniker(SyntaxNode guiElement) {

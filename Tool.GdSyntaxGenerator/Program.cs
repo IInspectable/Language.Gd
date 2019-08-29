@@ -1,12 +1,16 @@
 ﻿// #define Verbose
+
 #region Using Directives
 
 using System;
 using System.Diagnostics;
 using System.IO;
+using System.Linq;
 using System.Text;
 
 using Antlr4.Runtime;
+
+using Pharmatechnik.Apotheke.XTplus.Framework.Tools.Generators.GuiModelGenerator.GuiMetaModel;
 
 using Tool.GdSyntaxGenerator.Grammar;
 using Tool.GdSyntaxGenerator.Models;
@@ -14,7 +18,7 @@ using Tool.GdSyntaxGenerator.Models;
 #endregion
 
 namespace Tool.GdSyntaxGenerator {
-    
+
     class Program {
 
         public static void Main(string[] args) {
@@ -81,6 +85,8 @@ namespace Tool.GdSyntaxGenerator {
             WriteSyntaxSlotBuilder(targetDirectory, slotModels, context);
             WriteSyntaxVisitor(targetDirectory, slotModels, context);
             WriteSyntaxFactory(targetDirectory, slotModels, context);
+            WriteMetaModel(targetDirectory, slotModels, context);
+
         }
 
         static GrammarInfo ReadGrammarInfo(string grammarSpec) {
@@ -174,6 +180,18 @@ namespace Tool.GdSyntaxGenerator {
             var fullname = Path.Combine(targetDirectory, "SyntaxFactory.generated.cs");
 
             File.WriteAllText(fullname, content, Encoding.UTF8);
+        }
+
+        private static void WriteMetaModel(string targetDirectory, SlotModels slotModels, CodeGeneratorContext context) {
+            // TODO Write Control Types...
+
+            var derivedTypes = from t in typeof(Control).Assembly.GetTypes()
+                               where t.IsSubclassOf(typeof(GuiElement))
+                               select t;
+
+            foreach (var c in derivedTypes) {
+                Console.WriteLine(c.Name);
+            }
         }
 
     }
