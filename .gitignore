@@ -25,6 +25,9 @@
 /Language.Gd.Tests/bin
 /Language.Gd.Tests/obj
 
+/VisualSudio.Interop/bin
+/VisualSudio.Interop/obj
+
 /.vs
 /**/*.generated.cs
 /**/*.nuget.cache

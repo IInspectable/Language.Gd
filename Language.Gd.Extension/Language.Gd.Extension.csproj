@@ -136,6 +136,10 @@
       <Project>{c88f5da6-dc82-4a50-b89b-51d4eaf6ea99}</Project>
       <Name>Language.Gd</Name>
     </ProjectReference>
+    <ProjectReference Include="..\VisualSudio.Interop\VisualSudio.Interop.csproj">
+      <Project>{1fa03477-ac9e-4fcf-a068-a3accbc0f7eb}</Project>
+      <Name>VisualSudio.Interop</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\GuiDefinition.ico">

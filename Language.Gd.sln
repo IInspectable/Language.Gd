@@ -26,6 +26,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tool.GdSyntaxGenerator", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Language.Gd.Extension", "Language.Gd.Extension\Language.Gd.Extension.csproj", "{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisualSudio.Interop", "VisualSudio.Interop\VisualSudio.Interop.csproj", "{1FA03477-AC9E-4FCF-A068-A3ACCBC0F7EB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -60,6 +62,10 @@ Global
 		{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1FA03477-AC9E-4FCF-A068-A3ACCBC0F7EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1FA03477-AC9E-4FCF-A068-A3ACCBC0F7EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1FA03477-AC9E-4FCF-A068-A3ACCBC0F7EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1FA03477-AC9E-4FCF-A068-A3ACCBC0F7EB}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
