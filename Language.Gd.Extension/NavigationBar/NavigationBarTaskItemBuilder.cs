@@ -41,28 +41,48 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
         }
 
+        protected override void VisitContainerSyntax(ContainerSyntax container) {
+            AddSection(container);
+            DefaultVisit(container);
+        }
+
         protected override void VisitGuiElementSyntax(GuiElementSyntax guiElement) {
+            AddSection(guiElement);
+            DefaultVisit(guiElement);
+        }
 
-            var sectionSyntax = guiElement as ISectionSyntax;
+        private void AddSection(SyntaxNode sectionSyntax) {
 
-            var sectionBegin = sectionSyntax?.SectionBegin;
-            if (sectionBegin != null) {
+            var section      = sectionSyntax as ISectionSyntax;
+            var sectionBegin = section?.SectionBegin;
 
-                // TODO Eigene Icons für die Controls
-                NavigationItems.Add(new NavigationBarItem(
-                                        displayName: sectionBegin.GetText(),
-                                        imageMoniker: GetImageMoniker(guiElement),
-                                        extent: guiElement.FullExtent,
-                                        navigationPoint: guiElement.ExtentStart));
+            if (sectionBegin == null) {
+                return;
             }
 
-            DefaultVisit(guiElement);
-
+            NavigationItems.Add(new NavigationBarItem(
+                                    displayName: sectionBegin.GetText(),
+                                    imageMoniker: GetImageMoniker(sectionSyntax),
+                                    extent: sectionSyntax.FullExtent,
+                                    navigationPoint: sectionSyntax.ExtentStart));
         }
 
         ImageMoniker GetImageMoniker(SyntaxNode guiElement) {
 
             // TODO Bisweilen nur pseudo Code
+
+            if (guiElement is DialogSectionSyntax) {
+                return KnownMonikers.Dialog;
+            }
+
+            if (guiElement is FormSectionSyntax) {
+                return KnownMonikers.Dialog;
+            }
+
+            if (guiElement is UserControlSectionSyntax) {
+                return KnownMonikers.UserControl;
+            }
+
             if (guiElement is PanelSectionSyntax) {
                 return KnownMonikers.Panel;
             }
@@ -95,7 +115,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
                 return KnownMonikers.Control;
             }
 
-            return KnownMonikers.Control;
+            return KnownMonikers.None;
         }
 
         #if ShowMemberCombobox
