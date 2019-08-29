@@ -14,6 +14,11 @@
             return kind >= SyntaxKind.PlusCtrl && kind <= SyntaxKind.MinusShift;
         }
 
+        //TODO Generieren!!
+        public static string SingleLineComment => "//";
+        public static string BlockCommentStart => "/*";
+        public static string BlockCommentEnd   => "*/";
+
     }
 
 }

@@ -11,27 +11,25 @@ namespace Pharmatechnik.Language.Gd {
 
     public struct SyntaxNodeOrToken {
 
-        [CanBeNull]
-        readonly TokenSlot _tokenSlot;
+        [CanBeNull] readonly TokenSlot _tokenSlot;
 
-        [CanBeNull]
-        readonly SyntaxNode _nodeOrParent;
+        [CanBeNull] readonly SyntaxNode _nodeOrParent;
 
         private readonly int _position;
 
-        internal SyntaxNodeOrToken([NotNull] SyntaxNode syntaxNode) {
+        internal SyntaxNodeOrToken([CanBeNull] SyntaxNode syntaxNode) {
             _nodeOrParent = syntaxNode;
-            _position     = syntaxNode.Position;
+            _position     = syntaxNode?.Position ?? default;
             _tokenSlot    = null;
         }
 
-        internal SyntaxNodeOrToken([NotNull] SyntaxNode tokenParent, TokenSlot tokenSlot, int tokenPosition) {
+        internal SyntaxNodeOrToken([CanBeNull] SyntaxNode tokenParent, TokenSlot tokenSlot, int tokenPosition) {
             _nodeOrParent = tokenParent;
             _position     = tokenPosition;
             _tokenSlot    = tokenSlot;
         }
 
-        public bool IsNode    => _tokenSlot == null && _nodeOrParent!=null;
+        public bool IsNode    => _tokenSlot == null && _nodeOrParent != null;
         public bool IsToken   => _tokenSlot != null;
         public bool IsMissing => _tokenSlot?.IsMissing ?? _nodeOrParent?.IsMissing ?? false;
 

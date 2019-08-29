@@ -51,7 +51,10 @@
     <Compile Include="Classification\TriviaSpanClassificationTagger.cs" />
     <Compile Include="Classification\SyntacticClassificationTagger.cs" />
     <Compile Include="Classification\SyntacticClassificationTaggerProvider.cs" />
+    <Compile Include="Commands\CommandHandlerNames.cs" />
+    <Compile Include="Commands\CommentUncommentSelectionCommandHandler.cs" />
     <Compile Include="Common\AndSnapshot.cs" />
+    <Compile Include="Common\BufferGraphExtensions.cs" />
     <Compile Include="Common\CodeContentControlProvider.cs" />
     <Compile Include="Common\ComEventSink.cs" />
     <Compile Include="Common\ServiceProperties.cs" />
@@ -60,9 +63,13 @@
     <Compile Include="Common\TextBufferExtensions.cs" />
     <Compile Include="Common\TextBufferScopedTagger.cs" />
     <Compile Include="Common\TextBufferScopedValue.cs" />
+    <Compile Include="Common\TextSelectionExtensions.cs" />
     <Compile Include="Common\TextSnapshotExtensions.cs" />
     <Compile Include="Common\TextSnapshotLineExtensions.cs" />
+    <Compile Include="Common\TextUndoTransaction.cs" />
     <Compile Include="Common\TextViewConnectionListener.cs" />
+    <Compile Include="Common\TextViewExtensions.AutoClosingViewProperty.cs" />
+    <Compile Include="Common\TextViewExtensions.cs" />
     <Compile Include="Common\WpfTextViewExtensions.cs" />
     <Compile Include="GdLanguageContentDefinitions.cs" />
     <Compile Include="HACK_ThemeColorFixer.cs" />
@@ -85,9 +92,14 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GdLanguagePackage.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
+    <Compile Include="Utilities\IWaitContext.cs" />
+    <Compile Include="Utilities\IWaitIndicator.cs" />
     <Compile Include="Utilities\ProjectInfo.cs" />
     <Compile Include="Utilities\ProjectMapper.cs" />
     <Compile Include="Utilities\UriBuilder.cs" />
+    <Compile Include="Utilities\VisualStudioWaitContext.Callback.cs" />
+    <Compile Include="Utilities\VisualStudioWaitContext.cs" />
+    <Compile Include="Utilities\VisualStudioWaitIndicator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CustomBuild.targets" />
