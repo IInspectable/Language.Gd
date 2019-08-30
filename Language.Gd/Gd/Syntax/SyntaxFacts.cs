@@ -1,6 +1,6 @@
 ﻿namespace Pharmatechnik.Language.Gd {
 
-    public class SyntaxFacts {
+    public static partial class SyntaxFacts {
 
         public static bool IsKeyword(SyntaxKind kind) {
             return kind >= SyntaxKind.Using && kind <= SyntaxKind.ContextMenu;
@@ -14,10 +14,9 @@
             return kind >= SyntaxKind.PlusCtrl && kind <= SyntaxKind.MinusShift;
         }
 
-        //TODO Generieren!!
-        public static string SingleLineComment => "//";
-        public static string BlockCommentStart => "/*";
-        public static string BlockCommentEnd   => "*/";
+        public static readonly string SingleLineComment = "//";
+        public static readonly string BlockCommentStart = "/*";
+        public static readonly string BlockCommentEnd   = "*/";
 
     }
 

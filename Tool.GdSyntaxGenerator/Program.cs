@@ -1,4 +1,4 @@
-﻿// #define Verbose
+﻿#define Verbose
 
 #region Using Directives
 
@@ -46,7 +46,12 @@ namespace Tool.GdSyntaxGenerator {
         private static void DumpTokens(TokenInfo tokenInfo) {
 
             foreach (var token in tokenInfo.Tokens) {
-                Console.WriteLine($"{token.Index}:{token.Name}");
+                if (token.IsSimpleTerminal) {
+                    Console.WriteLine($"{token.Index}:{token.Name} = {token.TerminalText}");
+                } else {
+                    Console.WriteLine($"{token.Index}:{token.Name}");
+                }
+
             }
         }
 
@@ -59,7 +64,10 @@ namespace Tool.GdSyntaxGenerator {
             }
         }
 
-        static void WriteGeneratedFiles(string targetDirectory, string baseNamespace, TokenInfo tokenInfo, GrammarInfo grammarInfo) {
+        static void WriteGeneratedFiles(string targetDirectory,
+                                        string baseNamespace,
+                                        TokenInfo tokenInfo,
+                                        GrammarInfo grammarInfo) {
 
             var syntaxKindModel = new SyntaxKindEnumModel(
                 @namespace: baseNamespace,
@@ -70,6 +78,10 @@ namespace Tool.GdSyntaxGenerator {
                 baseNamespace: baseNamespace,
                 grammarInfo: grammarInfo
             );
+
+            var tokenModel = new TokenModel(
+                tokenInfo: tokenInfo,
+                baseNamespace: baseNamespace);
 
             Console.WriteLine(targetDirectory);
 
@@ -85,6 +97,7 @@ namespace Tool.GdSyntaxGenerator {
             WriteSyntaxSlotBuilder(targetDirectory, slotModels, context);
             WriteSyntaxVisitor(targetDirectory, slotModels, context);
             WriteSyntaxFactory(targetDirectory, slotModels, context);
+            WriteSyntaxFacts(targetDirectory, tokenModel, context);
             WriteMetaModel(targetDirectory, slotModels, context);
 
         }
@@ -178,6 +191,13 @@ namespace Tool.GdSyntaxGenerator {
 
             var content  = CodeGenerator.GenerateSyntaxFactory(model, context);
             var fullname = Path.Combine(targetDirectory, "SyntaxFactory.generated.cs");
+
+            File.WriteAllText(fullname, content, Encoding.UTF8);
+        }
+
+        private static void WriteSyntaxFacts(string targetDirectory, TokenModel model, CodeGeneratorContext context) {
+            var content  = CodeGenerator.GenerateSyntaxFacts(model, context);
+            var fullname = Path.Combine(targetDirectory, "SyntaxFacts.generated.cs");
 
             File.WriteAllText(fullname, content, Encoding.UTF8);
         }

@@ -16,6 +16,7 @@ namespace Tool.GdSyntaxGenerator.Templates {
         public static readonly string SyntaxSlotBuilderTemplate = LoadText("SyntaxSlotBuilder.stg");
         public static readonly string SyntaxVisitorTemplate     = LoadText("SyntaxVisitor.stg");
         public static readonly string SyntaxFactoryTemplate     = LoadText("SyntaxFactory.stg");
+        public static readonly string SyntaxFactsTemplate       = LoadText("SyntaxFacts.stg");
 
         // ReSharper restore InconsistentNaming
 

@@ -1,0 +1,19 @@
+﻿delimiters "<", ">"
+
+Begin(model, context) ::=<<
+<writeFileHeader(context)>
+#pragma warning disable 108,114
+
+namespace <model.Namespace> {
+
+	public static partial class SyntaxFacts {
+
+		<model.TokenInfo.Tokens:writeTokenProperty()>
+	}
+}
+>>
+
+writeTokenProperty(token)  ::=<<
+<if(token.IsSimpleTerminal)>public static readonly string <token.Name> = "<token.TerminalText>";
+<endif>
+>>
