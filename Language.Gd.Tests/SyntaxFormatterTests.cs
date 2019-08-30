@@ -1,4 +1,6 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 
 using NUnit.Framework;
@@ -12,15 +14,18 @@ namespace Pharmatechnik.Language.Gd.Tests {
         public void Bla() {
 
             string inputSyntax =
-                @"
-        PROPERTIES
-a=b
-
-        c=d
+@"    // Comment 1
+  // Comment 2
+PROPERTIES
+a=b 
+   
+        c=d   
     END PROPERTIES
 ";
             string expectedSyntax =
-                @"PROPERTIES
+@"// Comment 1
+// Comment 2
+PROPERTIES
     a = b
     c = d
 END PROPERTIES
@@ -83,36 +88,51 @@ END PROPERTIES
 
             void WriteOnSingleLine(SyntaxNode node) {
 
-                //var lines = new List<string>();
+                var builder = new LinesBuilder();
 
-                //using (var enumerator = node.DescendantTokens().GetEnumerator()) {
+                using (var enumerator = node.DescendantTokens().GetEnumerator()) {
 
-                //    if (enumerator.MoveNext()) {
-                //        var token = enumerator.Current;
-                       
-                //        // Trivia erstes Token
-                //        foreach (var trivia in token.LeadingTrivia) {
-                //            if (trivia.Kind == SyntaxKind.SingleLineCommentTrivia) {
-                //                lines.Add(trivia.Text);
-                //            }
-                //        }
+                    if (enumerator.MoveNext()) {
 
+                        var token = enumerator.Current;
 
-                //    }
+                        // Trivia vom ersten Token
+                        foreach (var trivia in token.LeadingTrivia) {
 
-                //}
+                            if (trivia.Kind == SyntaxKind.SingleLineCommentTrivia) {
+                                builder.WriteOnNewLine(trivia.Text);
+                                builder.NewLine();
+                            }
 
-                var line = new StringBuilder();
+                            if (trivia.Kind == SyntaxKind.MultiLineCommentTrivia) {
+                                builder.WriteOnNewLine(trivia.Text);
+                                builder.NewLine();
+                            }
 
-                var separator = "";
-                foreach (var token in node.DescendantTokens()) {
-                    line.Append(separator + token.Text);
-                    separator = " ";
+                            if (trivia.IsSkipedTokenTrivia) {
+                                builder.WritePart(token.Text);
+                            }
+
+                            // Whitespaces sind uninteressant
+                        }
+
+                        builder.WriteOnNewLine(token.Text);
+
+                    }
+
+                    while (enumerator.MoveNext()) {
+                        var token = enumerator.Current;
+                        builder.WritePart(token.Text);
+                    }
+
                 }
 
-                var lineText = line.ToString();
-                if (!string.IsNullOrWhiteSpace(lineText)) {
-                    _sb.AppendLine(GetIndentString() + lineText);
+                //foreach (var token in node.DescendantTokens()) {
+                //    builder.WritePart(token.Text);
+                //}
+
+                foreach (var line in builder.GetLines()) {
+                    _sb.AppendLine(GetIndentString() + line);
                 }
 
             }
@@ -133,6 +153,71 @@ END PROPERTIES
 
             private int _indent;
 
+        }
+
+    }
+
+    class LinesBuilder {
+
+        readonly LineBuilder _lineBuilder;
+
+        readonly List<string> _lines;
+
+        public LinesBuilder() {
+            _lineBuilder = new LineBuilder();
+            _lines       = new List<string>();
+        }
+
+        public List<string> GetLines() {
+            NewLine();
+            return _lines;
+        }
+
+        public void WritePart(string text) {
+            _lineBuilder.WritePart(text);
+        }
+
+        public void NewLine() {
+            if (_lineBuilder.TryCompleteLine(out var completedLine)) {
+                _lines.Add(completedLine);
+            }
+        }
+
+        public void WriteOnNewLine(string text) {
+            NewLine();
+
+            _lineBuilder.WritePart(text);
+
+        }
+
+    }
+
+    class LineBuilder {
+
+        private readonly List<string> _parts;
+
+        public LineBuilder() {
+            _parts = new List<string>();
+        }
+
+        public void WritePart(string text) {
+            _parts.Add(text.Replace("\r\n",""));
+        }
+
+        public bool TryCompleteLine(out string completedLine) {
+
+            completedLine = null;
+
+            if (_parts.Any()) {
+
+                completedLine = String.Join(" ", _parts);
+                _parts.Clear();
+
+                return true;
+
+            }
+
+            return false;
         }
 
     }
