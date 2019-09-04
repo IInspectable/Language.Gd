@@ -49,6 +49,7 @@
 
                 }
 
+                // Dialog Section
                 if (token.Parent is DialogSectionBeginSyntax dialogSectionBegin) {
 
                     if (dialogSectionBegin.DialogIdentifierToken == token) {
@@ -57,6 +58,15 @@
 
                 }
 
+                if (token.Parent is DialogSectionEndSyntax dialogSectionEnd) {
+
+                    if (dialogSectionEnd.DialogIdentifierToken == token) {
+                        return GdClassification.ClassName;
+                    }
+
+                }
+
+                // Form Section
                 if (token.Parent is FormSectionBeginSyntax formSectionBegin) {
 
                     if (formSectionBegin.FormIdentifierToken == token) {
@@ -65,6 +75,15 @@
 
                 }
 
+                if (token.Parent is FormSectionEndSyntax formSectionEnd) {
+
+                    if (formSectionEnd.FormIdentifierToken == token) {
+                        return GdClassification.ClassName;
+                    }
+
+                }
+
+                // User Control
                 if (token.Parent is UserControlSectionBeginSyntax userControlSectionBegin) {
 
                     if (userControlSectionBegin.UserControlIdentifierToken == token) {
@@ -73,6 +92,15 @@
 
                 }
 
+                if (token.Parent is UserControlSectionEndSyntax userControlSectionEnd) {
+
+                    if (userControlSectionEnd.UserControlIdentifierToken == token) {
+                        return GdClassification.ClassName;
+                    }
+
+                }
+
+                // Control Section
                 if (token.Parent is ControlSectionBeginSyntax controlSectionBegin) {
                     if (controlSectionBegin.ControlTypeToken == token) {
                         return GdClassification.ClassName;

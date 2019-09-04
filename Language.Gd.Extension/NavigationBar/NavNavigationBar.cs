@@ -9,6 +9,7 @@ using JetBrains.Annotations;
 
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Text;
+using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Editor;
@@ -231,17 +232,20 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
             DROPDOWNFONTATTR attributes = DROPDOWNFONTATTR.FONTATTR_PLAIN;
 
-            var entries       = GetItems(iCombo);
-            var selectedIndex = GetActiveSelection(iCombo);
-            var caretPosition = GetCurrentView().Caret.Position.BufferPosition.Position;
+            if (iCombo != ProjectComboIndex) {
 
-            if (_focusedCombo != iCombo &&
-                entries.Any()           && iIndex < entries.Count  &&
-                iIndex                            == selectedIndex &&
-                (caretPosition < entries[selectedIndex].Start ||
-                 caretPosition > entries[selectedIndex].End)) {
+                var entries       = GetItems(iCombo);
+                var selectedIndex = GetActiveSelection(iCombo);
+                var caretPosition = GetCurrentView().Caret.Position.BufferPosition.Position;
 
-                attributes = DROPDOWNFONTATTR.FONTATTR_GRAY;
+                if (_focusedCombo != iCombo &&
+                    entries.Any()           && iIndex < entries.Count  &&
+                    iIndex                            == selectedIndex &&
+                    (caretPosition < entries[selectedIndex].Start ||
+                     caretPosition > entries[selectedIndex].End)) {
+
+                    attributes = DROPDOWNFONTATTR.FONTATTR_GRAY;
+                }
             }
 
             pAttr = (uint) attributes;
@@ -298,11 +302,26 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
         int IVsDropdownBarClient.GetComboTipText(int iCombo, out string pbstrText) {
 
-            pbstrText = GetActiveSelectionItem(iCombo)?.DisplayName ?? "";
-            if (pbstrText != "") {
+            var itemText = GetActiveSelectionItem(iCombo)?.DisplayName ?? "";
+
+            pbstrText = itemText;
+
+            if (iCombo == ProjectComboIndex) {
+
+                var keybindingString = KeyBindingHelper.GetGlobalKeyBinding(VSConstants.GUID_VSStandardCommandSet97, (int) VSConstants.VSStd97CmdID.MoveToDropdownBar);
+
+                if (!String.IsNullOrEmpty(keybindingString)) {
+                    pbstrText += $" ({keybindingString})";
+                }
+
                 pbstrText += Environment.NewLine + Environment.NewLine;
+
+                pbstrText += "Use the dropdown to view and switch to other projects this file may belong to..";
+
+                return VSConstants.S_OK;
             }
 
+            pbstrText += Environment.NewLine + Environment.NewLine;
             pbstrText += "Use the dropdown to view and navigate to other items in the file.";
 
             return VSConstants.S_OK;
@@ -419,6 +438,10 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
         int GetActiveSelection(int comboBoxId) {
             if (_activeSelections.TryGetValue(comboBoxId, out var selection)) {
                 return selection;
+            }
+
+            if (_dropdownBar.GetCurrentSelection(comboBoxId, out var sel) == 0) {
+                return sel;
             }
 
             return -1;

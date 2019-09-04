@@ -4,6 +4,8 @@ using System;
 
 using Microsoft.VisualStudio.Text;
 
+using Pharmatechnik.Language.CodeAnalysis;
+
 #endregion
 
 namespace Pharmatechnik.Language.Gd.Extension.Common {
@@ -57,7 +59,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Common {
         /// </example>
         public static int GetColumnForOffset(this ITextSnapshotLine line, int tabSize, int offset) {
             var text = line.GetText();
-            return text.GetColumnForOffset(tabSize, offset);
+            return text.GetColumnFromPosition(tabSize, offset);
         }
 
         /// <summary>
@@ -73,7 +75,8 @@ namespace Pharmatechnik.Language.Gd.Extension.Common {
         /// </example>
         public static int GetSignificantColumn(this ITextSnapshotLine line, int tabSize) {
             var text = line.GetText();
-            return text.GetSignificantColumn(tabSize);
+            var col = text.GetFirstNonWhitespaceColumn(tabSize);
+            return col ?? Int32.MaxValue;
         }
 
         /// <summary>

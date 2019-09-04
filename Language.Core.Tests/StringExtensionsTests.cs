@@ -189,6 +189,7 @@ namespace Pharmatechnik.Language.Core.Tests {
             Assert.That("Foo\r\nNeue".GetNewLineCharCount(), Is.EqualTo(0));
         }
 
+
     }
 
 }
