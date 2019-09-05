@@ -19,6 +19,9 @@
 /Language.Gd.Extension/bin
 /Language.Gd.Extension/obj
 
+/Language.Gd.Extension.Tests/bin
+/Language.Gd.Extension.Tests/obj
+
 /Tool.GdSyntaxGenerator/bin
 /Tool.GdSyntaxGenerator/obj
 

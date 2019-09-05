@@ -389,7 +389,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
             using (Logger.LogBlock(nameof(UpdateNavigationItems))) {
 
                 UpdateProjectItems();
-                UpdateTaskItems();
+                UpdateSectionItems();
                 #if ShowMemberCombobox
                 UpdateMemberItems();
                 #endif
@@ -407,9 +407,9 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
             _dropdownBar?.RefreshCombo(ProjectComboIndex, 0);
         }
 
-        void UpdateTaskItems() {
+        void UpdateSectionItems() {
 
-            _taskItems = NavigationBarTaskItemBuilder.Build(ParserService.SyntaxTreeAndSnapshot);
+            _taskItems = NavigationBarSectionItemBuilder.Build(ParserService.SyntaxTreeAndSnapshot);
 
             SetActiveSelection(TaskComboIndex);
         }

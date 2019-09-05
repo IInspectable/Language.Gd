@@ -12,7 +12,7 @@ using Pharmatechnik.Language.Gd.Extension.Utilities;
 
 namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
-    class NavigationBarProjectItemBuilder {
+    static class NavigationBarProjectItemBuilder {
 
         public static ImmutableList<NavigationBarItem> Build(SyntaxTreeAndSnapshot codeGenerationUnitAndSnapshot) {
 

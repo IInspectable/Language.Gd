@@ -37,6 +37,7 @@
 
   <ItemGroup>
     <Folder Include="Gd\Grammar\" />
+    <Folder Include="Gd\Model\" />
     <Folder Include="Gd\Syntax\generated\" />
   </ItemGroup>
 
