@@ -68,7 +68,7 @@ namespace Pharmatechnik.Language.Gd {
             var lexerErrorListener = new GdLexerErrorListener(sourceText, diagnostics);
             lexer.RemoveErrorListeners();
             lexer.AddErrorListener(lexerErrorListener);
-
+         
             // Setup Parser
             var cts                 = new GdCommonTokenStream(lexer);
             var parser              = new GdGrammar(cts);

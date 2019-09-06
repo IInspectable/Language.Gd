@@ -71,9 +71,25 @@
     <Compile Include="Common\TextViewExtensions.AutoClosingViewProperty.cs" />
     <Compile Include="Common\TextViewExtensions.cs" />
     <Compile Include="Common\WpfTextViewExtensions.cs" />
+    <Compile Include="Diagnostics\DiagnosticErrorTag.cs" />
+    <Compile Include="Diagnostics\DiagnosticErrorTagger.cs" />
+    <Compile Include="Diagnostics\DiagnosticErrorTaggerProvider.cs" />
+    <Compile Include="Diagnostics\DiagnosticErrorTypeNames.cs" />
+    <Compile Include="Diagnostics\DiagnosticService.cs" />
+    <Compile Include="Diagnostics\DiagnosticStripeControl.xaml.cs">
+      <DependentUpon>DiagnosticStripeControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Diagnostics\DiagnosticStripeMargin.cs" />
+    <Compile Include="Diagnostics\DiagnosticStripeMarginProvider.cs" />
+    <Compile Include="Diagnostics\DiagnosticSummaryControl.xaml.cs">
+      <DependentUpon>DiagnosticSummaryControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Diagnostics\DiagnosticSummaryMargin.cs" />
+    <Compile Include="Diagnostics\DiagnosticSummaryMarginProvider.cs" />
     <Compile Include="GdLanguageContentDefinitions.cs" />
     <Compile Include="HACK_ThemeColorFixer.cs" />
     <Compile Include="Imaging\GdImageMonikers.cs" />
+    <Compile Include="Imaging\ImageMonikers.cs" />
     <Compile Include="LanguageService\LanguageServiceOptionRegistrationAttribute.cs" />
     <Compile Include="LanguageService\GdCodeWindowManager.cs" />
     <Compile Include="LanguageService\GdLanguagePreferences.cs" />
@@ -84,7 +100,7 @@
     <Compile Include="NavigationBar\NavigationBarItem.cs" />
     <Compile Include="NavigationBar\NavigationBarProjectItemBuilder.cs" />
     <Compile Include="NavigationBar\NavigationBarSectionItemBuilder.cs" />
-    <Compile Include="NavigationBar\NavNavigationBar.cs" />
+    <Compile Include="NavigationBar\NavigationBar.cs" />
     <Compile Include="Outlining\OutliningTagger.cs" />
     <Compile Include="Outlining\OutliningTaggerProvider.cs" />
     <Compile Include="ParserService\ParserService.cs" />
@@ -159,7 +175,16 @@
       <IncludeInVSIX>true</IncludeInVSIX>
     </Content>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="Diagnostics\DiagnosticStripeControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Diagnostics\DiagnosticSummaryControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(VSToolsPath)\VSSDK\Microsoft.VsSDK.targets" Condition="'$(VSToolsPath)' != ''" />
   <Import Project="CustomBuild.targets" />

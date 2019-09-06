@@ -20,8 +20,12 @@ namespace Pharmatechnik.Language.Gd.Antlr {
         public ImmutableArray<Diagnostic>.Builder Diagnostics { get; }
 
         public override void SyntaxError([NotNull] IRecognizer recognizer, [Nullable] IToken offendingSymbol, int line, int charPositionInLine, [NotNull] string msg, [Nullable] RecognitionException e) {
-       
-            var diagnostic = SyntaxErrorFactory.CreateDiagnostic(SourceText, line, charPositionInLine, msg);
+
+            var diagnostic = SyntaxErrorFactory.CreateDiagnostic(
+                SourceText, 
+                offendingSymbol, 
+                line, 
+                charPositionInLine, msg);
 
             Diagnostics.Add(diagnostic);
         }

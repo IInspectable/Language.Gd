@@ -1,12 +1,14 @@
 ﻿using Antlr4.Runtime;
 
+using JetBrains.Annotations;
+
 using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd.Internal {
 
     static class SyntaxErrorFactory {
 
-        public static Diagnostic CreateDiagnostic(SourceText sourceText, IToken offendingSymbol, int line, int charPositionInLine, string msg) {
+        public static Diagnostic CreateDiagnostic(SourceText sourceText, [CanBeNull] IToken offendingSymbol, int line, int charPositionInLine, string msg) {
 
             if (offendingSymbol != null) {
                 var textExtent = TextExtent.FromBounds(start: offendingSymbol.StartIndex, end: offendingSymbol.StopIndex + 1);
