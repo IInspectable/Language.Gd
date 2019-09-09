@@ -108,6 +108,12 @@
     <Compile Include="ParserService\SyntaxTreeAndSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GdLanguagePackage.cs" />
+    <Compile Include="QuickInfo\DebugQuickInfoSource.cs" />
+    <Compile Include="QuickInfo\DebugQuickInfoSourceProvider.cs" />
+    <Compile Include="QuickInfo\QuickInfoSourceProviderNames.cs" />
+    <Compile Include="QuickInfo\SymbolQuickInfoControl.xaml.cs">
+      <DependentUpon>SymbolQuickInfoControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="ThisAssembly.generated.cs" />
     <Compile Include="Utilities\IWaitContext.cs" />
     <Compile Include="Utilities\IWaitIndicator.cs" />
@@ -181,6 +187,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Diagnostics\DiagnosticSummaryControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="QuickInfo\SymbolQuickInfoControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>

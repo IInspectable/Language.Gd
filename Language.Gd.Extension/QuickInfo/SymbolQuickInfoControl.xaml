@@ -1,0 +1,25 @@
+﻿<StackPanel x:Class="Pharmatechnik.Language.Gd.Extension.QuickInfo.SymbolQuickInfoControl"
+             xmlns            = "http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x          = "http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc         = "http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d          = "http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:imaging    = "clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
+             xmlns:theming    = "clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Imaging"
+             xmlns:platformUi = "clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+             Orientation="Horizontal"
+  
+            theming:ImageThemingUtilities.ImageBackgroundColor="{DynamicResource {x:Static platformUi:EnvironmentColors.ToolTipColorKey}}"
+             mc:Ignorable   = "d"        
+            
+             d:DesignHeight = "20" 
+             d:DesignWidth  = "250">
+
+    <imaging:CrispImage x:Name              = "CrispImage"
+                        Margin              = "0, 0, 4, 0"
+                        VerticalAlignment   = "Center"
+                        HorizontalAlignment = "Left"/>
+    
+    <ContentControl x:Name="TextContent">Text</ContentControl>
+
+    <!---->   
+</StackPanel>
