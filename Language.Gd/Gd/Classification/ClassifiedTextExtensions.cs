@@ -6,7 +6,7 @@ using System.Text;
 
 #endregion
 
-namespace Pharmatechnik.Language.Text {
+namespace Pharmatechnik.Language.Gd {
 
     public static class ClassifiedTextExtensions {
 

@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.Immutable;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
@@ -353,6 +354,14 @@ namespace Pharmatechnik.Language.Gd {
 
         public abstract void Accept(SyntaxVisitor visitor);
         public abstract TResult Accept<TResult>(SyntaxVisitor<TResult> visitor);
+
+        public ImmutableArray<ClassifiedText> ToSimplifiedText() {
+            return ToSimplifiedText(null);
+        }
+
+        public ImmutableArray<ClassifiedText> ToSimplifiedText(TextEditorSettings editorSettings) {
+            return SimplifiedClassificationBuilder.Classify(this, editorSettings);
+        }
 
     }
 
