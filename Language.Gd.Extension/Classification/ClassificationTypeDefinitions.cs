@@ -177,7 +177,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
 
         #endregion
 
-        public static ImmutableDictionary<GdClassification, IClassificationType> GetSyntaxTokenClassificationMap(IClassificationTypeRegistryService registry) {
+        public static ImmutableDictionary<GdClassification, IClassificationType> GetClassificationMap(IClassificationTypeRegistryService registry) {
 
             // TODO Mapping...
             var classificationMap = new Dictionary<GdClassification, IClassificationType> {

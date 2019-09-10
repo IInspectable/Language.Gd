@@ -22,7 +22,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
 
         internal SyntacticClassificationTagger(IClassificationTypeRegistryService registry, ITextBuffer textBuffer): base(textBuffer) {
 
-            _classificationMap = ClassificationTypeDefinitions.GetSyntaxTokenClassificationMap(registry);
+            _classificationMap = ClassificationTypeDefinitions.GetClassificationMap(registry);
         }
 
         public static SyntacticClassificationTagger GetOrCreateSingelton(IClassificationTypeRegistryService registry, ITextBuffer textBuffer) {

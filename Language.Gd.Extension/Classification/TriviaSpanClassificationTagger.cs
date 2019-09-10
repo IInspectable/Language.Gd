@@ -22,7 +22,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
 
         internal TriviaSpanClassificationTagger(IClassificationTypeRegistryService registry, ITextBuffer textBuffer): base(textBuffer) {
 
-            _classificationMap = ClassificationTypeDefinitions.GetSyntaxTokenClassificationMap(registry);
+            _classificationMap = ClassificationTypeDefinitions.GetClassificationMap(registry);
         }
 
         public static TriviaSpanClassificationTagger GetOrCreateSingelton(IClassificationTypeRegistryService registry, ITextBuffer textBuffer) {
