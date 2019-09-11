@@ -3,7 +3,8 @@
     public enum Glyph {
 
         None,
-
+        //
+        Namespace,
         // Container
         Dialog,
         Form,
@@ -52,7 +53,10 @@
         Tree,
         UserControlReference,
         WebBrowser,
-        SelectionList
+        SelectionList,
+        // 
+        Property,
+        Event
 
     }
 

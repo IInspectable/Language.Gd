@@ -10,6 +10,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Imaging {
 
         static readonly ImmutableDictionary<Glyph, ImageMoniker> Mapping = new Dictionary<Glyph, ImageMoniker> {
             {Glyph.None, default},
+
+            {Glyph.Namespace, KnownMonikers.Namespace},
+
             {Glyph.Dialog, KnownMonikers.Dialog},
             {Glyph.Form, KnownMonikers.Dialog},
             {Glyph.UserControl, KnownMonikers.UserControl},
@@ -53,6 +56,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Imaging {
             {Glyph.UserControlReference, KnownMonikers.InheritedUserControl},
             {Glyph.WebBrowser, KnownMonikers.WebBrowserItem},
             {Glyph.SelectionList, KnownMonikers.ListView},
+            {Glyph.Property, KnownMonikers.Property},
+            {Glyph.Event, KnownMonikers.EventPublic},
+            
 
         }.ToImmutableDictionary();
 

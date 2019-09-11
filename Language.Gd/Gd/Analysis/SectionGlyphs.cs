@@ -6,50 +6,53 @@ namespace Pharmatechnik.Language.Gd {
 
     public static class SectionGlyphs {
 
-        public static Glyph GetGlyph([CanBeNull] ISectionSyntax guiElement) {
+        public static Glyph GetGlyph([CanBeNull] ISectionSyntax section) {
 
+            if (section is NamespaceDeclarationSectionSyntax) {
+                return Glyph.Namespace;
+            }
             // Container
 
-            if (guiElement is DialogSectionSyntax) {
+            if (section is DialogSectionSyntax) {
                 return Glyph.Dialog;
             }
 
-            if (guiElement is FormSectionSyntax) {
+            if (section is FormSectionSyntax) {
                 return Glyph.Form;
             }
 
-            if (guiElement is UserControlSectionSyntax) {
+            if (section is UserControlSectionSyntax) {
                 return Glyph.UserControl;
             }
 
             // GuiControls
 
-            if (guiElement is BarManagerSectionSyntax) {
+            if (section is BarManagerSectionSyntax) {
                 return Glyph.BarManager;
             }
 
-            if (guiElement is DetailsPanelSectionSyntax) {
+            if (section is DetailsPanelSectionSyntax) {
                 return Glyph.DetailsPanel;
             }
 
-            if (guiElement is MultiViewSectionSyntax) {
+            if (section is MultiViewSectionSyntax) {
                 return Glyph.MultiView;
             }
 
-            if (guiElement is PanelSectionSyntax) {
+            if (section is PanelSectionSyntax) {
                 return Glyph.Panel;
             }
 
-            if (guiElement is TabNavigationSectionSyntax) {
+            if (section is TabNavigationSectionSyntax) {
                 return Glyph.TabNavigation;
             }
 
             // Sonderlocke TabPage
-            if (guiElement is TabPageSectionSyntax) {
+            if (section is TabPageSectionSyntax) {
                 return Glyph.TabPage;
             }
 
-            if (guiElement is ControlSectionSyntax control) {
+            if (section is ControlSectionSyntax control) {
 
                 var controlTypeText = control.ControlSectionBegin?.ControlTypeToken.Text;
                 var controlType     = GetControlType(controlTypeText);

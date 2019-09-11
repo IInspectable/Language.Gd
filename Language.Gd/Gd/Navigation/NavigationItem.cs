@@ -35,7 +35,7 @@ namespace Pharmatechnik.Language.Gd.Navigation {
         public Glyph Glyph { get; }
 
         /// <summary>
-        /// Gibt den gesamte Bereich des Items an, oder null, falls es keinen definierten Bereich gibt (z.B. Projekt Items)
+        /// Gibt den gesamten Bereich des Items an, oder null, falls es keinen definierten Bereich gibt (z.B. Projekt Items)
         /// </summary>
         [CanBeNull]
         public TextExtent? Extent { get; }

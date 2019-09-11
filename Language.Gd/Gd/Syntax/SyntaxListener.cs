@@ -8,6 +8,18 @@
 
         protected SyntaxListenerDepth Depth { get; }
 
+        public void Visit(SyntaxToken token) {
+            if (Depth >= SyntaxListenerDepth.Token) {
+                VisitTokenImpl(token);
+            }
+        }
+
+        public void Visit(SyntaxTrivia trivia) {
+            if (Depth >= SyntaxListenerDepth.Trivia) {
+                VisitTrivia(trivia);
+            }
+        }
+
         protected override void DefaultVisit(SyntaxNode node) {
 
             if (node == null) {

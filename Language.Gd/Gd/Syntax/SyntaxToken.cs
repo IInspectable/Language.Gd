@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.Collections.Immutable;
 
 using JetBrains.Annotations;
 
@@ -91,6 +92,14 @@ namespace Pharmatechnik.Language.Gd {
 
         public static bool operator !=(SyntaxToken left, SyntaxToken right) {
             return !left.Equals(right);
+        }
+
+        public ImmutableArray<ClassifiedText> ToSimplifiedText() {
+            return ToSimplifiedText(null);
+        }
+
+        public ImmutableArray<ClassifiedText> ToSimplifiedText(TextEditorSettings editorSettings) {
+            return SimplifiedClassificationBuilder.Classify(this, editorSettings);
         }
 
     }

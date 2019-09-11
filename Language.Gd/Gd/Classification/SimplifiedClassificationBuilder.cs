@@ -28,10 +28,19 @@ namespace Pharmatechnik.Language.Gd {
             Tab        = new ClassifiedText(new String(' ', editorSettings.TabSize), GdClassification.WhiteSpace);
         }
 
-        // TODO aus EditorSettings
         ClassifiedText WhiteSpace { get; }
         ClassifiedText Tab        { get; }
         ClassifiedText NewLine    { get; }
+
+        public static ImmutableArray<ClassifiedText> Classify(SyntaxToken token, TextEditorSettings editorSettings) {
+
+            var builder = new SimplifiedClassificationBuilder(editorSettings);
+
+            builder.Visit(token);
+            builder.TrimEnd();
+
+            return builder._parts.ToImmutableArray();
+        }
 
         public static ImmutableArray<ClassifiedText> Classify(SyntaxNode node, TextEditorSettings editorSettings) {
 

@@ -109,6 +109,8 @@
     <Compile Include="ParserService\SyntaxTreeAndSnapshot.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="GdLanguagePackage.cs" />
+    <Compile Include="QuickInfo\QuickInfoSourceProvider.cs" />
+    <Compile Include="QuickInfo\QuickInfoSource.cs" />
     <Compile Include="QuickInfo\DebugQuickInfoSource.cs" />
     <Compile Include="QuickInfo\DebugQuickInfoSourceProvider.cs" />
     <Compile Include="Classification\TextBlockBuilderService.cs" />
