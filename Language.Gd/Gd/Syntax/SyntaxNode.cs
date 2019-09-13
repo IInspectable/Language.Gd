@@ -115,6 +115,17 @@ namespace Pharmatechnik.Language.Gd {
             return default;
         }
 
+        public SyntaxToken FindToken(int position, bool excludeTrivia) {
+            
+            var token = FindToken(position);
+            
+            if (excludeTrivia && !token.Extent.IntersectsWith(position)) {
+                return default;
+            }
+
+            return token;
+        }
+
         public SyntaxToken FindToken(int position) {
 
             if (TryGetEofAt(out var eof)) {

@@ -59,6 +59,10 @@ namespace Pharmatechnik.Language.Text {
             return position >= Start && position < End;
         }
 
+        public bool IntersectsWith(int position) {
+            return position >= Start && position <= End;
+        }
+
         /// <summary>
         /// Determines whether <paramref name="extent"/> intersects this extent. Two extents are considered to 
         /// intersect if they have positions in common or the end of one extent 

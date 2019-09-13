@@ -69,7 +69,7 @@ namespace Pharmatechnik.Language.Gd.Navigation {
                     return;
                 }
 
-                var glyph = SectionGlyphs.GetGlyph(section);
+                var glyph = SectionGlyphs.GetGlyph(sectionSyntax);
 
                 NavigationItems.Add(new NavigationItem(
                                         displayName    : displayName,

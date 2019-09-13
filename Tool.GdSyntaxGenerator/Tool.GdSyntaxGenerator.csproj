@@ -32,6 +32,11 @@
     <None Remove="Templates\SyntaxVisitor.stg" />
   </ItemGroup>
 
+
+  <ItemGroup>
+    <Compile Include="..\_build\Resharper.cs" Link="Resharper.cs" />
+  </ItemGroup>
+
   <ItemGroup>
     <EmbeddedResource Include="..\Language.Gd\Gd\Grammar\GdGrammar.g4" Link="Grammar\GdGrammar.g4" />
     <EmbeddedResource Include="..\Language.Gd\Gd\Grammar\GdTokens.g4" Link="Grammar\GdTokens.g4" />

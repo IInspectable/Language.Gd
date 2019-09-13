@@ -1,4 +1,4 @@
-﻿#define Verbose
+﻿//#define Verbose
 
 #region Using Directives
 
@@ -9,6 +9,8 @@ using System.Linq;
 using System.Text;
 
 using Antlr4.Runtime;
+
+using JetBrains.Annotations;
 
 using Pharmatechnik.Apotheke.XTplus.Framework.Tools.Generators.GuiModelGenerator.GuiMetaModel;
 
@@ -202,7 +204,8 @@ namespace Tool.GdSyntaxGenerator {
             File.WriteAllText(fullname, content, Encoding.UTF8);
         }
 
-        private static void WriteMetaModel(string targetDirectory, SlotModels slotModels, CodeGeneratorContext context) {
+        [UsedImplicitly]
+        private static void WriteMetaModel( string targetDirectory, SlotModels slotModels, CodeGeneratorContext context) {
             // TODO Write Control Types...
 
             var derivedTypes = from t in typeof(Control).Assembly.GetTypes()

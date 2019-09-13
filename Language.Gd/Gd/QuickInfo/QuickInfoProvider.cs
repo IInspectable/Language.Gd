@@ -8,7 +8,7 @@ namespace Pharmatechnik.Language.Gd.QuickInfo {
         [CanBeNull]
         public static QuickInfoDefinition GetQuickInfoDefinition(SyntaxTree syntaxTree, int triggerPoint) {
 
-            var triggerToken = syntaxTree.Root.FindToken(triggerPoint);
+            var triggerToken = syntaxTree.Root.FindToken(triggerPoint, excludeTrivia: true);
 
             if (triggerToken.IsMissing || triggerToken.Parent == null) {
                 return null;
@@ -20,7 +20,7 @@ namespace Pharmatechnik.Language.Gd.QuickInfo {
                 (namedSection.NameBegin  == triggerToken ||
                  namedSection.SectionEnd == triggerToken.Parent)) {
 
-                var glyph   = SectionGlyphs.GetGlyph(namedSection);
+                var glyph   = SectionGlyphs.GetGlyph(namedSection as SyntaxNode);
                 var content = namedSection.SectionBegin.ToSimplifiedText();
 
                 return new QuickInfoDefinition(triggerToken.Extent, glyph, content);
@@ -62,10 +62,9 @@ namespace Pharmatechnik.Language.Gd.QuickInfo {
                 // NAMESPACE Foo.Bar.Baz
                 //           ^----------^- Nur dieser Bereich triggert den Tooltip
                 if (triggerToken.Parent.HasAncestorOfType<NamespaceDeclarationSectionBeginSyntax>(out var namespaceSectionBegin) &&
-                    triggerToken.Parent.HasAncestorOfType<QualifiedNameSyntax>()                                                 &&
-                    namespaceSectionBegin.Parent is NamespaceDeclarationSectionSyntax namespaceDeclaration) {
+                    triggerToken.Parent.HasAncestorOfType<QualifiedNameSyntax>()) {
 
-                    var glyph   = SectionGlyphs.GetGlyph(namespaceDeclaration);
+                    var glyph   = SectionGlyphs.GetGlyph(namespaceSectionBegin);
                     var content = namespaceSectionBegin.ToSimplifiedText();
 
                     return new QuickInfoDefinition(triggerToken.Extent, glyph, content);
