@@ -162,7 +162,7 @@ namespace Pharmatechnik.Language.CodeAnalysis {
             var sb    = new StringBuilder();
             var lines = comment.Split('\n');
 
-            var separator = "";
+            //var separator = "";
             for (int i = 0; i < lines.Length; ++i) {
 
                 var line = lines[i].Trim(trimChars);

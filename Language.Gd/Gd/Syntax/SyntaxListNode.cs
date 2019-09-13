@@ -17,7 +17,7 @@ namespace Pharmatechnik.Language.Gd {
             _children = new SyntaxNode[slotList.SlotCount];
         }
 
-        internal override SyntaxNode GetCachedSyntaxNode(int index) {
+        private protected override SyntaxNode GetCachedSyntaxNode(int index) {
             return _children[index];
         }
 
