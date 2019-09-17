@@ -11,7 +11,7 @@
              Name="MyToolWindow">
     <Grid>
         <StackPanel Orientation="Vertical" VerticalAlignment="Center">
-            <TextBlock Margin="10" HorizontalAlignment="Center">Nix hier</TextBlock>
+            <TextBlock x:Name="TxtTest" Margin="10" HorizontalAlignment="Center">Nix hier</TextBlock>
         </StackPanel>
     </Grid>
 </UserControl>

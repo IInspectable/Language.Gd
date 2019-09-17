@@ -52,7 +52,7 @@
         <Icon guid="ImageCatalogGuid" id="DocumentOutline" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>
-          <ButtonText>GD Outline</ButtonText>
+          <ButtonText>Gui Outline</ButtonText>
         </Strings>
       </Button>
     </Buttons>
