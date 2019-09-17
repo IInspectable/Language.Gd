@@ -234,8 +234,9 @@ namespace Pharmatechnik.Language.Text {
         }
 
         /// <summary>
-        /// Liefert den Spaltenindex (beginnend bei 0) für das erste Signifikante Zeichen in der angegebenen Zeile.
+        /// Liefert den Spaltenindex (beginnend bei 0) für das erste signifikante Zeichen in der angegebenen Zeile.
         /// Als nicht signifikant gelten alle Arten von Leerzeichen. Dabei werden Tabulatoren entsprechend umgerechnet.
+        /// Null, wenn es kein signifikantes Zeichen in der Zeile gibt.
         /// </summary>
         /// <example>
         /// Gegeben sei folgende Zeile mit gemischten Leerzeichen (o) und Tabulatoren (->) mit einer Tabulatorweite 
@@ -244,7 +245,7 @@ namespace Pharmatechnik.Language.Text {
         /// --------^ 
         /// Der Signifikante Spaltenindex für diese Zeile ist 8.
         /// </example>
-        public static int GetSignificantColumn(this ReadOnlySpan<char> text, int tabSize) {
+        public static int GetIndentationColumn(this ReadOnlySpan<char> text, int tabSize) {
             bool hasSignificantContent = false;
             int  column                = 0;
             for (int index = 0; index < text.Length; index++) {

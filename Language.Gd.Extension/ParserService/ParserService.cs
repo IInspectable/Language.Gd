@@ -83,15 +83,10 @@ namespace Pharmatechnik.Language.Gd.Extension.ParserService {
                 textBuffer,
                 typeof(ParserService),
                 () => new ParserService(textBuffer)).Value;
-
-            //return textBuffer.Properties.GetOrCreateSingletonProperty(
-            //    typeof(ParserService),
-            //    () => new ParserService(textBuffer));
         }
 
         public static ParserService TryGet(ITextBuffer textBuffer) {
-            textBuffer.Properties.TryGetProperty<ParserService>(typeof(ParserService), out var parserService);
-            return parserService;
+            return TextBufferScopedValue<ParserService>.TryGet(textBuffer, typeof(ParserService));
         }
 
         public static void SetParseMethod(ITextBuffer textBuffer, ParseMethod parseMethod) {

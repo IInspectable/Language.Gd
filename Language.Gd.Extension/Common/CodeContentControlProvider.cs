@@ -181,7 +181,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Common {
                 if (isFirstLine) {
                     significantColumn = line.GetColumnForOffset(tabSize, span.Start - line.Start);
                 } else {
-                    significantColumn = Math.Min(significantColumn, line.GetSignificantColumn(tabSize));
+                    significantColumn = Math.Min(significantColumn, line.GetIndentationColumn(tabSize) ?? Int32.MaxValue);
                 }
 
                 lines.Add(line);

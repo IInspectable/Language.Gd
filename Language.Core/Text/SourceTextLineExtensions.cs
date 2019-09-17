@@ -6,7 +6,7 @@ namespace Pharmatechnik.Language.Text {
 
         public static string GetIndentAsSpaces(this SourceTextLine sourceText, int tabSize) {
 
-            var startColumn = sourceText.GetSignificantColumn(tabSize);
+            var startColumn = sourceText.GetIndentationColumn(tabSize);
 
             return new String(' ', startColumn);
         }
@@ -37,8 +37,8 @@ namespace Pharmatechnik.Language.Text {
         /// --------^ 
         /// Der Signifikante Spaltenindex für diese Zeile ist 8.
         /// </example>
-        public static int GetSignificantColumn(this SourceTextLine sourceText, int tabSize) {
-            return sourceText.Span.GetSignificantColumn(tabSize);
+        public static int GetIndentationColumn(this SourceTextLine sourceText, int tabSize) {
+            return sourceText.Span.GetIndentationColumn(tabSize);
         }
 
     }

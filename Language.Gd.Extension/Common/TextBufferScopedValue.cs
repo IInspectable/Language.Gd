@@ -14,9 +14,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Common {
             _value = value;
         }
 
-        internal T Value {
-            get { return _value; }
-        }
+        internal T Value => _value;
 
         internal void Dispose() {
             _value = null;

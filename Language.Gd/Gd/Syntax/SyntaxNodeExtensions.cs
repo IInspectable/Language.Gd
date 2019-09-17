@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Pharmatechnik.Language.Gd {
 
-    static class SyntaxNodeExtensions {
+    public static class SyntaxNodeExtensions {
         
         public static bool HasAncestorOfType<TNode>(this SyntaxNode node) where TNode : SyntaxNode {
             return HasAncestorOfType<TNode>(node, out _);

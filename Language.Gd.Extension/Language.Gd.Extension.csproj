@@ -118,6 +118,8 @@
     <Compile Include="QuickInfo\SymbolQuickInfoControl.xaml.cs">
       <DependentUpon>SymbolQuickInfoControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SmartIndent\GdSmartIndent.cs" />
+    <Compile Include="SmartIndent\GdSmartIndentProvider.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
     <Compile Include="Utilities\IWaitContext.cs" />
     <Compile Include="Utilities\IWaitIndicator.cs" />

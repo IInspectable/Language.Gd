@@ -154,7 +154,7 @@ namespace Pharmatechnik.Language.Core.Tests {
 
             var tl2 = st.TextLines[1];
 
-            var col = tl2.GetSignificantColumn(tabSize: 4);
+            var col = tl2.GetIndentationColumn(tabSize: 4);
             Assert.That(col, Is.EqualTo(4 + 1));
         }
 
@@ -167,7 +167,7 @@ namespace Pharmatechnik.Language.Core.Tests {
 
             var tl2 = st.TextLines[1];
 
-            var col = tl2.GetSignificantColumn(tabSize: 4);
+            var col = tl2.GetIndentationColumn(tabSize: 4);
             Assert.That(col, Is.EqualTo(4 + 4));
         }
 
@@ -180,7 +180,7 @@ namespace Pharmatechnik.Language.Core.Tests {
 
             var tl2 = st.TextLines[1];
 
-            var col = tl2.GetSignificantColumn(tabSize: 4);
+            var col = tl2.GetIndentationColumn(tabSize: 4);
             Assert.That(col, Is.EqualTo(0 + 4 + 1));
         }
 
@@ -193,7 +193,7 @@ namespace Pharmatechnik.Language.Core.Tests {
 
             var tl2 = st.TextLines[1];
 
-            var col = tl2.GetSignificantColumn(tabSize: 4);
+            var col = tl2.GetIndentationColumn(tabSize: 4);
             Assert.That(col, Is.EqualTo(Int32.MaxValue));
         }
 
@@ -206,7 +206,7 @@ namespace Pharmatechnik.Language.Core.Tests {
 
             var tl2 = st.TextLines[1];
 
-            var col = tl2.GetSignificantColumn(tabSize: 4);
+            var col = tl2.GetIndentationColumn(tabSize: 4);
             Assert.That(col, Is.EqualTo(Int32.MaxValue));
         }
 

@@ -288,7 +288,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Commands {
 
                 var line = span.Snapshot.GetLineFromLineNumber(lineNumber);
 
-                var significantColumn = line.GetSignificantColumn(tabSize);
+                var significantColumn = line.GetIndentationColumn(tabSize) ?? Int32.MaxValue;
                 indentToCommentAt = Math.Min(indentToCommentAt, significantColumn);
             }
 

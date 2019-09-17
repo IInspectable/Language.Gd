@@ -32,8 +32,9 @@ namespace Pharmatechnik.Language.CodeAnalysis {
         }
 
         /// <summary>
-        /// Liefert den Spaltenindex (beginnend bei 0) für das erste Signifikante Zeichen in der angegebenen Zeile.
+        /// Liefert den Spaltenindex (beginnend bei 0) für das erste signifikante Zeichen in der angegebenen Zeile.
         /// Als nicht signifikant gelten alle Arten von Leerzeichen. Dabei werden Tabulatoren entsprechend umgerechnet.
+        /// Null, wenn es kein signifikantes Zeichen in der Zeile gibt.
         /// </summary>
         /// <example>
         /// Gegeben sei folgende Zeile mit gemischten Leerzeichen (o) und Tabulatoren (->) mit einer Tabulatorweite 
@@ -42,7 +43,7 @@ namespace Pharmatechnik.Language.CodeAnalysis {
         /// --------^ 
         /// Der Signifikante Spaltenindex für diese Zeile ist 8.
         /// </example>
-        public static int? GetFirstNonWhitespaceColumn(this string text, int tabSize) {
+        public static int? GetIndentationColumn(this string text, int tabSize) {
 
             bool hasSignificantContent = false;
             int  column                = 0;
@@ -63,7 +64,7 @@ namespace Pharmatechnik.Language.CodeAnalysis {
             return hasSignificantContent ? column : (int?) null;
         }
 
-        public static int GetFirstNonWhitespaceIndex(this string line) {
+        public static int GetIndentationIndex(this string line) {
 
             for (var i = 0; i < line.Length; i++) {
                 if (!char.IsWhiteSpace(line[i])) {
@@ -87,7 +88,7 @@ namespace Pharmatechnik.Language.CodeAnalysis {
 
         public static string GetLeadingWhitespace(this string lineText) {
 
-            var length = lineText.GetFirstNonWhitespaceIndex();
+            var length = lineText.GetIndentationIndex();
 
             return length >= 0
                 ? lineText.Substring(0, length)
@@ -167,7 +168,7 @@ namespace Pharmatechnik.Language.CodeAnalysis {
 
                 var line = lines[i].Trim(trimChars);
 
-                var nonWhitespaceindex = line.GetFirstNonWhitespaceIndex();
+                var nonWhitespaceindex = line.GetIndentationIndex();
                 if (nonWhitespaceindex >= 0) {
 
                     var text = line.Substring(nonWhitespaceindex, line.Length - nonWhitespaceindex);
