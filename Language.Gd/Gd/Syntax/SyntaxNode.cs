@@ -238,7 +238,7 @@ namespace Pharmatechnik.Language.Gd {
 
         public ChildNodesAndTokenList ChildNodesAndTokens() => new ChildNodesAndTokenList(this);
 
-        public virtual SyntaxNodeOrToken ChildThatContainsPosition(int position) {
+        public SyntaxNodeOrToken ChildThatContainsPosition(int position) {
             if (!FullExtent.Contains(position)) {
                 throw new ArgumentOutOfRangeException(nameof(position));
             }
@@ -337,10 +337,10 @@ namespace Pharmatechnik.Language.Gd {
             return result;
         }
 
-        internal abstract SyntaxNode GetCachedSyntaxNode(int index);
+        private protected abstract SyntaxNode GetCachedSyntaxNode(int index);
         internal abstract SyntaxNode GetSyntaxNode(int index);
 
-        internal virtual int GetChildPosition(int index) {
+        private int GetChildPosition(int index) {
             int offset = 0;
             var slot   = Slot;
             while (index > 0) {
@@ -366,11 +366,7 @@ namespace Pharmatechnik.Language.Gd {
         public abstract void Accept(SyntaxVisitor visitor);
         public abstract TResult Accept<TResult>(SyntaxVisitor<TResult> visitor);
 
-        public ImmutableArray<ClassifiedText> ToSimplifiedText() {
-            return ToSimplifiedText(null);
-        }
-
-        public ImmutableArray<ClassifiedText> ToSimplifiedText(TextEditorSettings editorSettings) {
+        public ImmutableArray<ClassifiedText> ToSimplifiedText(TextEditorSettings editorSettings = null) {
             return SimplifiedClassificationBuilder.Classify(this, editorSettings);
         }
 

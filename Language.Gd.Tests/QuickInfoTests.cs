@@ -1,6 +1,4 @@
-﻿using System.Text;
-
-using NUnit.Framework;
+﻿using NUnit.Framework;
 
 using Pharmatechnik.Language.Gd.QuickInfo;
 

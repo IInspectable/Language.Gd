@@ -49,9 +49,9 @@ namespace Tool.GdSyntaxGenerator {
 
             foreach (var token in tokenInfo.Tokens) {
                 if (token.IsSimpleTerminal) {
-                    Console.WriteLine($"{token.Index}:{token.Name} = {token.TerminalText}");
+                    WriteVerbose($"{token.Index}:{token.Name} = {token.TerminalText}");
                 } else {
-                    Console.WriteLine($"{token.Index}:{token.Name}");
+                    WriteVerbose($"{token.Index}:{token.Name}");
                 }
 
             }
@@ -213,10 +213,14 @@ namespace Tool.GdSyntaxGenerator {
                                select t;
 
             foreach (var c in derivedTypes) {
-                Console.WriteLine(c.Name);
+                WriteVerbose(c.Name);
             }
         }
 
+        [Conditional("Verbose")]
+        static void WriteVerbose(string text) {
+            Console.WriteLine(text);
+        }
     }
 
 }

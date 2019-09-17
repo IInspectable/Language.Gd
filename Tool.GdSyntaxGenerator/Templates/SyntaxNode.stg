@@ -123,7 +123,7 @@ pl(slotModel)::=<<
 writeGetCachedSyntaxNodeMethod(slotModels) ::=<<
 
 [CanBeNull]
-internal override SyntaxNode GetCachedSyntaxNode(int index) {
+private protected override SyntaxNode GetCachedSyntaxNode(int index) {
 	switch(index) {
 		<slotModels:writeGetCachedSyntaxNodeCase(); anchor>
 		default:

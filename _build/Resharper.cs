@@ -1,3 +1,4 @@
+// ReSharper disable All
 /* MIT License
 
 Copyright (c) 2016 JetBrains http://www.jetbrains.com
@@ -31,7 +32,7 @@ using System;
 // ReSharper disable IntroduceOptionalParameters.Global
 // ReSharper disable MemberCanBeProtected.Global
 // ReSharper disable InconsistentNaming
-// ReSharper disable InconsistentNamespace
+
 namespace JetBrains.Annotations {
 
     /// <summary>
