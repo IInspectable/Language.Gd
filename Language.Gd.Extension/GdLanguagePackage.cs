@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Drawing;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -12,15 +11,13 @@ using System.Windows.Threading;
 
 using EnvDTE;
 
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
-using Microsoft.VisualStudio.Imaging.Interop;
 using Microsoft.VisualStudio.Shell;
-using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.LanguageServices;
 
+using Pharmatechnik.Language.Gd.Extension.Document_Outline;
 using Pharmatechnik.Language.Gd.Extension.LanguageService;
 using Pharmatechnik.Language.Gd.Extension.Logging;
 
@@ -64,19 +61,18 @@ namespace Pharmatechnik.Language.Gd.Extension {
         ShowMatchingBrace           = true,
         ShowDropDownOptions         = true)]
     [ProvideLanguageExtension(typeof(GdLanguageService), GdLanguageContentDefinitions.FileExtension)]
-    [PackageRegistration(UseManagedResourcesOnly                = true, AllowsBackgroundLoading = true)]
+    
+    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideService(typeof(GdLanguageService), IsAsyncQueryable = true)]
-    [Guid(Guids.PackageGuidString)]
+    [Guid(PackageGuids.GdLanguagePackageGuidString)]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
+    [ProvideToolWindow(typeof(GdOutlineToolWindowPane), 
+        Style  = VsDockStyle.Tabbed, 
+        Window = Constants.vsWindowKindSolutionExplorer)]
+    [ProvideMenuResource("Menus.ctmenu", 1)]
     public sealed class GdLanguagePackage: AsyncPackage {
 
         static readonly Logger Logger = Logger.Create<GdLanguagePackage>();
-
-        public static class Guids {
-
-            public const string LanguageGuidString = "6B03358E-B39A-4496-A389-764B41F50EAF";
-            public const string PackageGuidString  = "ECAD3E41-42EA-49C5-BE56-4865B09C0FCD";
-
-        }
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -95,6 +91,8 @@ namespace Pharmatechnik.Language.Gd.Extension {
                            await JoinableTaskFactory.SwitchToMainThreadAsync(ct);
                            return new GdLanguageService(this);
                        }, promote: true);
+
+            await ShowGdOutlineWindowCommand.RegisterAsync(this);
         }
 
         public static object GetGlobalService<TService>() where TService : class {
@@ -181,50 +179,6 @@ namespace Pharmatechnik.Language.Gd.Extension {
             }
         }
 
-        public static IntPtr GetImageList(ImageMoniker moniker, Color? backgroundColor = null) {
-
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            var imageAttributes = GetImageAttributes(_UIImageType.IT_ImageList, _UIDataFormat.DF_Win32, backgroundColor);
-            var imageService    = GetGlobalService<SVsImageService, IVsImageService2>();
-            var result          = imageService?.GetImage(moniker, imageAttributes);
-
-            if (!(Microsoft.Internal.VisualStudio.PlatformUI.Utilities.GetObjectData(result) is IVsUIWin32ImageList imageListData)) {
-                Logger.Warn($"{nameof(GetImageList)}: Unable to get IVsUIWin32ImageList");
-                return IntPtr.Zero;
-            }
-
-            if (!ErrorHandler.Succeeded(imageListData.GetHIMAGELIST(out var imageListInt))) {
-                Logger.Warn($"{nameof(GetImageList)}: Unable to get HIMAGELIST");
-                return IntPtr.Zero;
-
-            }
-
-            return (IntPtr) imageListInt;
-        }
-
-        static ImageAttributes GetImageAttributes(_UIImageType imageType, _UIDataFormat format, Color? backgroundColor, int width = 16, int height = 16) {
-
-            ImageAttributes imageAttributes = new ImageAttributes {
-                StructSize    = Marshal.SizeOf(typeof(ImageAttributes)),
-                Dpi           = 96,
-                Flags         = (uint) _ImageAttributesFlags.IAF_RequiredFlags,
-                ImageType     = (uint) imageType,
-                Format        = (uint) format,
-                LogicalHeight = height,
-                LogicalWidth  = width
-            };
-            if (backgroundColor.HasValue) {
-                unchecked {
-                    imageAttributes.Flags |= (uint) _ImageAttributesFlags.IAF_Background;
-                }
-
-                imageAttributes.Background = (uint) backgroundColor.Value.ToArgb();
-            }
-
-            return imageAttributes;
-        }
-
         /// <summary>
         /// 1. Moves the caret to the specified index in the current snapshot.  
         /// 2. Updates the viewport so that the caret will be centered.
@@ -240,6 +194,7 @@ namespace Pharmatechnik.Language.Gd.Extension {
             // ReSharper disable once SuspiciousTypeConversion.Global 
             (textView as Control)?.Focus();
         }
+        
 
     }
 

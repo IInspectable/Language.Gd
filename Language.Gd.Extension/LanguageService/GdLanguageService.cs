@@ -9,7 +9,7 @@ using Microsoft.VisualStudio.TextManager.Interop;
 
 namespace Pharmatechnik.Language.Gd.Extension.LanguageService {
 
-    [Guid(GdLanguagePackage.Guids.LanguageGuidString)]
+    [Guid(PackageGuids.GdLanguagePackageGuidString)]
     public class GdLanguageService: IVsLanguageInfo {
 
         readonly GdLanguagePackage _package;
