@@ -62,6 +62,11 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
         public int Start => Extent.Start;
 
         /// <summary>
+        /// Gibt die Länge des Bereichs an.
+        /// </summary>
+        public int Length => Extent.Length;
+
+        /// <summary>
         /// Gibt den Endpunkt des Bereichs an.
         /// </summary>
         public int End => Extent.End;

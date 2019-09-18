@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 
 using Pharmatechnik.Language.Gd.DocumentOutline;
@@ -24,6 +25,21 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             ThreadHelper.ThrowIfNotOnUIThread();
             ConnectRunningDocumentTable();
             SetActiveTextView(GetActiveGdTextView());
+        }
+
+        public void NavigateToSource(OutlineElement outlineElement) {
+            if (_activeWpfTextView != null && outlineElement != null) {
+
+                var snapShotSpan = new SnapshotSpan(_activeWpfTextView.TextBuffer.CurrentSnapshot,
+                                                    new Span(outlineElement.Start, outlineElement.Length));
+
+                var snapshotPoint = new SnapshotPoint(_activeWpfTextView.TextBuffer.CurrentSnapshot,
+                                                      outlineElement.NavigationPoint);
+
+                _activeWpfTextView.Caret.MoveTo(snapshotPoint);
+                //_activeWpfTextView.Selection.Select(snapShotSpan, false);
+                _activeWpfTextView.ViewScroller.EnsureSpanVisible(snapShotSpan);
+            }
         }
 
         public void Dispose() {
@@ -57,7 +73,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         public event EventHandler<GdOutlineEventArgs> OutlineDataChanged;
 
         private void OnSelectionChanged(object sender, EventArgs e) {
-            OutlineDataChanged?.Invoke(this, new GdOutlineEventArgs(GetOutlineData()));
+            //TODO OutlineDataChanged?.Invoke(this, new GdOutlineEventArgs(GetOutlineData()));
         }
 
         void Invalidate() {
@@ -80,8 +96,6 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
             return outlineData;
         }
-
-        
 
         private void SetActiveTextView([CanBeNull] IWpfTextView wpfTextView) {
 
@@ -145,7 +159,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             return null;
         }
 
-        private void OnParseResultChanged(object sender, Microsoft.VisualStudio.Text.SnapshotSpanEventArgs e) {
+        private void OnParseResultChanged(object sender, SnapshotSpanEventArgs e) {
             Invalidate();
         }
 

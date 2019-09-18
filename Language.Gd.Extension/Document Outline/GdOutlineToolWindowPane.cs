@@ -19,7 +19,12 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             _outlineControl    = new GdOutlineControl();
             _outlineController = new GdOutlineController();
 
-            _outlineController.OutlineDataChanged += OnOutlineDataChanged;
+            _outlineControl.RequestNavigateToSource += OnRequestNavigateToSource;
+            _outlineController.OutlineDataChanged   += OnOutlineDataChanged;
+        }
+
+        private void OnRequestNavigateToSource(object sender, RequestNavigateToEventArgs e) {
+            _outlineController.NavigateToSource(e.OutlineElement);
         }
 
         protected override void Dispose(bool disposing) {
@@ -27,7 +32,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
             base.Dispose(disposing);
 
-            _outlineController.OutlineDataChanged -= OnOutlineDataChanged;
+            _outlineControl.RequestNavigateToSource -= OnRequestNavigateToSource;
+            _outlineController.OutlineDataChanged   -= OnOutlineDataChanged;
+
             _outlineController.Dispose();
         }
 
@@ -39,8 +46,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         }
 
         private void OnOutlineDataChanged(object sender, GdOutlineEventArgs e) {
-            _outlineControl.TxtTest.Text = $"{FormatArgs(e)}";
-           
+
+            _outlineControl.ShowOutline(e.OutlineData);
+
             var file = e.OutlineData?.SyntaxTree.SourceText.FileInfo?.Name;
             if (!String.IsNullOrEmpty(file)) {
                 Caption = $"{DefaultCaption} - {file}";
@@ -50,17 +58,6 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         }
 
         private static string DefaultCaption => "Gui Outline";
-
-        string FormatArgs(GdOutlineEventArgs args) {
-
-            if (args.OutlineData == null) {
-                return "There are no items to show for the selected document.";
-            }
-
-            var elem = args.OutlineData.OutlineElement.FindElement(args.OutlineData.ActivePosition??0);
-
-            return $"{args.OutlineData.ActivePosition} '{elem?.DisplayName}' {DateTime.Now.ToLongTimeString()}";
-        }
 
         public override object Content {
             get => _outlineControl;
