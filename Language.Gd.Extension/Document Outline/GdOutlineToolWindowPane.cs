@@ -14,12 +14,12 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         public GdOutlineToolWindowPane(): base(null) {
 
-            Caption            = "Gui Outline";
+            Caption            = DefaultCaption;
             BitmapImageMoniker = KnownMonikers.DocumentOutline;
             _outlineControl    = new GdOutlineControl();
             _outlineController = new GdOutlineController();
 
-            _outlineController.ModelChanged += OnModelChanged;
+            _outlineController.OutlineDataChanged += OnOutlineDataChanged;
         }
 
         protected override void Dispose(bool disposing) {
@@ -27,7 +27,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
             base.Dispose(disposing);
 
-            _outlineController.ModelChanged -= OnModelChanged;
+            _outlineController.OutlineDataChanged -= OnOutlineDataChanged;
             _outlineController.Dispose();
         }
 
@@ -38,19 +38,28 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             _outlineController.Run();
         }
 
-        private void OnModelChanged(object sender, GdOutlineEventArgs e) {
+        private void OnOutlineDataChanged(object sender, GdOutlineEventArgs e) {
             _outlineControl.TxtTest.Text = $"{FormatArgs(e)}";
+           
+            var file = e.OutlineData?.SyntaxTree.SourceText.FileInfo?.Name;
+            if (!String.IsNullOrEmpty(file)) {
+                Caption = $"{DefaultCaption} - {file}";
+            } else {
+                Caption = DefaultCaption;
+            }
         }
+
+        private static string DefaultCaption => "Gui Outline";
 
         string FormatArgs(GdOutlineEventArgs args) {
 
-            if (args.SyntaxTreeAndSnapshot == null) {
+            if (args.OutlineData == null) {
                 return "There are no items to show for the selected document.";
             }
 
-            var fileName = args.SyntaxTreeAndSnapshot.SyntaxTree.SourceText.FileInfo?.Name ?? "<unknown file>";
+            var elem = args.OutlineData.OutlineElement.FindElement(args.OutlineData.ActivePosition??0);
 
-            return $"{args.ActivePosition} {DateTime.Now.ToLongTimeString()} ''{fileName}''";
+            return $"{args.OutlineData.ActivePosition} '{elem?.DisplayName}' {DateTime.Now.ToLongTimeString()}";
         }
 
         public override object Content {

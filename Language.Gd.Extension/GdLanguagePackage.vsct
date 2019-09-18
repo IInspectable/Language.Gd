@@ -48,17 +48,22 @@
               id       = "ShowGdOutlineWindow"
               priority = "0x0100"
               type     = "Button">
-        <Parent guid="guidSHLMainMenu" id="IDG_VS_WNDO_OTRWNDWSEXPLORERS" />
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_VIEW_CODEBROWSENAV_WINDOWS" />
         <Icon guid="ImageCatalogGuid" id="DocumentOutline" />
         <CommandFlag>IconIsMoniker</CommandFlag>
         <Strings>
-          <ButtonText>Gui Outline</ButtonText>
+          <ButtonText>Gui Outl&amp;ine</ButtonText>
         </Strings>
       </Button>
     </Buttons>
 
- 
+
   </Commands>
+
+  <KeyBindings>
+    <KeyBinding guid="GdLanguagePackageCmdSetGuid" id="ShowGdOutlineWindow" key1="w" mod1="Control" key2="i"
+                editor="guidVSStd97" />
+  </KeyBindings>
 
   <Symbols>
     <!-- This is the package guid. -->

@@ -9,6 +9,7 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text.Editor;
 
+using Pharmatechnik.Language.Gd.DocumentOutline;
 using Pharmatechnik.Language.Gd.Extension.Common;
 
 #endregion
@@ -53,23 +54,34 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         IVsRunningDocumentTable RunningDocumentTable    => GdLanguagePackage.GetGlobalService<SVsRunningDocumentTable, IVsRunningDocumentTable>();
         IVsMonitorSelection     MonitorSelectionService => GdLanguagePackage.GetGlobalService<SVsShellMonitorSelection, IVsMonitorSelection>();
 
-        public event EventHandler<GdOutlineEventArgs> ModelChanged;
+        public event EventHandler<GdOutlineEventArgs> OutlineDataChanged;
 
         private void OnSelectionChanged(object sender, EventArgs e) {
-            ModelChanged?.Invoke(this, GetGdOutlineEventArgs());
+            OutlineDataChanged?.Invoke(this, new GdOutlineEventArgs(GetOutlineData()));
         }
 
         void Invalidate() {
-            ModelChanged?.Invoke(this, GetGdOutlineEventArgs());
+            OutlineDataChanged?.Invoke(this, new GdOutlineEventArgs(GetOutlineData()));
         }
 
-        private GdOutlineEventArgs GetGdOutlineEventArgs() {
+        [CanBeNull]
+        private OutlineData GetOutlineData() {
 
-            var sts      = TryGetActiveParserService()?.SyntaxTreeAndSnapshot;
-            var position = _activeWpfTextView?.Selection.ActivePoint.Position;
+            var sts            = TryGetActiveParserService()?.SyntaxTreeAndSnapshot;
+            var syntaxTree     = sts?.SyntaxTree;
+            var snapshot       = sts?.Snapshot;
+            var outlineElement = OutlineBuilder.Build(syntaxTree?.Root);
+            var position       = _activeWpfTextView?.Selection.ActivePoint.Position;
 
-            return new GdOutlineEventArgs(sts, position);
+            OutlineData outlineData = null;
+            if (syntaxTree != null && outlineElement != null) {
+                outlineData = new OutlineData(outlineElement, position, syntaxTree, snapshot);
+            }
+
+            return outlineData;
         }
+
+        
 
         private void SetActiveTextView([CanBeNull] IWpfTextView wpfTextView) {
 

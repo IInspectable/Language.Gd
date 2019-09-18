@@ -10,7 +10,7 @@ using Pharmatechnik.Language.Gd.Extension.Common;
 
 namespace Pharmatechnik.Language.Gd.Extension.ParserService {
 
-    sealed class SyntaxTreeAndSnapshot : AndSnapshot {
+    class SyntaxTreeAndSnapshot : AndSnapshot {
 
         internal SyntaxTreeAndSnapshot([NotNull] SyntaxTree syntaxTree, ITextSnapshot snapshot) : base(snapshot) {
             SyntaxTree = syntaxTree;

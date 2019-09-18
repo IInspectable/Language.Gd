@@ -3,9 +3,9 @@
 using System.Collections.Immutable;
 using System.Linq;
 
+using Pharmatechnik.Language.Gd.DocumentOutline;
 using Pharmatechnik.Language.Gd.Extension.Imaging;
 using Pharmatechnik.Language.Gd.Extension.ParserService;
-using Pharmatechnik.Language.Gd.Navigation;
 
 #endregion
 
@@ -15,7 +15,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
         public static ImmutableList<NavigationBarItem> Build(SyntaxTreeAndSnapshot codeGenerationUnitAndSnapshot) {
 
-            var syntaxRoot = codeGenerationUnitAndSnapshot?.SyntaxTree.Root;
+            var syntaxRoot = codeGenerationUnitAndSnapshot?.SyntaxTree.Root as GuiDescriptionSyntax;
 
             return NavigatableSections.GetItems(syntaxRoot)
                                       .Select(item => new NavigationBarItem(
