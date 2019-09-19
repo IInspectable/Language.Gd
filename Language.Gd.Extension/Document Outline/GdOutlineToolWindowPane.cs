@@ -17,10 +17,12 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         public GdOutlineToolWindowPane(): base(null) {
 
             BitmapImageMoniker = KnownMonikers.DocumentOutline;
-            _outlineControl    = new GdOutlineControl();
-            _outlineController = new GdOutlineController();
 
-            _outlineControl.RequestNavigateToSource     += OnRequestNavigateToSource;
+            _outlineControl                         =  new GdOutlineControl();
+            _outlineControl.IsVisibleChanged        += OnOutlineControlIsVisibleChanged;
+            _outlineControl.RequestNavigateToSource += OnRequestNavigateToSource;
+
+            _outlineController                          =  new GdOutlineController();
             _outlineController.RequestNavigateToOutline += OnRequestNavigateToOutline;
             _outlineController.OutlineDataChanged       += OnOutlineDataChanged;
 
@@ -32,6 +34,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
             base.Dispose(disposing);
 
+            _outlineControl.IsVisibleChanged            -= OnOutlineControlIsVisibleChanged;
             _outlineControl.RequestNavigateToSource     -= OnRequestNavigateToSource;
             _outlineController.RequestNavigateToOutline -= OnRequestNavigateToOutline;
             _outlineController.OutlineDataChanged       -= OnOutlineDataChanged;
@@ -44,12 +47,22 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             set { }
         }
 
-        private void OnRequestNavigateToOutline(object sender, NavigateToOutlineEventArgs e) {
+        void OnRequestNavigateToSource(object sender, RequestNavigateToEventArgs e) {
+            _outlineController.NavigateToSource(e.OutlineElement);
+        }
+
+        void OnRequestNavigateToOutline(object sender, NavigateToOutlineEventArgs e) {
             _outlineControl.NavigateToOutline(e.OutlineElement);
         }
 
-        private void OnRequestNavigateToSource(object sender, RequestNavigateToEventArgs e) {
-            _outlineController.NavigateToSource(e.OutlineElement);
+        void OnOutlineControlIsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e) {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (_outlineControl.IsVisible) {
+                _outlineController.Run();
+            } else {
+                _outlineController.Stop();
+            }
         }
 
         public override void OnToolWindowCreated() {

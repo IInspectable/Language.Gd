@@ -20,11 +20,34 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
     class GdOutlineController: IVsRunningDocTableEvents, IDisposable {
 
         IWpfTextView _activeWpfTextView;
+        bool         _isRunning;
 
         public void Run() {
+
             ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (_isRunning) {
+                return;
+            }
+
+            _isRunning = true;
+
             ConnectRunningDocumentTable();
             SetActiveTextView(TryGetActiveGdTextView());
+        }
+
+        public void Stop() {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            if (!_isRunning) {
+                return;
+            }
+
+            SetActiveTextView(null);
+            DisconnectRunningDocumentTable();
+
+            _isRunning = false;
         }
 
         private bool IsNavigatingToSource { get; set; }
@@ -50,13 +73,15 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         }
 
         public void Invalidate() {
+            if (!_isRunning) {
+                return;
+            }
+
             RaiseOutlineDataChanged();
         }
 
         public void Dispose() {
-            ThreadHelper.ThrowIfNotOnUIThread();
-            SetActiveTextView(null);
-            DisconnectRunningDocumentTable();
+            Stop();
         }
 
         private uint _runningDocTableEventCookie;
@@ -118,7 +143,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         private void SetActiveTextView([CanBeNull] IWpfTextView wpfTextView) {
 
-            if (_activeWpfTextView == wpfTextView) {
+            if (_activeWpfTextView == wpfTextView || !_isRunning) {
                 return;
             }
 

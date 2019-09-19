@@ -18,6 +18,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         public GdOutlineControl() {
             InitializeComponent();
             _flattenTree = new Dictionary<OutlineElement, TreeViewItem>();
+
         }
 
         public event EventHandler<RequestNavigateToEventArgs> RequestNavigateToSource;
@@ -27,10 +28,10 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             AddOutlineElement(null, outlineData?.OutlineElement);
 
             if (TreeView.Items.Count == 0) {
-                TreeView.Visibility   = System.Windows.Visibility.Collapsed;
+                TreeView.Visibility  = System.Windows.Visibility.Collapsed;
                 Watermark.Visibility = System.Windows.Visibility.Visible;
             } else {
-                TreeView.Visibility   = System.Windows.Visibility.Visible;
+                TreeView.Visibility  = System.Windows.Visibility.Visible;
                 Watermark.Visibility = System.Windows.Visibility.Collapsed;
             }
         }
