@@ -16,22 +16,18 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
     class OutlineData: SyntaxTreeAndSnapshot {
 
         public OutlineData(OutlineElement outlineElement,
-                           int? activePosition,
                            [NotNull] SyntaxTree syntaxTree,
                            [NotNull] ITextSnapshot snapshot): base(syntaxTree, snapshot) {
             OutlineElement = outlineElement;
-            ActivePosition = activePosition;
         }
 
         public OutlineElement OutlineElement { get; }
 
-        public int? ActivePosition { get; }
-
     }
 
-    class GdOutlineEventArgs: EventArgs {
+    class OutlineDataEventArgs: EventArgs {
 
-        public GdOutlineEventArgs(OutlineData outlineData) {
+        public OutlineDataEventArgs(OutlineData outlineData) {
             OutlineData = outlineData;
 
         }

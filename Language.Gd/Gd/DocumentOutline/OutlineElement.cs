@@ -110,7 +110,7 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
         }
 
         [CanBeNull]
-        public OutlineElement FindElement(int position) {
+        public OutlineElement FindBestMatch(int position) {
 
             var flattenList = Flatten();
             // finde erstes Item mit dem kleinsten definierten Bereich

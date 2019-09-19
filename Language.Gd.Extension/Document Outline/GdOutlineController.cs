@@ -24,22 +24,33 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         public void Run() {
             ThreadHelper.ThrowIfNotOnUIThread();
             ConnectRunningDocumentTable();
-            SetActiveTextView(GetActiveGdTextView());
+            SetActiveTextView(TryGetActiveGdTextView());
+        }
+
+        private bool IsNavigatingToSource { get; set; }
+
+        IDisposable NavigatingToSource() {
+            return new ScopedValue<bool>(() => IsNavigatingToSource, v => IsNavigatingToSource = v, true);
         }
 
         public void NavigateToSource(OutlineElement outlineElement) {
-            if (_activeWpfTextView != null && outlineElement != null) {
+            using (NavigatingToSource()) {
+                if (_activeWpfTextView != null && outlineElement != null) {
 
-                var snapShotSpan = new SnapshotSpan(_activeWpfTextView.TextBuffer.CurrentSnapshot,
-                                                    new Span(outlineElement.Start, outlineElement.Length));
+                    var snapshotPoint = new SnapshotPoint(_activeWpfTextView.TextBuffer.CurrentSnapshot,
+                                                          outlineElement.NavigationPoint);
 
-                var snapshotPoint = new SnapshotPoint(_activeWpfTextView.TextBuffer.CurrentSnapshot,
-                                                      outlineElement.NavigationPoint);
+                    var snapShotSpan = snapshotPoint.GetContainingLine().Extent;
 
-                _activeWpfTextView.Caret.MoveTo(snapshotPoint);
-                //_activeWpfTextView.Selection.Select(snapShotSpan, false);
-                _activeWpfTextView.ViewScroller.EnsureSpanVisible(snapShotSpan);
+                    _activeWpfTextView.Caret.MoveTo(snapshotPoint);
+                    _activeWpfTextView.ViewScroller.EnsureSpanVisible(snapShotSpan);
+                }
             }
+
+        }
+
+        public void Invalidate() {
+            RaiseOutlineDataChanged();
         }
 
         public void Dispose() {
@@ -70,31 +81,39 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         IVsRunningDocumentTable RunningDocumentTable    => GdLanguagePackage.GetGlobalService<SVsRunningDocumentTable, IVsRunningDocumentTable>();
         IVsMonitorSelection     MonitorSelectionService => GdLanguagePackage.GetGlobalService<SVsShellMonitorSelection, IVsMonitorSelection>();
 
-        public event EventHandler<GdOutlineEventArgs> OutlineDataChanged;
+        public event EventHandler<OutlineDataEventArgs>       OutlineDataChanged;
+        public event EventHandler<NavigateToOutlineEventArgs> RequestNavigateToOutline;
 
-        private void OnSelectionChanged(object sender, EventArgs e) {
-            //TODO OutlineDataChanged?.Invoke(this, new GdOutlineEventArgs(GetOutlineData()));
+        void OnParseResultChanged(object sender, SnapshotSpanEventArgs e) {
+            Invalidate();
         }
 
-        void Invalidate() {
-            OutlineDataChanged?.Invoke(this, new GdOutlineEventArgs(GetOutlineData()));
+        void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
+            // TODO Throtteling?
+            RaiseRequestNavigateToOutline();
         }
 
-        [CanBeNull]
-        private OutlineData GetOutlineData() {
+        private void RaiseOutlineDataChanged() {
 
-            var sts            = TryGetActiveParserService()?.SyntaxTreeAndSnapshot;
-            var syntaxTree     = sts?.SyntaxTree;
-            var snapshot       = sts?.Snapshot;
-            var outlineElement = OutlineBuilder.Build(syntaxTree?.Root);
-            var position       = _activeWpfTextView?.Selection.ActivePoint.Position;
+            OutlineDataChanged?.Invoke(this, new OutlineDataEventArgs(TryGetOutlineData()));
+            RaiseRequestNavigateToOutline();
+        }
 
-            OutlineData outlineData = null;
-            if (syntaxTree != null && outlineElement != null) {
-                outlineData = new OutlineData(outlineElement, position, syntaxTree, snapshot);
+        void RaiseRequestNavigateToOutline() {
+
+            if (IsNavigatingToSource) {
+                return;
             }
 
-            return outlineData;
+            var rootElement = TryGetOutlineData()?.OutlineElement;
+            if (rootElement == null) {
+                return;
+            }
+
+            int caretPosition = _activeWpfTextView.Caret.Position.BufferPosition;
+            var bestMatch     = rootElement.FindBestMatch(caretPosition);
+
+            RequestNavigateToOutline?.Invoke(this, new NavigateToOutlineEventArgs(bestMatch));
         }
 
         private void SetActiveTextView([CanBeNull] IWpfTextView wpfTextView) {
@@ -106,7 +125,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             // Disconnect from current view
             if (_activeWpfTextView != null) {
 
-                _activeWpfTextView.Selection.SelectionChanged -= OnSelectionChanged;
+                _activeWpfTextView.Caret.PositionChanged -= OnCaretPositionChanged;
 
                 ParserService.ParserService.GetOrCreateSingelton(_activeWpfTextView.TextBuffer).ParseResultChanged -= OnParseResultChanged;
 
@@ -119,13 +138,37 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
             // Connect to active view
             if (_activeWpfTextView != null) {
-
-                _activeWpfTextView.Selection.SelectionChanged += OnSelectionChanged;
+                _activeWpfTextView.Caret.PositionChanged += OnCaretPositionChanged;
 
                 ParserService.ParserService.GetOrCreateSingelton(_activeWpfTextView.TextBuffer).ParseResultChanged += OnParseResultChanged;
             }
 
             Invalidate();
+        }
+
+        OutlineData _cachedOutlineData;
+
+        [CanBeNull]
+        private OutlineData TryGetOutlineData() {
+
+            var sts = TryGetActiveParserService()?.SyntaxTreeAndSnapshot;
+
+            if (_cachedOutlineData != null && _cachedOutlineData.Snapshot == sts?.Snapshot) {
+                return _cachedOutlineData;
+            }
+
+            var syntaxTree     = sts?.SyntaxTree;
+            var snapshot       = sts?.Snapshot;
+            var outlineElement = OutlineBuilder.Build(syntaxTree?.Root);
+
+            OutlineData outlineData = null;
+            if (syntaxTree != null && outlineElement != null) {
+                outlineData = new OutlineData(outlineElement, syntaxTree, snapshot);
+            }
+
+            _cachedOutlineData = outlineData;
+
+            return outlineData;
         }
 
         ParserService.ParserService TryGetActiveParserService() {
@@ -138,7 +181,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         }
 
         [CanBeNull]
-        IWpfTextView GetActiveGdTextView() {
+        IWpfTextView TryGetActiveGdTextView() {
 
             ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -157,10 +200,6 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             }
 
             return null;
-        }
-
-        private void OnParseResultChanged(object sender, SnapshotSpanEventArgs e) {
-            Invalidate();
         }
 
         bool IsGdContentType([CanBeNull] IWpfTextView wpfTextView) {

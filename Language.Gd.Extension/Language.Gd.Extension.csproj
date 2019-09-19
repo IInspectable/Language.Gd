@@ -88,7 +88,8 @@
     <Compile Include="Diagnostics\DiagnosticSummaryMargin.cs" />
     <Compile Include="Diagnostics\DiagnosticSummaryMarginProvider.cs" />
     <Compile Include="Document Outline\GdOutlineController.cs" />
-    <Compile Include="Document Outline\GdOutlineEventArgs.cs" />
+    <Compile Include="Document Outline\NavigateToOutlineEventArgs.cs" />
+    <Compile Include="Document Outline\OutlineDataEventArgs.cs" />
     <Compile Include="Document Outline\GdOutlineToolWindowPane.cs" />
     <Compile Include="Document Outline\RequestNavigateToEventArgs.cs" />
     <Compile Include="Document Outline\ShowGdOutlineWindowCommand.cs" />
@@ -99,6 +100,7 @@
     <Compile Include="Document Outline\OutlineItemControl.xaml.cs">
       <DependentUpon>OutlineItemControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Common\ScopedValue.cs" />
     <Compile Include="GdLanguageContentDefinitions.cs" />
     <Compile Include="GdLanguagePackage1.cs">
       <AutoGen>True</AutoGen>

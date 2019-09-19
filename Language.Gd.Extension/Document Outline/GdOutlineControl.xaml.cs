@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 
 using JetBrains.Annotations;
 
 using Pharmatechnik.Language.Gd.DocumentOutline;
+using Pharmatechnik.Language.Gd.Extension.Common;
 using Pharmatechnik.Language.Gd.Extension.Imaging;
 
 namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
@@ -11,9 +13,11 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
     partial class GdOutlineControl: UserControl {
 
+        readonly Dictionary<OutlineElement, TreeViewItem> _flattenTree;
+
         public GdOutlineControl() {
             InitializeComponent();
-
+            _flattenTree = new Dictionary<OutlineElement, TreeViewItem>();
         }
 
         public event EventHandler<RequestNavigateToEventArgs> RequestNavigateToSource;
@@ -23,10 +27,32 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             AddOutlineElement(null, outlineData?.OutlineElement);
         }
 
+        private bool IsNavigatingToOutline { get; set; }
+
+        IDisposable NavigatingToOutline() {
+            return new ScopedValue<bool>(getter: () => IsNavigatingToOutline, setter: v => IsNavigatingToOutline = v, value: true);
+        }
+
+        internal void NavigateToOutline([CanBeNull] OutlineElement outlineElement) {
+            using (NavigatingToOutline()) {
+
+                if (outlineElement != null && _flattenTree.TryGetValue(outlineElement, out var item)) {
+                    item.IsSelected = true;
+                    item.BringIntoView();
+                    return;
+                }
+
+                if (TreeView.SelectedItem is TreeViewItem prevSel) {
+                    prevSel.IsSelected = false;
+                }
+            }
+        }
+
         private void AddOutlineElement(TreeViewItem parent, [CanBeNull] OutlineElement outline) {
 
             if (parent == null) {
                 TreeView.Items.Clear();
+                _flattenTree.Clear();
             }
 
             if (outline == null) {
@@ -48,15 +74,22 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
             item.Selected += (o, e) => {
                 var outlineElement = (OutlineElement) ((TreeViewItem) o).Tag;
-                RequestNavigateToSource?.Invoke(this, new RequestNavigateToEventArgs(outlineElement));
+                if (!IsNavigatingToOutline) {
+                    RequestNavigateToSource?.Invoke(this, new RequestNavigateToEventArgs(outlineElement));
+                }
+
                 e.Handled = true;
             };
+
+            // TODO Bai NavigateToOutline sollte das aber dennoch funktionieren
+            item.RequestBringIntoView += (o, e) => { e.Handled = true; };
 
             foreach (var child in outline.Children) {
                 AddOutlineElement(item, child);
             }
 
             itemCollection.Add(item);
+            _flattenTree[outline] = item;
 
         }
 
