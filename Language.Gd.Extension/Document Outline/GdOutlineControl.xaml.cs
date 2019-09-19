@@ -25,6 +25,14 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         internal void ShowOutline([CanBeNull] OutlineData outlineData) {
 
             AddOutlineElement(null, outlineData?.OutlineElement);
+
+            if (TreeView.Items.Count == 0) {
+                TreeView.Visibility   = System.Windows.Visibility.Collapsed;
+                Watermark.Visibility = System.Windows.Visibility.Visible;
+            } else {
+                TreeView.Visibility   = System.Windows.Visibility.Visible;
+                Watermark.Visibility = System.Windows.Visibility.Collapsed;
+            }
         }
 
         private bool IsNavigatingToOutline { get; set; }
