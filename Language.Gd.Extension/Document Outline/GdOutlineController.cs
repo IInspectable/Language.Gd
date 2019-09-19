@@ -1,6 +1,8 @@
 ﻿#region Using Directives
 
 using System;
+using System.Reactive.Linq;
+using System.Threading;
 
 using JetBrains.Annotations;
 
@@ -20,17 +22,18 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
     class GdOutlineController: IVsRunningDocTableEvents, IDisposable {
 
         IWpfTextView _activeWpfTextView;
-        bool         _isRunning;
+
+        bool IsRunning { get; set; }
 
         public void Run() {
 
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (_isRunning) {
+            if (IsRunning) {
                 return;
             }
 
-            _isRunning = true;
+            IsRunning = true;
 
             ConnectRunningDocumentTable();
             SetActiveTextView(TryGetActiveGdTextView());
@@ -40,47 +43,44 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            if (!_isRunning) {
+            if (!IsRunning) {
                 return;
             }
 
             SetActiveTextView(null);
             DisconnectRunningDocumentTable();
 
-            _isRunning = false;
+            IsRunning = false;
         }
 
-        private bool IsNavigatingToSource { get; set; }
+        bool IsNavigatingToSource { get; set; }
 
         IDisposable NavigatingToSource() {
             return new ScopedValue<bool>(() => IsNavigatingToSource, v => IsNavigatingToSource = v, true);
         }
 
         public void NavigateToSource(OutlineElement outlineElement) {
-            using (NavigatingToSource()) {
-                if (_activeWpfTextView != null && outlineElement != null) {
 
-                    var snapshotPoint = new SnapshotPoint(_activeWpfTextView.TextBuffer.CurrentSnapshot,
-                                                          outlineElement.NavigationPoint);
-
-                    var snapShotSpan = snapshotPoint.GetContainingLine().Extent;
-
-                    _activeWpfTextView.Caret.MoveTo(snapshotPoint);
-                    _activeWpfTextView.ViewScroller.EnsureSpanVisible(snapShotSpan);
-                }
-            }
-
-        }
-
-        public void Invalidate() {
-            if (!_isRunning) {
+            if (_activeWpfTextView == null ||
+                outlineElement     == null) {
                 return;
             }
 
-            RaiseOutlineDataChanged();
+            using (NavigatingToSource()) {
+
+                var snapshotPoint = new SnapshotPoint(_activeWpfTextView.TextBuffer.CurrentSnapshot,
+                                                      outlineElement.NavigationPoint);
+
+                var snapShotSpan = snapshotPoint.GetContainingLine().Extent;
+
+                _activeWpfTextView.Caret.MoveTo(snapshotPoint);
+                _activeWpfTextView.ViewScroller.EnsureSpanVisible(snapShotSpan);
+            }
+
         }
 
         public void Dispose() {
+            ThreadHelper.ThrowIfNotOnUIThread();
             Stop();
         }
 
@@ -110,15 +110,18 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         public event EventHandler<NavigateToOutlineEventArgs> RequestNavigateToOutline;
 
         void OnParseResultChanged(object sender, SnapshotSpanEventArgs e) {
-            Invalidate();
+            RaiseOutlineDataChanged();
         }
 
-        void OnCaretPositionChanged(object sender, CaretPositionChangedEventArgs e) {
-            // TODO Throtteling?
+        void OnCaretPositionChanged(CaretPositionChangedEventArgs e) {
             RaiseRequestNavigateToOutline();
         }
 
-        private void RaiseOutlineDataChanged() {
+        void RaiseOutlineDataChanged() {
+
+            if (!IsRunning) {
+                return;
+            }
 
             OutlineDataChanged?.Invoke(this, new OutlineDataEventArgs(TryGetOutlineData()));
             RaiseRequestNavigateToOutline();
@@ -126,7 +129,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         void RaiseRequestNavigateToOutline() {
 
-            if (IsNavigatingToSource) {
+            if (IsNavigatingToSource || !IsRunning) {
                 return;
             }
 
@@ -141,40 +144,49 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             RequestNavigateToOutline?.Invoke(this, new NavigateToOutlineEventArgs(bestMatch));
         }
 
-        private void SetActiveTextView([CanBeNull] IWpfTextView wpfTextView) {
+        IDisposable _caretPositionEvents;
 
-            if (_activeWpfTextView == wpfTextView || !_isRunning) {
+        void SetActiveTextView([CanBeNull] IWpfTextView wpfTextView) {
+
+            if (_activeWpfTextView == wpfTextView || !IsRunning) {
                 return;
             }
 
             // Disconnect from current view
             if (_activeWpfTextView != null) {
 
-                _activeWpfTextView.Caret.PositionChanged -= OnCaretPositionChanged;
+                _caretPositionEvents?.Dispose();
+                _caretPositionEvents = null;
 
                 ParserService.ParserService.GetOrCreateSingelton(_activeWpfTextView.TextBuffer).ParseResultChanged -= OnParseResultChanged;
 
                 _activeWpfTextView = null;
             }
 
-            if (IsGdContentType(wpfTextView)) {
-                _activeWpfTextView = wpfTextView;
-            }
-
             // Connect to active view
-            if (_activeWpfTextView != null) {
-                _activeWpfTextView.Caret.PositionChanged += OnCaretPositionChanged;
+            if (wpfTextView != null && IsGdContentType(wpfTextView)) {
+
+                _activeWpfTextView = wpfTextView;
+
+                _caretPositionEvents = Observable.FromEventPattern<CaretPositionChangedEventArgs>(
+                                                      addHandler: handler => wpfTextView.Caret.PositionChanged    += handler,
+                                                      removeHandler: handler => wpfTextView.Caret.PositionChanged -= handler
+                                                  )
+                                                 .Throttle(ServiceProperties.OutlineControllerSyncThrottleTime)
+                                                 .Select(d => d.EventArgs)
+                                                 .ObserveOn(SynchronizationContext.Current)
+                                                 .Subscribe(OnCaretPositionChanged);
 
                 ParserService.ParserService.GetOrCreateSingelton(_activeWpfTextView.TextBuffer).ParseResultChanged += OnParseResultChanged;
             }
 
-            Invalidate();
+            RaiseOutlineDataChanged();
         }
 
         OutlineData _cachedOutlineData;
 
         [CanBeNull]
-        private OutlineData TryGetOutlineData() {
+        OutlineData TryGetOutlineData() {
 
             var sts = TryGetActiveParserService()?.SyntaxTreeAndSnapshot;
 
