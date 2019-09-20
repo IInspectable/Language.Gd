@@ -9,7 +9,7 @@
             Orientation="Horizontal"
 
             theming:ImageThemingUtilities.ImageBackgroundColor="{DynamicResource {x:Static platformUi:TreeViewColors.BackgroundColorKey}}"
-            Margin="1,2,1,1"
+            Margin="1,2,1,2"
             mc:Ignorable="d"
             d:DesignHeight="20"
             d:DesignWidth="250">
