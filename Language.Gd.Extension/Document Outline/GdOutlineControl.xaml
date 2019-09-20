@@ -116,7 +116,7 @@
                     <Setter Property="Template">
                         <Setter.Value>
                             <ControlTemplate TargetType="{x:Type TreeViewItem}">
-                                <Grid>
+                                <Grid ShowGridLines="False">
                                     <Grid.ColumnDefinitions>
                                         <ColumnDefinition MinWidth="19" Width="Auto" />
                                         <ColumnDefinition Width="Auto" />
@@ -127,22 +127,31 @@
                                         <RowDefinition />
                                     </Grid.RowDefinitions>
 
-                                    <ToggleButton x:Name="Expander" ClickMode="Press"
+                                    <ToggleButton x:Name="Expander" 
+                                                  ClickMode="Press"
                                                   IsChecked="{Binding IsExpanded, RelativeSource={RelativeSource TemplatedParent}}"
                                                   Style="{StaticResource ExpandCollapseToggleStyle}" />
-
                                     
                                     <Border x:Name="Bd" BorderBrush="{TemplateBinding BorderBrush}"
                                             BorderThickness="{TemplateBinding BorderThickness}"
-                                            Background="{TemplateBinding Background}" Grid.Column="1"
-                                            Padding="{TemplateBinding Padding}" SnapsToDevicePixels="true">
+                                            Background="{TemplateBinding Background}" 
+                                            Grid.Column="1" 
+                                            Grid.ColumnSpan="2"
+                                            Grid.Row="0"
+                                            Padding="{TemplateBinding Padding}" 
+                                            SnapsToDevicePixels="true">
 
                                         <ContentPresenter x:Name="PART_Header" ContentSource="Header"
                                                           HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
                                                           SnapsToDevicePixels="{TemplateBinding SnapsToDevicePixels}" />
                                     </Border>
-                                    <ItemsPresenter x:Name="ItemsHost" Grid.ColumnSpan="2" Grid.Column="1" Grid.Row="1" />
+
+                                    <ItemsPresenter x:Name="ItemsHost" 
+                                                    Grid.ColumnSpan="2" 
+                                                    Grid.Column="1" 
+                                                    Grid.Row="1" />
                                 </Grid>
+
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsExpanded" Value="false">
                                         <Setter Property="Visibility" TargetName="ItemsHost" Value="Collapsed" />
