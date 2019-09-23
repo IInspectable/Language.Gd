@@ -1,11 +1,16 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
 using System.Collections.Generic;
+using System.Windows;
 
 using JetBrains.Annotations;
 
 using Pharmatechnik.Language.Gd.DocumentOutline;
 using Pharmatechnik.Language.Gd.Extension.Common;
 using Pharmatechnik.Language.Gd.Extension.Imaging;
+
+#endregion
 
 namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
@@ -28,11 +33,11 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             AddOutlineElement(null, outlineData?.OutlineElement);
 
             if (TreeView.Items.Count == 0) {
-                TreeView.Visibility  = System.Windows.Visibility.Collapsed;
-                Watermark.Visibility = System.Windows.Visibility.Visible;
+                TreeView.Visibility  = Visibility.Collapsed;
+                Watermark.Visibility = Visibility.Visible;
             } else {
-                TreeView.Visibility  = System.Windows.Visibility.Visible;
-                Watermark.Visibility = System.Windows.Visibility.Collapsed;
+                TreeView.Visibility  = Visibility.Visible;
+                Watermark.Visibility = Visibility.Collapsed;
             }
         }
 
@@ -90,8 +95,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                 e.Handled = true;
             };
 
-            // TODO Bai NavigateToOutline sollte das aber dennoch funktionieren
-            item.RequestBringIntoView += (o, e) => { e.Handled = true; };
+            item.RequestBringIntoView += OnItemRequestBringIntoView;
 
             foreach (var child in outline.Children) {
                 AddOutlineElement(item, child);
@@ -100,6 +104,34 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             itemCollection.Add(item);
             _flattenTree[outline] = item;
 
+        }
+
+        private bool IsHandlingOnItemRequestBringIntoView { get; set; }
+
+        IDisposable HandlingOnItemRequestBringIntoView() {
+            return new ScopedValue<bool>(getter: () => IsHandlingOnItemRequestBringIntoView, setter: v => IsHandlingOnItemRequestBringIntoView = v, value: true);
+        }
+
+        void OnItemRequestBringIntoView(object sender, RequestBringIntoViewEventArgs e) {
+
+            if (IsHandlingOnItemRequestBringIntoView) {
+                return;
+            }
+
+            using (HandlingOnItemRequestBringIntoView()) {
+
+                if (sender is TreeViewItem tvi &&
+                    tvi.Header is OutlineItemControl oic) {
+
+                    tvi.UpdateLayout();
+                    // See: https://stackoverflow.com/questions/3225940/prevent-automatic-horizontal-scroll-in-treeview/34269542#42238409
+                    var newTargetRect = new Rect(x: -1000, y: 0, width: oic.ActualWidth + 1000, height: oic.ActualHeight);
+                    tvi.BringIntoView(newTargetRect);
+
+                    e.Handled = true;
+
+                }
+            }
         }
 
     }
