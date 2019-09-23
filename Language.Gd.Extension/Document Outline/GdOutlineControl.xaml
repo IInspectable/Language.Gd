@@ -199,10 +199,10 @@
         </TreeView>
 
         <TextBlock x:Name="Watermark"
-                   TextWrapping="Wrap"
-                   TextAlignment="Center"
+                   TextWrapping="Wrap" 
                    HorizontalAlignment="Center"
-                   Margin="2,10,2,2">
+                   Margin="3,15,3,3" 
+                   FocusVisualStyle="{x:Null}">
             There are no items to show for the selected document.
         </TextBlock>
     </Grid>
