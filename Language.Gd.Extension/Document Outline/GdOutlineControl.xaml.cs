@@ -41,14 +41,10 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             }
         }
 
-        private bool IsNavigatingToOutline { get; set; }
-
-        IDisposable NavigatingToOutline() {
-            return new ScopedValue<bool>(getter: () => IsNavigatingToOutline, setter: v => IsNavigatingToOutline = v, value: true);
-        }
+        readonly ScopedProperty<bool> _isNavigatingToOutline = ScopedProperty.Boolean();
 
         internal void NavigateToOutline([CanBeNull] OutlineElement outlineElement) {
-            using (NavigatingToOutline()) {
+            using (_isNavigatingToOutline.Enter()) {
 
                 if (outlineElement != null && _flattenTree.TryGetValue(outlineElement, out var item)) {
                     item.IsSelected = true;
@@ -87,12 +83,16 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             };
 
             item.Selected += (o, e) => {
-                var outlineElement = (OutlineElement) ((TreeViewItem) o).Tag;
-                if (!IsNavigatingToOutline) {
-                    RequestNavigateToSource?.Invoke(this, new RequestNavigateToEventArgs(outlineElement));
-                }
 
                 e.Handled = true;
+
+                if (_isNavigatingToOutline) {
+                    return;
+                }
+
+                var outlineElement = (OutlineElement) ((TreeViewItem) o).Tag;
+                RequestNavigateToSource?.Invoke(this, new RequestNavigateToEventArgs(outlineElement));
+
             };
 
             item.RequestBringIntoView += OnItemRequestBringIntoView;
@@ -106,19 +106,15 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         }
 
-        private bool IsHandlingOnItemRequestBringIntoView { get; set; }
-
-        IDisposable HandlingOnItemRequestBringIntoView() {
-            return new ScopedValue<bool>(getter: () => IsHandlingOnItemRequestBringIntoView, setter: v => IsHandlingOnItemRequestBringIntoView = v, value: true);
-        }
+        readonly ScopedProperty<bool> _isHandlingOnItemRequestBringIntoView = ScopedProperty.Boolean();
 
         void OnItemRequestBringIntoView(object sender, RequestBringIntoViewEventArgs e) {
 
-            if (IsHandlingOnItemRequestBringIntoView) {
+            if (_isHandlingOnItemRequestBringIntoView) {
                 return;
             }
 
-            using (HandlingOnItemRequestBringIntoView()) {
+            using (_isHandlingOnItemRequestBringIntoView.Enter()) {
 
                 if (sender is TreeViewItem tvi &&
                     tvi.Header is OutlineItemControl oic) {

@@ -53,11 +53,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             IsRunning = false;
         }
 
-        bool IsNavigatingToSource { get; set; }
-
-        IDisposable NavigatingToSource() {
-            return new ScopedValue<bool>(() => IsNavigatingToSource, v => IsNavigatingToSource = v, true);
-        }
+        readonly ScopedProperty<bool> _isNavigatingToSource = ScopedProperty.Boolean();
 
         public void NavigateToSource(OutlineElement outlineElement) {
 
@@ -66,7 +62,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                 return;
             }
 
-            using (NavigatingToSource()) {
+            using (_isNavigatingToSource.Enter()) {
 
                 var snapshotPoint = new SnapshotPoint(_activeWpfTextView.TextBuffer.CurrentSnapshot,
                                                       outlineElement.NavigationPoint);
@@ -129,7 +125,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         void RaiseRequestNavigateToOutline() {
 
-            if (IsNavigatingToSource || !IsRunning) {
+            if (_isNavigatingToSource || !IsRunning) {
                 return;
             }
 
