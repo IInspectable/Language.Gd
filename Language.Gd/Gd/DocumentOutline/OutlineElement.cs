@@ -92,12 +92,15 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
 
                 FlattenElements(this, elements);
 
+                // Wir gehen davon aus, dass die Elemente hierarchisch sind, und von daher der Parent immer mindestens die Ausdehung seiner Kinder hat.
+                // Um die Ordnung nun beizubehalten, kommen bei Elementen mit selber Position die Elemente mit der größeren Ausdehnung
+                // (also die Eltern) immer zuerst.
                 return elements.OrderBy(e => e.Extent.Start)
-                               .ThenBy(e => e.Extent.Length)
+                               .ThenByDescending(e => e.Extent.Length)
                                .ToImmutableArray();
             }
 
-            void FlattenElements(OutlineElement element, List<OutlineElement> items) {
+            void FlattenElements(OutlineElement element, ICollection<OutlineElement> items) {
                 items.Add(element);
                 foreach (var c in element.Children) {
                     FlattenElements(c, items);
@@ -112,24 +115,22 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
         [CanBeNull]
         public OutlineElement FindBestMatch(int position) {
 
-            var flattenList = Flatten();
-            // finde erstes Item mit dem kleinsten definierten Bereich
-            var activeItem = flattenList.Where(entry => entry.Contains(position))
-                                        .OrderBy(e => e.Extent.Length)
-                                        .FirstOrDefault();
+            return FindExtactMatch(position) ?? this;
+        }
 
-            if (activeItem != null) {
-                return activeItem;
+        OutlineElement FindExtactMatch(int position) {
+            if (!Extent.Contains(position)) {
+                return null;
             }
 
-            // Den ersten Eintrag nach dem Cursor wählen
-            var closestEntry = flattenList.FirstOrDefault(entry => position < entry.Start && position < entry.End);
-            if (closestEntry == null) {
-                // Den letzten Eintrag wählen
-                closestEntry = flattenList.Last();
+            if (Children.Length == 0) {
+                return this;
             }
 
-            return closestEntry;
+            var bestChild = Children.Select(entry => entry.FindExtactMatch(position))
+                                    .FirstOrDefault(c => c != null);
+
+            return bestChild ?? this;
         }
 
     }

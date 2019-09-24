@@ -491,8 +491,8 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
                     // Den ersten Eintrag nach dem Cursor wählen
                     var closestEntry = items.FirstOrDefault(entry => caretPosition < entry.Start && caretPosition < entry.End);
                     if (closestEntry == null) {
-                        // Den letzten Eintrag wählen
-                        closestEntry = items.Last();
+                        // Den ersten Eintrag, da.h. die Spitze der Hierarchy wählen
+                        closestEntry = items.First();
                     }
 
                     newIndex = items.IndexOf(closestEntry);
