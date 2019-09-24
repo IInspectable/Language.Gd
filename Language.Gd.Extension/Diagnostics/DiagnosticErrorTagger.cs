@@ -28,8 +28,6 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
 
         public IEnumerable<ITagSpan<DiagnosticErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans) {
 
-            // TODO GetTags
-
             var serviceSyntaxTreeAndSnapshot = ParserService.SyntaxTreeAndSnapshot;
             if (serviceSyntaxTreeAndSnapshot == null) {
                 yield break;
@@ -54,6 +52,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
                     }
                 }
             }
+
+            // TODO DiagnosticErrorTagger GetTags Semantic Fehler
+
             //    //==================
             //    // Semantic Fehler
             //    foreach (var diagnostic in codeGenerationUnit.Diagnostics.SelectMany(diag => diag.ExpandLocations())) {

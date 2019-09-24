@@ -1,6 +1,6 @@
 ﻿namespace Pharmatechnik.Language.Gd {
 
-    class SyntaxClassifierHelper {
+    static class SyntaxClassifierHelper {
 
         public static GdClassification ClassifyToken(SyntaxToken token) {
 
@@ -127,7 +127,6 @@
                 return GdClassification.StaticSymbol;
             }
 
-            // TODO ClassifyTokenKind
             switch (syntaxKind) {
                 case SyntaxKind.MultiLineCommentTrivia:
                 case SyntaxKind.SingleLineCommentTrivia:

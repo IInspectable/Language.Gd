@@ -25,10 +25,10 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
         // TODO ClassificationTypeNames
 
         public const string StaticSymbol = "Gd StaticSymbol"; // CSharpClassificationTypeNames.StaticSymbol;
-        public const string Unknown      = "GdUnknown";
+        public const string Unknown      = "Gd Unknown";
         public const string Skiped       = "Gd Skiped Token";
-        public const string Underline    = "GdUnderline";
-        public const string CallType     = "GdCallType";
+        public const string Underline    = "Gd Underline";
+        public const string CallType     = "Gd CallType";
 
         public const string LeadingTriviaSpan  = "Gd LeadingTriviaSpan";
         public const string TokenSpan          = "Gd TokenSpan";

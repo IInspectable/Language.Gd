@@ -50,7 +50,7 @@ namespace Pharmatechnik.Language.Gd.Extension {
         101,
         AutoOutlining               = true,
         MatchBraces                 = true,
-        ShowSmartIndent             = false,
+        ShowSmartIndent             = true,
         DefaultToInsertSpaces       = true,
         MatchBracesAtCaret          = true,
         EnableAsyncCompletion       = true,

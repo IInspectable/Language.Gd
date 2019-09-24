@@ -10,12 +10,11 @@ using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd {
 
-    // TODO SyntaxList
     public struct SyntaxList<TSyntax>: IReadOnlyList<TSyntax> where TSyntax : SyntaxNode {
 
         private readonly SyntaxNode _node;
 
-        internal SyntaxList(SyntaxNode slot) {
+        SyntaxList(SyntaxNode slot) {
             _node = slot;
         }
 

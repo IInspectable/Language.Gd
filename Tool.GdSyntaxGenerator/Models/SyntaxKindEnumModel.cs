@@ -1,9 +1,16 @@
-﻿using System.Collections.Generic;
+﻿#region Using Directives
+
+using System.Collections.Generic;
+
+using JetBrains.Annotations;
 
 using Pharmatechnik.Language.Text;
 
+#endregion
+
 namespace Tool.GdSyntaxGenerator.Models {
 
+    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     class SyntaxKindEnumModel {
         
         public SyntaxKindEnumModel(string @namespace, TokenInfo tokenInfo, GrammarInfo grammarInfo) {

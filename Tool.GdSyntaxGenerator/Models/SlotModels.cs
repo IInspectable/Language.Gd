@@ -1,9 +1,15 @@
-﻿using System.Linq;
+﻿#region Using Directives
+
+using System.Linq;
 using System.Collections.Generic;
+
+using JetBrains.Annotations;
+
+#endregion
 
 namespace Tool.GdSyntaxGenerator.Models {
 
-    // TODO: Eigentlich sind die Slots hier die Rules und AbstractRules
+    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     class SlotModels {
 
         public SlotModels(string baseNamespace, GrammarInfo grammarInfo) {

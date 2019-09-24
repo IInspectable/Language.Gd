@@ -50,8 +50,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
 
         public static DiagnosticService GetOrCreate(IWpfTextView textView) {
             var componentModel = GdLanguagePackage.GetGlobalService<SComponentModel, IComponentModel>();
-            return textView.Properties.GetOrCreateSingletonProperty(() =>
-                                                                        new DiagnosticService(textView, componentModel));
+            return textView.Properties.GetOrCreateSingletonProperty(() => new DiagnosticService(textView, componentModel));
         }
 
         public void Dispose() {
@@ -94,20 +93,12 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
         }
 
         [CanBeNull]
-        public DiagnosticSeverity? WorstSeverity {
-            get { return _worstSeverity; }
-        }
+        public DiagnosticSeverity? WorstSeverity => _worstSeverity;
 
-        public bool NoErrorsOrWarnings {
-            get {
-                return CountDiagnosticsWithSeverity(DiagnosticSeverity.Error)   == 0 &&
-                       CountDiagnosticsWithSeverity(DiagnosticSeverity.Warning) == 0;
-            }
-        }
+        public bool NoErrorsOrWarnings => CountDiagnosticsWithSeverity(DiagnosticSeverity.Error)   == 0 &&
+                                          CountDiagnosticsWithSeverity(DiagnosticSeverity.Warning) == 0;
 
-        public bool WaitingForAnalysis {
-            get { return _waitingForAnalysis; }
-        }
+        public bool WaitingForAnalysis => _waitingForAnalysis;
 
         public void Invalidate() {
 
@@ -134,9 +125,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
                 ?? Enumerable.Empty<IMappingTagSpan<DiagnosticErrorTag>>();
         }
 
-        public bool CanGoToNextDiagnostic {
-            get { return _diagnosticMapping.Count > 0; }
-        }
+        public bool CanGoToNextDiagnostic => _diagnosticMapping.Count > 0;
 
         public bool GoToNextDiagnostic() {
 
@@ -160,8 +149,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
             var caretPos = _textView.Caret.Position.BufferPosition;
 
             // TODO noch optimieren / überprüfen
-            foreach (var tagSpan in GetDiagnosticsWithSeverity(severity)
-               .Select(mappingTagSpan => _textView.MapToSingleSnapshotSpan(mappingTagSpan))) {
+            foreach (var tagSpan in GetDiagnosticsWithSeverity(severity).Select(mappingTagSpan => _textView.MapToSingleSnapshotSpan(mappingTagSpan))) {
 
                 if (tagSpan?.Span.Start > caretPos) {
                     return GoToDiagnostic(tagSpan);

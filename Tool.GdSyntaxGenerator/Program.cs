@@ -61,9 +61,19 @@ namespace Tool.GdSyntaxGenerator {
         private static void DumpGrammar(GrammarInfo grammarInfo) {
 
             foreach (var rule in grammarInfo.Rules) {
-                Console.WriteLine();
-                Console.WriteLine(rule);
+                WriteVerbose();
+                WriteVerbose(rule);
             }
+        }
+
+        [Conditional("Verbose")]
+        static void WriteVerbose(object value) {
+            Console.WriteLine(value);
+        }
+
+        [Conditional("Verbose")]
+        static void WriteVerbose() {
+            Console.WriteLine();
         }
 
         static void WriteGeneratedFiles(string targetDirectory,
@@ -205,10 +215,11 @@ namespace Tool.GdSyntaxGenerator {
         }
 
         [UsedImplicitly]
-        private static void WriteMetaModel( string targetDirectory, SlotModels slotModels, CodeGeneratorContext context) {
-            // TODO Write Control Types...
+        private static void WriteMetaModel(string targetDirectory, SlotModels slotModels, CodeGeneratorContext context) {
 
-            var derivedTypes = from t in typeof(Control).Assembly.GetTypes()
+            // TODO WriteMetaModel
+
+            var derivedTypes = from t in typeof(GuiElement).Assembly.GetTypes()
                                where t.IsSubclassOf(typeof(GuiElement))
                                select t;
 
@@ -217,10 +228,6 @@ namespace Tool.GdSyntaxGenerator {
             }
         }
 
-        [Conditional("Verbose")]
-        static void WriteVerbose(string text) {
-            Console.WriteLine(text);
-        }
     }
 
 }

@@ -1,11 +1,18 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
 using System.Linq;
 using System.Collections.Generic;
 
+using JetBrains.Annotations;
+
 using Pharmatechnik.Language.Text;
+
+#endregion
 
 namespace Tool.GdSyntaxGenerator.Models {
 
+    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     class SlotModel: AbstractSlotModel {
 
         public SlotModel(ParserRule rule, string baseRule, string baseNamespace, GrammarInfo grammarInfo)
@@ -51,11 +58,10 @@ namespace Tool.GdSyntaxGenerator.Models {
                 }
 
                 Slots.Add(new SlotMemberModel {
-                    Name       = name,
-                    IsToken    = element is TokenElement,
-                    IsLabeled  = element.IsLabeled,
-                    SyntaxKind = syntaxKind,
-                    // TODO Falls token, dann wollen wir hier immer eine 0..1 
+                    Name        = name,
+                    IsToken     = element is TokenElement,
+                    IsLabeled   = element.IsLabeled,
+                    SyntaxKind  = syntaxKind,
                     Cardinality = element.Cardinality,
                     SlotIndex   = index++
                 });
@@ -69,7 +75,6 @@ namespace Tool.GdSyntaxGenerator.Models {
         public IEnumerable<SlotMemberModel> SyntaxSlots => Slots.Where(s => !s.IsToken);
         public IEnumerable<SlotMemberModel> TokenSlots  => Slots.Where(s => s.IsToken);
 
-        // TODO Named Sections generieren?
         public bool IsSection => RuleName.EndsWith("Section");
 
         public string SectionBeginName => IsSection ? RuleName + "Begin" : "";

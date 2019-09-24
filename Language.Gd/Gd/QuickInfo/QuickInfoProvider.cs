@@ -2,7 +2,7 @@
 
 namespace Pharmatechnik.Language.Gd.QuickInfo {
 
-    public class QuickInfoProvider {
+    public static class QuickInfoProvider {
 
         // TODO GetQuickInfoDefinition
         [CanBeNull]

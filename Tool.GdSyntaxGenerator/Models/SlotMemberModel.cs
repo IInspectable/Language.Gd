@@ -1,7 +1,14 @@
-﻿using Pharmatechnik.Language.Text;
+﻿#region Using Directives
+
+using JetBrains.Annotations;
+
+using Pharmatechnik.Language.Text;
+
+#endregion
 
 namespace Tool.GdSyntaxGenerator.Models {
 
+    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     class SlotMemberModel {
 
         public bool   IsToken      { get; set; }

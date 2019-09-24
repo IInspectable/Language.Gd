@@ -179,7 +179,6 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
 
         public static ImmutableDictionary<GdClassification, IClassificationType> GetClassificationMap(IClassificationTypeRegistryService registry) {
 
-            // TODO Mapping...
             var classificationMap = new Dictionary<GdClassification, IClassificationType> {
                 {GdClassification.Comment, registry.GetClassificationType(ClassificationTypeNames.Comment)},
                 {GdClassification.Keyword, registry.GetClassificationType(ClassificationTypeNames.Keyword)},

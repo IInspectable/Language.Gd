@@ -7,6 +7,7 @@ using Pharmatechnik.Language.Gd.Internal;
 
 namespace Pharmatechnik.Language.Gd {
 
+    // TODO SyntaxTriviaList solle einen einzigen TokenSlot (mit IsList=true) als Argument erhalten. Siehe SyntaxList implementierung
     public struct SyntaxTriviaList: IReadOnlyList<SyntaxTrivia> {
 
         private readonly ImmutableArray<TriviaSlot> _trivias;

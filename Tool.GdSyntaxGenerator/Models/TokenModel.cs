@@ -1,5 +1,12 @@
-﻿namespace Tool.GdSyntaxGenerator.Models {
+﻿#region Using Directives
 
+using JetBrains.Annotations;
+
+#endregion
+
+namespace Tool.GdSyntaxGenerator.Models {
+
+    [UsedImplicitly(ImplicitUseTargetFlags.WithMembers)]
     class TokenModel {
 
         public TokenModel(TokenInfo tokenInfo, string baseNamespace) {
