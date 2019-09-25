@@ -54,9 +54,10 @@ namespace Pharmatechnik.Language.Core.Tests {
             Assert.That(st.FileInfo,        Is.Null);
             Assert.That(st.TextLines.Count, Is.EqualTo(2));
 
-            Assert.That(st.TextLines[0].ToString(),      Is.EqualTo("hello There!\r\n"));
-            Assert.That(st.TextLines[0].Span.ToString(), Is.EqualTo("hello There!\r\n"));
-            Assert.That(st.TextLines[1].ToString(),      Is.EqualTo(""));
+            Assert.That(st.TextLines[0].ToString(),                        Is.EqualTo("hello There!"));
+            Assert.That(st.TextLines[0].SpanIncludingLineBreak.ToString(), Is.EqualTo("hello There!\r\n"));
+            Assert.That(st.TextLines[0].Span.ToString(),                   Is.EqualTo("hello There!"));
+            Assert.That(st.TextLines[1].ToString(),                        Is.EqualTo(""));
         }
 
         //[Test]
@@ -110,15 +111,39 @@ namespace Pharmatechnik.Language.Core.Tests {
         }
 
         [Test]
+        public void SliceFromLineStartToPositionFirstLine() {
+            const string testText = "Hello There!\r\n" +
+                                    "Next Line";
+
+            SourceText st = SourceText.From(testText);
+
+            var position = testText.IndexOf("There", StringComparison.Ordinal);
+            var sliceEnd = st.SliceFromLineStartToPosition(position);
+            Assert.That(sliceEnd.ToString(), Is.EqualTo("Hello "));
+        }
+
+        [Test]
         public void SliceFromLineStartToPosition() {
             const string testText = "Hello There!\r\n" +
                                     "Next Line";
 
             SourceText st = SourceText.From(testText);
 
-            var position = testText.IndexOf("Line", StringComparison.Ordinal);
+            var position = testText.IndexOf(" Line", StringComparison.Ordinal);
+            var sliceEnd = st.SliceFromLineStartToPosition(position);
+            Assert.That(sliceEnd.ToString(), Is.EqualTo("Next"));
+        }
+
+        [Test]
+        public void SliceFromPositionToLineEndFirstLine() {
+            const string testText = "Hello There!\r\n" +
+                                    "Next Line";
+
+            SourceText st = SourceText.From(testText);
+
+            var position = testText.IndexOf("Hello", StringComparison.Ordinal);
             var sliceEnd = st.SliceFromPositionToLineEnd(position);
-            Assert.That(sliceEnd.ToString(), Is.EqualTo("Line"));
+            Assert.That(sliceEnd.ToString(), Is.EqualTo("Hello There!"));
         }
 
         [Test]
@@ -130,6 +155,30 @@ namespace Pharmatechnik.Language.Core.Tests {
 
             var position = testText.IndexOf("Line", StringComparison.Ordinal);
             var sliceEnd = st.SliceFromPositionToLineEnd(position);
+            Assert.That(sliceEnd.ToString(), Is.EqualTo("Line"));
+        }
+
+        [Test]
+        public void SliceFromPositionToLineEndIncludingLineBreakFirstLine() {
+            const string testText = "Hello There!\r\n" +
+                                    "Next Line";
+
+            SourceText st = SourceText.From(testText);
+
+            var position = testText.IndexOf("Hello", StringComparison.Ordinal);
+            var sliceEnd = st.SliceFromPositionToLineEndIncludingLineBreak(position);
+            Assert.That(sliceEnd.ToString(), Is.EqualTo("Hello There!\r\n"));
+        }
+
+        [Test]
+        public void SliceFromPositionToLineEndIncludingLineBreak() {
+            const string testText = "Hello There!\r\n" +
+                                    "Next Line";
+
+            SourceText st = SourceText.From(testText);
+
+            var position = testText.IndexOf("Line", StringComparison.Ordinal);
+            var sliceEnd = st.SliceFromPositionToLineEndIncludingLineBreak(position);
             Assert.That(sliceEnd.ToString(), Is.EqualTo("Line"));
         }
 
@@ -154,8 +203,9 @@ namespace Pharmatechnik.Language.Core.Tests {
 
             var tl2 = st.TextLines[1];
 
-            var col = tl2.GetIndentationColumn(tabSize: 4);
-            Assert.That(col, Is.EqualTo(4 + 1));
+            var col = tl2.GetIndentationColumn(tabSize: 4, out var index);
+            Assert.That(col,   Is.EqualTo(4 + 1));
+            Assert.That(index, Is.EqualTo(2));
         }
 
         [Test]
@@ -167,8 +217,9 @@ namespace Pharmatechnik.Language.Core.Tests {
 
             var tl2 = st.TextLines[1];
 
-            var col = tl2.GetIndentationColumn(tabSize: 4);
-            Assert.That(col, Is.EqualTo(4 + 4));
+            var col = tl2.GetIndentationColumn(tabSize: 4, out var index);
+            Assert.That(col,   Is.EqualTo(4 + 4));
+            Assert.That(index, Is.EqualTo(5));
         }
 
         [Test]
@@ -180,8 +231,9 @@ namespace Pharmatechnik.Language.Core.Tests {
 
             var tl2 = st.TextLines[1];
 
-            var col = tl2.GetIndentationColumn(tabSize: 4);
-            Assert.That(col, Is.EqualTo(0 + 4 + 1));
+            var col = tl2.GetIndentationColumn(tabSize: 4, out var index);
+            Assert.That(col,   Is.EqualTo(0 + 4 + 1));
+            Assert.That(index, Is.EqualTo(3));
         }
 
         [Test]
@@ -193,8 +245,9 @@ namespace Pharmatechnik.Language.Core.Tests {
 
             var tl2 = st.TextLines[1];
 
-            var col = tl2.GetIndentationColumn(tabSize: 4);
-            Assert.That(col, Is.EqualTo(Int32.MaxValue));
+            var col = tl2.GetIndentationColumn(tabSize: 4, out var index);
+            Assert.That(col,   Is.EqualTo(Int32.MaxValue));
+            Assert.That(index, Is.EqualTo(0));
         }
 
         [Test]
@@ -206,8 +259,10 @@ namespace Pharmatechnik.Language.Core.Tests {
 
             var tl2 = st.TextLines[1];
 
-            var col = tl2.GetIndentationColumn(tabSize: 4);
-            Assert.That(col, Is.EqualTo(Int32.MaxValue));
+            var col = tl2.GetIndentationColumn(tabSize: 4, out var index);
+
+            Assert.That(col,   Is.EqualTo(Int32.MaxValue));
+            Assert.That(index, Is.EqualTo(3));
         }
 
         [Test]

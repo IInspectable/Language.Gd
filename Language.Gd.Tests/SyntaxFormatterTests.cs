@@ -5,6 +5,8 @@ using System.Text;
 
 using NUnit.Framework;
 
+using Pharmatechnik.Language.Text;
+
 namespace Pharmatechnik.Language.Gd.Tests {
 
     [TestFixture]
@@ -38,6 +40,19 @@ END PROPERTIES
             var actual = writer.ToString();
 
             Assert.That(actual, Is.EqualTo(expectedSyntax));
+
+            var comment=
+@"/*
+ 1
+    2
+     3
+      */";
+            SourceText st = SourceText.From(comment);
+
+            var indent=st.TextLines.Select(tl => tl.GetIndentationColumn(tabSize:4)).ToList();
+
+            Assert.That(indent, Is.EquivalentTo(new[] {0, 1, 4, 5, 6}));
+
         }
 
         class TextFormatter: SyntaxListener {

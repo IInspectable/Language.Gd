@@ -246,9 +246,22 @@ namespace Pharmatechnik.Language.Text {
         /// Der Signifikante Spaltenindex für diese Zeile ist 8.
         /// </example>
         public static int GetIndentationColumn(this ReadOnlySpan<char> text, int tabSize) {
+            return GetIndentationColumn(text, tabSize, out _);
+        }
+
+        /// <summary>
+        /// Liefert den Spaltenindex (beginnend bei 0) für das erste signifikante Zeichen in der angegebenen Zeile.
+        /// Als nicht signifikant gelten alle Arten von Leerzeichen. Dabei werden Tabulatoren entsprechend umgerechnet.
+        /// <list type="bullet">
+        /// <item>Spaltenindex für das erste signifikante Zeichen</item>
+        /// <item><see cref="int.MaxValue"/>, wenn es kein signifikantes Zeichen gibt</item>
+        /// </list>
+        /// <para>See also: <see cref="StringExtensions.GetIndentationColumn(ReadOnlySpan&lt;char&gt;, int)"/></para>
+        /// </summary>
+        public static int GetIndentationColumn(this ReadOnlySpan<char> text, int tabSize, out int index) {
             bool hasSignificantContent = false;
             int  column                = 0;
-            for (int index = 0; index < text.Length; index++) {
+            for (index = 0; index < text.Length; index++) {
                 var c = text[index];
 
                 if (c == '\t') {
@@ -261,7 +274,12 @@ namespace Pharmatechnik.Language.Text {
                 }
             }
 
-            return hasSignificantContent ? column : Int32.MaxValue;
+            if (!hasSignificantContent) {
+                //   index = -1;
+                return Int32.MaxValue;
+            }
+
+            return column;
         }
 
         public static ImmutableArray<int> ParseLineStarts(this ReadOnlySpan<char> text) {

@@ -20,7 +20,7 @@ namespace Pharmatechnik.Language.Text {
         public int    TabSize { get; }
         public string NewLine { get; }
 
-        public static TextEditorSettings Default = new TextEditorSettings(4, "\r\n");
+        public static readonly TextEditorSettings Default = new TextEditorSettings(4, "\r\n");
 
         public TextEditorSettings With(int? tabSize = null,
                                        string newLine = null) {

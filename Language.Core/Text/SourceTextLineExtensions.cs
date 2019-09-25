@@ -6,9 +6,9 @@ namespace Pharmatechnik.Language.Text {
 
         public static string GetIndentAsSpaces(this SourceTextLine sourceText, int tabSize) {
 
-            var startColumn = sourceText.GetIndentationColumn(tabSize);
+            var indentation = sourceText.GetIndentationColumn(tabSize);
 
-            return new String(' ', startColumn);
+            return new String(' ', indentation);
         }
 
         /// <summary>
@@ -39,6 +39,10 @@ namespace Pharmatechnik.Language.Text {
         /// </example>
         public static int GetIndentationColumn(this SourceTextLine sourceText, int tabSize) {
             return sourceText.Span.GetIndentationColumn(tabSize);
+        }
+
+        public static int GetIndentationColumn(this SourceTextLine sourceText, int tabSize, out int index) {
+            return sourceText.Span.GetIndentationColumn(tabSize, out index);
         }
 
     }

@@ -32,16 +32,20 @@ namespace Pharmatechnik.Language.Text {
                 throw new ArgumentOutOfRangeException(nameof(lineEnd));
             }
 
-            SourceText = sourceText;
-            Line       = line;
-            Start      = lineStart;
-            End        = lineEnd;
+            SourceText            = sourceText;
+            Line                  = line;
+            Start                 = lineStart;
+            EndIncludingLineBreak = lineEnd;
         }
 
         [NotNull]
         public SourceText SourceText { get; }
 
-        public ReadOnlySpan<char> Span => SourceText.Slice(Extent);
+        int IExtent.Start => Start;
+        int IExtent.End   => EndIncludingLineBreak;
+
+        public ReadOnlySpan<char> Span                   => SourceText.Slice(Extent);
+        public ReadOnlySpan<char> SpanIncludingLineBreak => SourceText.Slice(ExtentIncludingLineBreak);
 
         public ReadOnlySpan<char> Slice(int charPositionInLine, int length) => SourceText.Slice(Start + charPositionInLine, length);
 
@@ -49,8 +53,11 @@ namespace Pharmatechnik.Language.Text {
         public Location Location => SourceText.GetLocation(Extent);
 
         [NotNull]
+        public Location LocationIncludingLineBreak => SourceText.GetLocation(ExtentIncludingLineBreak);
+
+        [NotNull]
         public Location GetLocation(int charPositionInLine, int length) {
-            var start  = Extent.Start + charPositionInLine;
+            var start  = Start + charPositionInLine;
             var extent = new TextExtent(start: start, length: length);
             return SourceText.GetLocation(extent);
         }
@@ -61,17 +68,19 @@ namespace Pharmatechnik.Language.Text {
         public int Line { get; }
 
         /// <summary>
-        /// The extent of the line.
+        /// The extent of the line excluding the line ending
         /// </summary>
         public TextExtent Extent => TextExtent.FromBounds(Start, End);
 
         /// <summary>
-        /// The extent of the line excluding the line ending
+        /// The extent of the line.
         /// </summary>
-        public TextExtent ExtentWithoutLineEndings => new TextExtent(Extent.Start, Extent.Length - Span.GetNewLineCharCount());
+        public TextExtent ExtentIncludingLineBreak => TextExtent.FromBounds(Start, EndIncludingLineBreak);
 
         public int Start { get; }
-        public int End   { get; }
+
+        public int End                   => EndIncludingLineBreak - SpanIncludingLineBreak.GetNewLineCharCount();
+        public int EndIncludingLineBreak { get; }
 
         /// <summary>
         /// Determines whether two <see cref="SourceTextLine"/> are the same.
@@ -92,7 +101,7 @@ namespace Pharmatechnik.Language.Text {
         /// </summary>
         /// <param name="other">The object to compare.</param>
         public bool Equals(SourceTextLine other) {
-            return other.Line == Line && other.Extent == Extent;
+            return other.Line == Line && other.ExtentIncludingLineBreak == ExtentIncludingLineBreak;
         }
 
         /// <summary>
@@ -100,7 +109,7 @@ namespace Pharmatechnik.Language.Text {
         /// </summary>
         /// <param name="obj">The object to compare.</param>
         public override bool Equals(object obj) {
-            return obj is SourceTextLine extent && Equals(extent);
+            return obj is SourceTextLine sourceTextLine && Equals(sourceTextLine);
         }
 
         public override string ToString() {
@@ -111,7 +120,7 @@ namespace Pharmatechnik.Language.Text {
         /// Provides a hash function for <see cref="SourceTextLine"/>.
         /// </summary>
         public override int GetHashCode() {
-            return Line ^ Extent.GetHashCode();
+            return Line ^ ExtentIncludingLineBreak.GetHashCode();
         }
 
     }

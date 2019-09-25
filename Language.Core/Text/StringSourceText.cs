@@ -18,7 +18,7 @@ namespace Pharmatechnik.Language.Text {
 
             _memory    = (text ?? String.Empty).AsMemory();
             _textLines = new Lazy<ImmutableArray<int>>(() => _memory.Span.ParseLineStarts(), LazyThreadSafetyMode.PublicationOnly);
-            FileInfo   = String.IsNullOrEmpty(filePath) ? null : new FileInfo(filePath);
+            FileInfo   = filePath.IsNullOrEmpty() ? null : new FileInfo(filePath);
             TextLines  = new StringTextLineList(this);
         }
 
@@ -29,7 +29,7 @@ namespace Pharmatechnik.Language.Text {
         public override ReadOnlySpan<char> Span      => _memory.Span;
 
         public override char this[int index] => _memory.Span[index];
-       
+
         public override ReadOnlySpan<char> Slice(int startIndex, int length) {
             return Span.Slice(start: startIndex, length: length);
         }

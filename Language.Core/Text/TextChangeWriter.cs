@@ -16,18 +16,20 @@ namespace Pharmatechnik.Language.Text {
             if (text == null) {
                 throw new ArgumentNullException(nameof(text));
             }
+
             if (textChanges == null) {
                 throw new ArgumentNullException(nameof(textChanges));
             }
 
             var orderedChanges = textChanges.OrderBy(tc => tc.Extent.Start).ToList();
+
             CheckForOverlappingChanges(orderedChanges);
 
-            StringBuilder textBuilder = new StringBuilder(text);
+            var textBuilder = new StringBuilder(text);
 
             int offset = 0;
             foreach (var change in orderedChanges) {
-                
+
                 int start = offset + change.Extent.Start;
 
                 textBuilder.Remove(start, change.Extent.Length);
@@ -39,7 +41,7 @@ namespace Pharmatechnik.Language.Text {
             return textBuilder.ToString();
         }
 
-        void CheckForOverlappingChanges(IEnumerable<TextChange> orderedChanges) {
+        static void CheckForOverlappingChanges(IEnumerable<TextChange> orderedChanges) {
 
             int currentEnd = 0;
             foreach (var change in orderedChanges) {
@@ -50,5 +52,7 @@ namespace Pharmatechnik.Language.Text {
                 currentEnd = change.Extent.End;
             }
         }
+
     }
+
 }

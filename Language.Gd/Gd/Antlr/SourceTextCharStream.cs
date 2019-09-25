@@ -118,7 +118,7 @@ namespace Pharmatechnik.Language.Gd.Antlr {
         public string SourceName {
             get {
                 var fileName = _sourceText.FileInfo?.FullName;
-                if (string.IsNullOrEmpty(fileName)) {
+                if (fileName.IsNullOrEmpty()) {
                     return "<unknown>";
                 }
 

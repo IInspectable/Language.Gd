@@ -76,7 +76,7 @@ namespace Pharmatechnik.Language.Text {
 
         LinePosition GetLinePositionAtPosition(int position) {
             var lineInformaton = GetTextLineAtPositionCore(position);
-            return new LinePosition(lineInformaton.Line, position - lineInformaton.Extent.Start);
+            return new LinePosition(lineInformaton.Line, position - lineInformaton.Start);
         }
 
         int _lastLineNumber;
@@ -87,8 +87,7 @@ namespace Pharmatechnik.Language.Text {
                 return TextLines[0];
             }
 
-            // TODO EOF
-            if (position == Length||position == Length+1) {
+            if (position == Length || position == Length + 1) {
                 return TextLines[TextLines.Count - 1];
             }
 
