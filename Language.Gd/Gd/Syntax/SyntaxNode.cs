@@ -18,7 +18,7 @@ namespace Pharmatechnik.Language.Gd {
 
     public abstract class SyntaxNode {
 
-        private protected SyntaxNode(SyntaxTree syntaxTree, SyntaxSlot slot, SyntaxNode parent, int position) {
+        private protected SyntaxNode(SyntaxTree syntaxTree, Slot slot, SyntaxNode parent, int position) {
 
             SyntaxTree = syntaxTree ?? throw new ArgumentNullException(nameof(syntaxTree));
             Slot       = slot       ?? throw new ArgumentNullException(nameof(slot));
@@ -27,7 +27,7 @@ namespace Pharmatechnik.Language.Gd {
 
         }
 
-        internal SyntaxSlot Slot { get; }
+        internal Slot Slot { get; }
 
         public SyntaxTree SyntaxTree { get; }
 
@@ -291,7 +291,7 @@ namespace Pharmatechnik.Language.Gd {
         }
 
         [CanBeNull]
-        private protected SyntaxListNode GetSyntaxNode(ref SyntaxListNode field, [CanBeNull] SyntaxSlotList slot, int index) {
+        private protected SyntaxListNode GetSyntaxNode(ref SyntaxListNode field, [CanBeNull] SlotList slot, int index) {
 
             if (slot == null) {
                 return null;
@@ -299,7 +299,8 @@ namespace Pharmatechnik.Language.Gd {
 
             var result = field;
             if (result == null) {
-                Interlocked.CompareExchange(ref field, (SyntaxListNode) slot.Realize(SyntaxTree, this, GetChildPosition(index)), null);
+                int position = GetChildPosition(index);
+                Interlocked.CompareExchange(ref field, new SyntaxListNode(SyntaxTree, slot, this, position), null);
                 result = field;
             }
 

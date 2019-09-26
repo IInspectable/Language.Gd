@@ -1,19 +1,17 @@
-﻿using System.Collections.Immutable;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.Immutable;
+using System.Linq;
+
+using JetBrains.Annotations;
 
 namespace Pharmatechnik.Language.Gd.Internal {
 
-    abstract class SyntaxSlotList: SyntaxSlot {
+    abstract class SlotList: Slot {
 
-        protected SyntaxSlotList(SyntaxKind kind): base(kind) {
-        }
+        private readonly ImmutableArray<Slot> _slots;
 
-    }
-
-    class SyntaxSlotList<T>: SyntaxSlotList where T : SyntaxSlot {
-
-        private readonly ImmutableArray<T> _slots;
-
-        internal SyntaxSlotList(ImmutableArray<T> slots)
+        internal SlotList(ImmutableArray<Slot> slots)
             : base(SyntaxKind.SyntaxList) {
             _slots = slots;
             foreach (var slot in slots) {
@@ -27,9 +25,32 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return _slots[index];
         }
 
-        public override SyntaxNode Realize(SyntaxTree syntaxTree, SyntaxNode parent, int position) {
-            return new SyntaxListNode(syntaxTree, this, parent, position);
+    }
+
+    static class SyntaxSlotList {
+
+        // TODO Spezialisierungen 1,2,3 Slots??
+
+        public static SyntaxSlotList<TSyntaxSlot> Create<TSyntaxSlot>(IEnumerable<SyntaxSlot> slots) where TSyntaxSlot : SyntaxSlot {
+            return new SyntaxSlotList<TSyntaxSlot>(
+                slots.Where(slot => slot != null)
+                     .Cast<TSyntaxSlot>() // Sicherstellen, dass alle elemente vom Typ TSlot sind
+                     .Cast<Slot>()
+                     .ToImmutableArray());
         }
+
+    }
+
+    // Dient nur, um den Code lesbarer zu gestalten
+    class SyntaxSlotList<T>: SlotList where T : SyntaxSlot {
+
+        internal SyntaxSlotList(ImmutableArray<Slot> slots)
+            : base(slots) {
+
+        }
+
+        [UsedImplicitly]
+        public Type SlotType => typeof(T);
 
     }
 

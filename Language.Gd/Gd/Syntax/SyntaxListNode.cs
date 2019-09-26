@@ -13,7 +13,8 @@ namespace Pharmatechnik.Language.Gd {
 
         readonly SyntaxNode[] _children;
 
-        internal SyntaxListNode(SyntaxTree syntaxTree, SyntaxSlotList slotList, SyntaxNode parent, int position): base(syntaxTree, slotList, parent, position) {
+        internal SyntaxListNode(SyntaxTree syntaxTree, SlotList slotList, SyntaxNode parent, int position)
+            : base(syntaxTree: syntaxTree, slot: slotList, parent: parent, position: position) {
             _children = new SyntaxNode[slotList.SlotCount];
         }
 

@@ -144,6 +144,18 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return i;
         }
 
+        public virtual int GetSlotOffset(int index) {
+            int offset = 0;
+            for (int i = 0; i < index; i++) {
+                var child = GetSlot(i);
+                if (child != null) {
+                    offset += child.FullLength;
+                }
+            }
+
+            return offset;
+        }
+
     }
 
 }

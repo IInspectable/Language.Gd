@@ -64,10 +64,8 @@ namespace Pharmatechnik.Language.Gd.Antlr {
         public static SyntaxSlotList<TSlot> OfType<TSlot>(this IEnumerable<SyntaxSlot> requiredSlots)
             where TSlot : SyntaxSlot {
 
-            return new SyntaxSlotList<TSlot>(
-                requiredSlots.Where(slot => slot != null)
-                             .Cast<TSlot>()
-                             .ToImmutableArray());
+            return SyntaxSlotList.Create<TSlot>(requiredSlots);
+
         }
 
     }

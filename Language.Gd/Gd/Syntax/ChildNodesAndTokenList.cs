@@ -14,7 +14,7 @@ namespace Pharmatechnik.Language.Gd {
             Count = CountNodes(node.Slot);
         }
 
-        private static int CountNodes(SyntaxSlot nodeSlot) {
+        private static int CountNodes(Slot nodeSlot) {
 
             int count = 0;
 
