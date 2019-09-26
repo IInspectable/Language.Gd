@@ -2,7 +2,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Immutable;
 using System.Linq;
 
 using Antlr4.Runtime;
@@ -61,10 +60,10 @@ namespace Pharmatechnik.Language.Gd.Antlr {
         }
 
         [NotNull]
-        public static SyntaxSlotList<TSlot> OfType<TSlot>(this IEnumerable<SyntaxSlot> requiredSlots)
+        public static SlotList OfType<TSlot>(this IEnumerable<SyntaxSlot> requiredSlots)
             where TSlot : SyntaxSlot {
 
-            return SyntaxSlotList.Create<TSlot>(requiredSlots);
+            return SlotList.Create<TSlot>(requiredSlots);
 
         }
 

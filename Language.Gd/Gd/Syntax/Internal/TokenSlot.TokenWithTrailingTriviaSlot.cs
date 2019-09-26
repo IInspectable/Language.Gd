@@ -1,22 +1,21 @@
-﻿using System.Collections.Immutable;
-
-namespace Pharmatechnik.Language.Gd.Internal {
+﻿namespace Pharmatechnik.Language.Gd.Internal {
 
     partial class TokenSlot {
 
         private class TokenWithTrailingTriviaSlot: TokenSlot {
 
-            public TokenWithTrailingTriviaSlot(int length, SyntaxKind kind, ImmutableArray<TriviaSlot> trailingTrivia)
+            public TokenWithTrailingTriviaSlot(int length, SyntaxKind kind, Slot trailingTrivia)
                 : base(length, kind) {
 
                 TrailingTrivia = trailingTrivia;
-
-                foreach (var t in trailingTrivia) {
-                    AdjustLength(t);
-                }
+                AdjustLength(trailingTrivia);
             }
 
-            public override ImmutableArray<TriviaSlot> TrailingTrivia { get; }
+            public override Slot TrailingTrivia { get; }
+
+            public override int GetLeadingTriviaWidth() {
+                return 0;
+            }
 
         }
 

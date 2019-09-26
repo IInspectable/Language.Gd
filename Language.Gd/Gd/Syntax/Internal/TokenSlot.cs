@@ -1,6 +1,11 @@
-﻿using System.Collections.Generic;
-using System.Collections.Immutable;
+﻿#region Using Directives
+
+using System.Collections.Generic;
 using System.Linq;
+
+using JetBrains.Annotations;
+
+#endregion
 
 namespace Pharmatechnik.Language.Gd.Internal {
 
@@ -10,8 +15,11 @@ namespace Pharmatechnik.Language.Gd.Internal {
             : base(fullLength, kind) {
         }
 
-        public virtual ImmutableArray<TriviaSlot> LeadingTrivia  => ImmutableArray<TriviaSlot>.Empty;
-        public virtual ImmutableArray<TriviaSlot> TrailingTrivia => ImmutableArray<TriviaSlot>.Empty;
+        [CanBeNull]
+        public virtual Slot LeadingTrivia => null;
+
+        [CanBeNull]
+        public virtual Slot TrailingTrivia => null;
 
         internal SyntaxToken Realize(SyntaxTree syntaxTree, SyntaxNode parent, int position) {
             return new SyntaxToken(syntaxTree, this, parent, position);
@@ -27,22 +35,22 @@ namespace Pharmatechnik.Language.Gd.Internal {
                 return new TokenWithTriviaSlot(
                     length: length,
                     kind: kind,
-                    leadingTrivia: leadingTrivia.ToImmutableArray(),
-                    trailingTrivia: trailingTrivia.ToImmutableArray());
+                    leadingTrivia: SlotList.Create(leadingTrivia),
+                    trailingTrivia: SlotList.Create(trailingTrivia));
             }
 
             if (leadingTrivia != null && leadingTrivia.Any()) {
                 return new TokenWithLeadingTriviaSlot(
                     length: length,
                     kind: kind,
-                    leadingTrivia: leadingTrivia.ToImmutableArray());
+                    leadingTrivia: SlotList.Create(leadingTrivia));
             }
 
             if (trailingTrivia != null && trailingTrivia.Any()) {
                 return new TokenWithTrailingTriviaSlot(
                     length: length,
                     kind: kind,
-                    trailingTrivia: trailingTrivia.ToImmutableArray());
+                    trailingTrivia: SlotList.Create(trailingTrivia));
             }
 
             return new TokenSlot(
@@ -50,13 +58,12 @@ namespace Pharmatechnik.Language.Gd.Internal {
                 kind: kind);
         }
 
-        // TODO TokenSlot Trivias..
         public override int GetLeadingTriviaWidth() {
-            return LeadingTrivia.Sum(l => l.FullLength);
+            return LeadingTrivia?.FullLength ?? 0;
         }
 
         public override int GetTrailingTriviaWidth() {
-            return TrailingTrivia.Sum(l => l.FullLength);
+            return TrailingTrivia?.FullLength ?? 0;
         }
 
     }

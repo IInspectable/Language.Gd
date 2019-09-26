@@ -8,12 +8,12 @@ using Pharmatechnik.Language.Gd.Internal;
 
 namespace Pharmatechnik.Language.Gd {
 
-    // TODO Perf Opt für 1,2,3 Elemente => GD-Analyse
-    class SyntaxListNode: SyntaxNode {
+    // TODO Perf Opt für 1,2,3 Elemente => GD-Analyse Siehe auch SlotList
+    class SyntaxNodeList: SyntaxNode {
 
         readonly SyntaxNode[] _children;
 
-        internal SyntaxListNode(SyntaxTree syntaxTree, SlotList slotList, SyntaxNode parent, int position)
+        internal SyntaxNodeList(SyntaxTree syntaxTree, SlotList slotList, SyntaxNode parent, int position)
             : base(syntaxTree: syntaxTree, slot: slotList, parent: parent, position: position) {
             _children = new SyntaxNode[slotList.SlotCount];
         }

@@ -291,7 +291,7 @@ namespace Pharmatechnik.Language.Gd {
         }
 
         [CanBeNull]
-        private protected SyntaxListNode GetSyntaxNode(ref SyntaxListNode field, [CanBeNull] SlotList slot, int index) {
+        private protected SyntaxNodeList GetSyntaxNode(ref SyntaxNodeList field, [CanBeNull] SlotList slot, int index) {
 
             if (slot == null) {
                 return null;
@@ -300,7 +300,7 @@ namespace Pharmatechnik.Language.Gd {
             var result = field;
             if (result == null) {
                 int position = GetChildPosition(index);
-                Interlocked.CompareExchange(ref field, new SyntaxListNode(SyntaxTree, slot, this, position), null);
+                Interlocked.CompareExchange(ref field, slot.Realize(SyntaxTree, this, position), null);
                 result = field;
             }
 

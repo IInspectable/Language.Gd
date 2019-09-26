@@ -1,17 +1,19 @@
-﻿using System;
+﻿#region Using Directives
+
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
 
-using JetBrains.Annotations;
+#endregion
 
 namespace Pharmatechnik.Language.Gd.Internal {
 
-    abstract class SlotList: Slot {
+    // TODO Spezialisierungen 1,2,3 Slots?? Siehe auch SyntaxNodeList
+    class SlotList: Slot {
 
         private readonly ImmutableArray<Slot> _slots;
 
-        internal SlotList(ImmutableArray<Slot> slots)
+        private SlotList(ImmutableArray<Slot> slots)
             : base(SyntaxKind.SyntaxList) {
             _slots = slots;
             foreach (var slot in slots) {
@@ -25,32 +27,22 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return _slots[index];
         }
 
-    }
+        public static SlotList Create(IReadOnlyList<TriviaSlot> slots) {
 
-    static class SyntaxSlotList {
+            return new SlotList(slots.Cast<Slot>().ToImmutableArray());
+        }
 
-        // TODO Spezialisierungen 1,2,3 Slots??
-
-        public static SyntaxSlotList<TSyntaxSlot> Create<TSyntaxSlot>(IEnumerable<SyntaxSlot> slots) where TSyntaxSlot : SyntaxSlot {
-            return new SyntaxSlotList<TSyntaxSlot>(
+        public static SlotList Create<TSyntaxSlot>(IEnumerable<SyntaxSlot> slots) where TSyntaxSlot : SyntaxSlot {
+            return new SlotList(
                 slots.Where(slot => slot != null)
                      .Cast<TSyntaxSlot>() // Sicherstellen, dass alle elemente vom Typ TSlot sind
                      .Cast<Slot>()
                      .ToImmutableArray());
         }
 
-    }
-
-    // Dient nur, um den Code lesbarer zu gestalten
-    class SyntaxSlotList<T>: SlotList where T : SyntaxSlot {
-
-        internal SyntaxSlotList(ImmutableArray<Slot> slots)
-            : base(slots) {
-
+        public SyntaxNodeList Realize(SyntaxTree syntaxTree, SyntaxNode parent, int position) {
+            return new SyntaxNodeList(syntaxTree, this, parent, position);
         }
-
-        [UsedImplicitly]
-        public Type SlotType => typeof(T);
 
     }
 

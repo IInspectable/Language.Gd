@@ -111,7 +111,7 @@ writeSyntaxNodeField(syntaxSlot)::=<<
 >>
 
 syntaxFieldType(syntaxSlot)::=<<
-<if(syntaxSlot.IsToN)>SyntaxListNode<else><syntaxSlot.Name>Syntax<endif>
+<if(syntaxSlot.IsToN)>SyntaxNodeList<else><syntaxSlot.Name>Syntax<endif>
 >>
 
 pl(slotModel)::=<<

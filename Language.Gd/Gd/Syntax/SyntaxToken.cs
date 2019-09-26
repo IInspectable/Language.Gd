@@ -38,8 +38,8 @@ namespace Pharmatechnik.Language.Gd {
 
         public string Text => SyntaxTree?.SourceText.Substring(Extent) ?? String.Empty;
 
-        public bool HasLeadingTrivia  => Slot?.LeadingTrivia.Length  > 0;
-        public bool HasTrailingTrivia => Slot?.TrailingTrivia.Length > 0;
+        public bool HasLeadingTrivia  => Slot?.GetLeadingTriviaWidth()  > 0;
+        public bool HasTrailingTrivia => Slot?.GetTrailingTriviaWidth() > 0;
 
         public SyntaxTriviaList LeadingTrivia  => new SyntaxTriviaList(this, Slot?.LeadingTrivia,  Position);
         public SyntaxTriviaList TrailingTrivia => new SyntaxTriviaList(this, Slot?.TrailingTrivia, Position + FullLength - TrailingWidth);
