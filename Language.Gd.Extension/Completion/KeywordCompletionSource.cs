@@ -100,6 +100,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Completion {
 
             applicableToSpan = default;
 
+            // TODO FindTokenOrTrivia Methode?
             var triggerToken = guiDescriptionSyntax.FindToken(triggerLocation);
             if (triggerToken.IsMissing || triggerToken == default) {
                 return false;
@@ -107,9 +108,14 @@ namespace Pharmatechnik.Language.Gd.Extension.Completion {
 
             int start = triggerToken.ExtentStart;
 
-            // Gg in den Trivias suchen
-            if (!triggerToken.Extent.IntersectsWith(triggerLocation)) {
-
+            // Wir haben ein Token an der Trigger Location
+            if (triggerToken.Extent.IntersectsWith(triggerLocation)) {
+                // Keine Autovervollständigung in Zeichenfolgen
+                if (triggerToken.Kind == SyntaxKind.String) {
+                    return false;
+                }
+            } else {
+                // Die Trigger Location befindet sich in den Trivias
                 var tokenExtent  = triggerToken.Extent;
                 var syntaxTrivia = default(SyntaxTrivia);
 
@@ -119,7 +125,15 @@ namespace Pharmatechnik.Language.Gd.Extension.Completion {
                     syntaxTrivia = triggerToken.TrailingTrivia.FirstOrDefault(t => t.Extent.IntersectsWith(triggerLocation));
                 }
 
+                // Kann es das geben?
                 if (syntaxTrivia == default) {
+                    return false;
+                }
+
+                // Keine Vervollständigung in Kommentaren
+                if (syntaxTrivia.Kind == SyntaxKind.MultiLineCommentTrivia ||
+                    syntaxTrivia.Kind == SyntaxKind.SingleLineCommentTrivia
+                ) {
                     return false;
                 }
 

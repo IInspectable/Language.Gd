@@ -126,6 +126,8 @@ namespace Pharmatechnik.Language.Gd {
             return token;
         }
 
+        // TODO FindTokenOrTrivia? SyntaxTokenOrTrivia
+
         public SyntaxToken FindToken(int position) {
 
             if (TryGetEofAt(out var eof)) {

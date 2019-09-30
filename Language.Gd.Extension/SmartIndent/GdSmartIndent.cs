@@ -43,7 +43,7 @@ namespace Pharmatechnik.Language.Gd.Extension.SmartIndent {
             var sectionBeginIndentation = GetIndendation(containingSection.SectionBegin?.FirstToken(), TabSize) ?? defaultIndent;
 
             // SectionBegin: Parent Section + TabSize
-            if (containingSection.SectionBegin.FullExtent.IntersectsWith(line.End)) {
+            if (containingSection.SectionBegin.FullExtent.Contains(line.Start)) {
 
                 var parentSection = containingSection.SectionBegin.Parent?.Ancestors()
                                                      .OfType<ISectionSyntax>()
@@ -52,8 +52,11 @@ namespace Pharmatechnik.Language.Gd.Extension.SmartIndent {
                 return GetIndendation(parentSection?.SectionBegin?.FirstToken(), TabSize) + TabSize ?? defaultIndent;
             }
 
+            // TODO: Wenn Kommentar, dann auf ebene der Section End einrücken. Nur Leere
+            // Zeilen vor dem SectionEnd als potentiellen Section Body einrücken.
+            var lineExtent = line.Extent.ToTextExtent();
             // SectionEnd: wie SectionBegin einrücken
-            if (containingSection.SectionEnd?.Extent.IntersectsWith(line.End) ?? false) {
+            if (containingSection.SectionEnd?.Extent.IntersectsWith(lineExtent) ?? false) {
                 return sectionBeginIndentation;
             }
 
