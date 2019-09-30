@@ -46,7 +46,7 @@ namespace Pharmatechnik.Language.Gd {
 
         internal int LeadingWidth  => Slot?.GetLeadingTriviaWidth()  ?? 0;
         internal int TrailingWidth => Slot?.GetTrailingTriviaWidth() ?? 0;
-
+        
         public int        ExtentStart => Position + Slot?.GetLeadingTriviaWidth() ?? 0;
         public TextExtent Extent      => Slot?.GetExtent(Position)                ?? default;
         public TextExtent FullExtent  => TextExtent.FromBounds(start: Position, end: EndPosition);

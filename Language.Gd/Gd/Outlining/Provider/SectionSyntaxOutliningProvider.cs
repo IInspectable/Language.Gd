@@ -54,7 +54,7 @@ namespace Pharmatechnik.Language.Gd.Outlining {
                         break;
                     }
 
-                    position = trivia.End;
+                    position = trivia.EndPosition;
                 }
 
                 return position;

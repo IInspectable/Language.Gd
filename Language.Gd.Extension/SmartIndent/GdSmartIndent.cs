@@ -9,12 +9,13 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Text.Editor.OptionsExtensionMethods;
 
 using Pharmatechnik.Language.Gd.Extension.Common;
+using Pharmatechnik.Language.Text;
 
 #endregion
 
 namespace Pharmatechnik.Language.Gd.Extension.SmartIndent {
 
-    class GdSmartIndent: ISmartIndent {
+    internal class GdSmartIndent: ISmartIndent {
 
         private readonly ITextView _textView;
 
@@ -24,65 +25,87 @@ namespace Pharmatechnik.Language.Gd.Extension.SmartIndent {
         }
 
         public void Dispose() {
-
         }
+
+        private int TabSize => _textView.Options.GetTabSize();
 
         public int? GetDesiredIndentation(ITextSnapshotLine line) {
 
-            var prevLine = GetPreviousNonEmptyLine(line);
+            // Default Einrückung ist die der vorigen Zeile
+            var defaultIndent = GetPreviousNonEmptyLine(line)?.GetIndentationColumn(TabSize);
 
-            if (prevLine == null) {
-                return 0;
+            // Die syntaktische Einrückung steht und fällt mit dem Beginn der Sektion
+            var containingSection = TryGetContainingSectionOrSelf(line);
+            if (containingSection?.SectionBegin == null) {
+                return defaultIndent;
             }
 
-            var tabSize            = _textView.Options.GetTabSize();
-            var desiredIndentation = prevLine.GetIndentationColumn(tabSize);
+            var sectionBeginIndentation = GetIndendation(containingSection.SectionBegin?.FirstToken(), TabSize) ?? defaultIndent;
 
-            if (IsLineSectionBegin(prevLine)) {
-                desiredIndentation += tabSize;
+            // SectionBegin: Parent Section + TabSize
+            if (containingSection.SectionBegin.FullExtent.IntersectsWith(line.End)) {
+
+                var parentSection = containingSection.SectionBegin.Parent?.Ancestors()
+                                                     .OfType<ISectionSyntax>()
+                                                     .FirstOrDefault();
+
+                return GetIndendation(parentSection?.SectionBegin?.FirstToken(), TabSize) + TabSize ?? defaultIndent;
             }
 
-            return desiredIndentation;
+            // SectionEnd: wie SectionBegin einrücken
+            if (containingSection.SectionEnd?.Extent.IntersectsWith(line.End) ?? false) {
+                return sectionBeginIndentation;
+            }
+
+            // SectionBody:  SectionBegin + TabSize
+            return sectionBeginIndentation + TabSize;
         }
 
-        bool IsLineSectionBegin(ITextSnapshotLine line) {
+        int? GetIndendation(SyntaxToken? token, int tabsize) {
 
-            var syntaxTree = TryGetSyntaxTree();
+            var line = token?.SyntaxTree?.SourceText?.GetTextLineAtPosition(token.Value.ExtentStart);
+
+            return line?.Span.GetColumnForOffset(tabsize, token.Value.ExtentStart - line.Value.Start);
+
+        }
+
+        ISectionSyntax TryGetContainingSectionOrSelf(ITextSnapshotLine line) {
+            var syntaxTree = TryGetSyntaxTree(updateSyntax: true);
 
             var containingSection = syntaxTree?.Root
-                                               .FindToken(line.End)
+                                               .FindToken(line.Start)
                                                .Parent?
                                                .Ancestors()
                                                .OfType<ISectionSyntax>()
                                                .FirstOrDefault();
 
-            return containingSection?.SectionBegin?.Extent.IntersectsWith(line.End) == true;
+            return containingSection;
         }
 
         [CanBeNull]
-        SyntaxTree TryGetSyntaxTree() {
+        private SyntaxTree TryGetSyntaxTree(bool updateSyntax = false) {
 
             var textBuffer = _textView.GetBufferContainingCaret();
-            if (textBuffer == null) {
-                return null;
-            }
+            if (textBuffer == null) return null;
 
             var parserService = ParserService.ParserService.TryGet(textBuffer);
+            if (updateSyntax) {
+                parserService.UpdateSynchronously();
+            }
+
             return parserService?.SyntaxTreeAndSnapshot?.SyntaxTree;
         }
 
         [CanBeNull]
-        static ITextSnapshotLine GetPreviousNonEmptyLine(ITextSnapshotLine line) {
+        private static ITextSnapshotLine GetPreviousNonEmptyLine(ITextSnapshotLine line) {
 
-            int lineNumber = line.LineNumber;
+            var lineNumber = line.LineNumber;
 
             while (lineNumber > 0) {
 
                 lineNumber--;
                 var prevLine = line.Snapshot.GetLineFromLineNumber(lineNumber);
-                if (!string.IsNullOrWhiteSpace(prevLine.GetText())) {
-                    return prevLine;
-                }
+                if (!string.IsNullOrWhiteSpace(prevLine.GetText())) return prevLine;
             }
 
             return null;

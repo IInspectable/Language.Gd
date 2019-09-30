@@ -73,6 +73,12 @@
     <Compile Include="Common\TextViewExtensions.AutoClosingViewProperty.cs" />
     <Compile Include="Common\TextViewExtensions.cs" />
     <Compile Include="Common\WpfTextViewExtensions.cs" />
+    <Compile Include="Completion\CompletionCommitManager.cs" />
+    <Compile Include="Completion\CompletionCommitManagerProvider.cs" />
+    <Compile Include="Completion\CompletionFilters.cs" />
+    <Compile Include="Completion\CompletionImages.cs" />
+    <Compile Include="Completion\KeywordCompletionSource.cs" />
+    <Compile Include="Completion\KeywordCompletionSourceProvider.cs" />
     <Compile Include="Diagnostics\DiagnosticErrorTag.cs" />
     <Compile Include="Diagnostics\DiagnosticErrorTagger.cs" />
     <Compile Include="Diagnostics\DiagnosticErrorTaggerProvider.cs" />

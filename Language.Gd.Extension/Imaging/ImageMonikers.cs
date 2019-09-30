@@ -5,6 +5,8 @@ namespace Pharmatechnik.Language.Gd.Extension.Imaging {
 
     static class ImageMonikers {
 
+        public static ImageMoniker Keyword => KnownMonikers.IntellisenseKeyword;
+
         public static ImageMoniker WaitingForAnalysis => KnownMonikers.Loading;
         public static ImageMoniker AnalysisOK         => KnownMonikers.StatusOK;
         public static ImageMoniker AnalysisWarning    => KnownMonikers.StatusWarning;
