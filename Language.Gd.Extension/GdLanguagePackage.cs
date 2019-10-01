@@ -61,13 +61,13 @@ namespace Pharmatechnik.Language.Gd.Extension {
         ShowMatchingBrace           = true,
         ShowDropDownOptions         = true)]
     [ProvideLanguageExtension(typeof(GdLanguageService), GdLanguageContentDefinitions.FileExtension)]
-    
     [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
     [ProvideService(typeof(GdLanguageService), IsAsyncQueryable = true)]
+    [ProvideService(typeof(IServiceProvider), IsAsyncQueryable  = true)]
     [Guid(PackageGuids.GdLanguagePackageGuidString)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
-    [ProvideToolWindow(typeof(GdOutlineToolWindowPane), 
-        Style  = VsDockStyle.Tabbed, 
+    [ProvideToolWindow(typeof(GdOutlineToolWindowPane),
+        Style  = VsDockStyle.Tabbed,
         Window = Constants.vsWindowKindSolutionExplorer)]
     [ProvideMenuResource("Menus.ctmenu", 1)]
     public sealed class GdLanguagePackage: AsyncPackage {
@@ -84,15 +84,17 @@ namespace Pharmatechnik.Language.Gd.Extension {
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress) {
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
+
+            AddService(typeof(GdLanguageService),
+                       (container, ct, type) => Task.FromResult<object>(new GdLanguageService(this)), promote: true);
+
+            AddService(typeof(IServiceProvider),
+                       (container, ct, type) => Task.FromResult<object>(this), promote: true);
+
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
 
-            AddService(typeof(GdLanguageService), async (container, ct, type)
-                           => {
-                           await JoinableTaskFactory.SwitchToMainThreadAsync(ct);
-                           return new GdLanguageService(this);
-                       }, promote: true);
-
             await ShowGdOutlineWindowCommand.RegisterAsync(this);
+
         }
 
         public static object GetGlobalService<TService>() where TService : class {
@@ -108,6 +110,10 @@ namespace Pharmatechnik.Language.Gd.Extension {
                 _DTE dte = GetGlobalService<_DTE, _DTE>();
                 return dte;
             }
+        }
+
+        public static IServiceProvider ServiceProvider {
+            get { return GetGlobalService<IServiceProvider, IServiceProvider>(); }
         }
 
         public static GdLanguageService Language => GetGlobalService<GdLanguageService, GdLanguageService>();
@@ -188,7 +194,6 @@ namespace Pharmatechnik.Language.Gd.Extension {
             // ReSharper disable once SuspiciousTypeConversion.Global 
             (textView as Control)?.Focus();
         }
-        
 
     }
 

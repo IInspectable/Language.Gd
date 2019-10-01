@@ -6,11 +6,9 @@ using System.ComponentModel.Design;
 using System.Linq;
 using System.Windows.Controls;
 
-using EnvDTE;
-
-using JetBrains.Annotations;
-
 using Microsoft.Internal.VisualStudio.Shell;
+using Microsoft.VisualStudio;
+using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 
@@ -37,9 +35,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Margin {
         }
 
         void UpdateTooltips() {
-            ShowGuiOutlineButton.ToolTip = GetTooltipText(ShowGdOutlineWindowCommand.CommandId, "Gui Outline");
-            GuiPreviewButton.ToolTip     = GetTooltipText(Ids.GuiPreviewCommandId,              "Gui Preview");
-            GenerateGuiButton.ToolTip    = GetTooltipText(Ids.GdGenerateCommandId,       "C# Code aus .gd-Dateien generieren");
+            ShowGuiOutlineButton.ToolTip = GetTooltipText(ShowGdOutlineWindowCommand.CommandId,         "Gui Outline");
+            GuiPreviewButton.ToolTip     = GetTooltipText(IxosEssentialsCommandIds.GuiPreviewCommandId, "Gui Preview");
+            GenerateGuiButton.ToolTip    = GetTooltipText(IxosEssentialsCommandIds.GdGenerateCommandId, "C# Code aus .gd-Dateien generieren");
         }
 
         private void OnShowGuiOutlineClick(object sender, RoutedEventArgs e) {
@@ -50,41 +48,44 @@ namespace Pharmatechnik.Language.Gd.Extension.Margin {
 
         private void OnGenerateGuiButtonClick(object sender, RoutedEventArgs e) {
             ThreadHelper.ThrowIfNotOnUIThread();
-            InvokeCommand(Ids.GdGenerateCommandId);
+            InvokeCommand(IxosEssentialsCommandIds.GdGenerateCommandId);
         }
 
         private void OnGuiPreviewClick(object sender, RoutedEventArgs e) {
             ThreadHelper.ThrowIfNotOnUIThread();
-            InvokeCommand(Ids.GuiPreviewCommandId);
+            InvokeCommand(IxosEssentialsCommandIds.GuiPreviewCommandId);
         }
 
-        [CanBeNull]
-        static Command TryGetCommand(CommandID commandId) {
+        //[CanBeNull]
+        //static Command TryGetCommand(CommandID commandId) {
 
-            try {
-                ThreadHelper.ThrowIfNotOnUIThread();
-                return GdLanguagePackage.DTE.Commands.Item(commandId.Guid.ToString("B"), commandId.ID);
-            } catch (ArgumentException) {
+        //    try {
+        //        ThreadHelper.ThrowIfNotOnUIThread();
+        //        return GdLanguagePackage.DTE.Commands.Item(commandId.Guid.ToString("B"), commandId.ID);
+        //    } catch (ArgumentException) {
 
-            }
+        //    }
 
-            return null;
-        }
+        //    return null;
+        //}
 
-        // TODO Geht das nicht schöner?
         private void InvokeCommand(CommandID commandId) {
+
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            UpdateTooltips();
+            var oleCommandTarget = GdLanguagePackage.ServiceProvider.GetService(typeof(IMenuCommandService)) as IOleCommandTarget;
 
-            var cmd = TryGetCommand(commandId);
+            var commandGroup = commandId.Guid;
 
-            if (cmd != null && cmd.IsAvailable) {
-                GdLanguagePackage.DTE.Commands.Raise(cmd.Guid, cmd.ID, null, null);
+            var hr = oleCommandTarget?.Exec(ref commandGroup, (uint) commandId.ID, 0, IntPtr.Zero, IntPtr.Zero) ?? VSConstants.E_FAIL;
+
+            if (ErrorHandler.Succeeded(hr)) {
                 GdLanguagePackage.DTE.DTE.StatusBar.Clear();
             } else {
-                GdLanguagePackage.DTE.DTE.StatusBar.Text = $"The command '{cmd?.Name}' is not available in the current context";
+                GdLanguagePackage.DTE.DTE.StatusBar.Text = "The command is not available in the current context";
             }
+
+            UpdateTooltips();
 
         }
 
@@ -100,19 +101,19 @@ namespace Pharmatechnik.Language.Gd.Extension.Margin {
             return tooltipText;
         }
 
-        // IDS siehe IXOS Essentials
-        static class Ids {
+    }
 
-            const int GdGenerateSelectionCommand = 0x0252;
-            const int GdPreviewSelectionCommand = 0x0253;
+    // IDS siehe IXOS Essentials
+    static class IxosEssentialsCommandIds {
 
-            const           string GuidIXOSEssentialsPackageCmdSetString = "6b794c4c-4923-45f3-a677-8cfca59df62f";
-            static readonly Guid   GuidIXOSEssentialsPackageCmdSet       = new Guid(GuidIXOSEssentialsPackageCmdSetString);
+        const int GdGenerateSelectionCommand = 0x0252;
+        const int GdPreviewSelectionCommand  = 0x0253;
 
-            public static CommandID GdGenerateCommandId => new CommandID(GuidIXOSEssentialsPackageCmdSet, GdGenerateSelectionCommand);
-            public static CommandID GuiPreviewCommandId => new CommandID(GuidIXOSEssentialsPackageCmdSet, GdPreviewSelectionCommand);
+        const           string GuidIXOSEssentialsPackageCmdSetString = "6b794c4c-4923-45f3-a677-8cfca59df62f";
+        static readonly Guid   GuidIXOSEssentialsPackageCmdSet       = new Guid(GuidIXOSEssentialsPackageCmdSetString);
 
-        }
+        public static CommandID GdGenerateCommandId => new CommandID(GuidIXOSEssentialsPackageCmdSet, GdGenerateSelectionCommand);
+        public static CommandID GuiPreviewCommandId => new CommandID(GuidIXOSEssentialsPackageCmdSet, GdPreviewSelectionCommand);
 
     }
 
