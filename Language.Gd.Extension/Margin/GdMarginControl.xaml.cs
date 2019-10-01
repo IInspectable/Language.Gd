@@ -7,8 +7,6 @@ using System.Linq;
 using System.Windows.Controls;
 
 using Microsoft.Internal.VisualStudio.Shell;
-using Microsoft.VisualStudio;
-using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text.Editor;
 
@@ -73,17 +71,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Margin {
 
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            var oleCommandTarget = GdLanguagePackage.ServiceProvider.GetService(typeof(IMenuCommandService)) as IOleCommandTarget;
+            var oleCommandTarget = GdLanguagePackage.ServiceProvider.GetService(typeof(IMenuCommandService)) as IMenuCommandService;
 
-            var commandGroup = commandId.Guid;
-
-            var hr = oleCommandTarget?.Exec(ref commandGroup, (uint) commandId.ID, 0, IntPtr.Zero, IntPtr.Zero) ?? VSConstants.E_FAIL;
-
-            if (ErrorHandler.Succeeded(hr)) {
-                GdLanguagePackage.DTE.DTE.StatusBar.Clear();
-            } else {
-                GdLanguagePackage.DTE.DTE.StatusBar.Text = "The command is not available in the current context";
-            }
+            oleCommandTarget?.GlobalInvoke(commandId);
 
             UpdateTooltips();
 
