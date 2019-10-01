@@ -14,7 +14,6 @@ using Microsoft.VisualStudio.Text.Operations;
 using Microsoft.VisualStudio.Utilities;
 
 using Pharmatechnik.Language.Gd.Extension.Common;
-using Pharmatechnik.Language.Gd.Extension.Utilities;
 
 #endregion
 
@@ -26,17 +25,14 @@ namespace Pharmatechnik.Language.Gd.Extension.Commands {
     class CommentUncommentSelectionCommandHandler: ICommandHandler<CommentSelectionCommandArgs>,
                                                    ICommandHandler<UncommentSelectionCommandArgs> {
 
-        readonly IWaitIndicator                  _waitIndicator;
         readonly ITextUndoHistoryRegistry        _undoHistoryRegistry;
         readonly IEditorOperationsFactoryService _editorOperationsFactoryService;
 
         [ImportingConstructor]
         public CommentUncommentSelectionCommandHandler(
-            IWaitIndicator waitIndicator,
             ITextUndoHistoryRegistry undoHistoryRegistry,
             IEditorOperationsFactoryService editorOperationsFactoryService) {
 
-            _waitIndicator                  = waitIndicator;
             _undoHistoryRegistry            = undoHistoryRegistry;
             _editorOperationsFactoryService = editorOperationsFactoryService;
         }
@@ -52,8 +48,8 @@ namespace Pharmatechnik.Language.Gd.Extension.Commands {
         }
 
         public bool ExecuteCommand(CommentSelectionCommandArgs args, CommandExecutionContext executionContext) {
-
-            ExecuteCommand(args.TextView, args.SubjectBuffer, Operation.Comment);
+            
+            ExecuteCommand(args.TextView, args.SubjectBuffer, Operation.Comment, executionContext);
             return true;
         }
 
@@ -66,28 +62,16 @@ namespace Pharmatechnik.Language.Gd.Extension.Commands {
         }
 
         public bool ExecuteCommand(UncommentSelectionCommandArgs args, CommandExecutionContext executionContext) {
-            ExecuteCommand(args.TextView, args.SubjectBuffer, Operation.Uncomment);
+            ExecuteCommand(args.TextView, args.SubjectBuffer, Operation.Uncomment, executionContext);
             return true;
         }
 
-        public CommandState GetCommandState(UncommentSelectionCommandArgs args, Func<CommandState> nextHandler) {
-            if (args.SubjectBuffer.CheckEditAccess()) {
-                return CommandState.Available;
-            }
-
-            return nextHandler();
-        }
-
-        public void ExecuteCommand(UncommentSelectionCommandArgs args, Action nextHandler) {
-            ExecuteCommand(args.TextView, args.SubjectBuffer, Operation.Uncomment);
-        }
-
-        void ExecuteCommand(ITextView textView, ITextBuffer subjectBuffer, Operation operation) {
+        void ExecuteCommand(ITextView textView, ITextBuffer subjectBuffer, Operation operation, CommandExecutionContext executionContext) {
 
             var title   = operation == Operation.Comment ? "Comment Selection" : "Uncomment Selection";
             var message = operation == Operation.Comment ? "Commenting currently selected text..." : "Uncommenting currently selected text...";
 
-            using (_waitIndicator.StartWait(title, message, allowCancel: false)) {
+            using (executionContext.OperationContext.AddScope(allowCancellation: false, description: message)) {
 
                 using (var undoTransaction = new TextUndoTransaction(title, textView, _undoHistoryRegistry, _editorOperationsFactoryService))
                 using (var textEdit = subjectBuffer.CreateEdit()) {
@@ -196,7 +180,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Commands {
 
         void TryUncommentContainingBlockComment(SnapshotSpan span, ITextEdit textEdit, List<ITrackingSpan> spansToSelect) {
 
-            var positionOfStart = -1;
+            int positionOfStart;
             var positionOfEnd   = -1;
             var spanText        = span.GetText();
             var trimmedSpanText = spanText.Trim();

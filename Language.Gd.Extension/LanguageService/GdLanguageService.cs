@@ -31,6 +31,8 @@ namespace Pharmatechnik.Language.Gd.Extension.LanguageService {
             }
         }
 
+        public GdLanguagePackage Package => _package;
+
         public int GetCodeWindowManager(IVsCodeWindow pCodeWin, out IVsCodeWindowManager ppCodeWinMgr) {
 
             ppCodeWinMgr = new GdCodeWindowManager(this, _package, pCodeWin);

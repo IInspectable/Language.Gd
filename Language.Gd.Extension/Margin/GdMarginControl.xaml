@@ -1,0 +1,69 @@
+﻿<StackPanel x:Class="Pharmatechnik.Language.Gd.Extension.Margin.GdMarginControl"
+            xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+            xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+            xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+            xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+            mc:Ignorable="d"
+            xmlns:imaging="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.Imaging"
+            xmlns:theming="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Imaging"
+            xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
+            xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
+            Background="{DynamicResource {x:Static platformUi:EnvironmentColors.ScrollBarBackgroundBrushKey}}"
+            theming:ImageThemingUtilities.ImageBackgroundColor="{DynamicResource {x:Static platformUi:EnvironmentColors.ScrollBarBackgroundColorKey}}"
+
+            RenderOptions.EdgeMode="Aliased"
+            Orientation="Horizontal"
+            VerticalAlignment="Stretch"
+            d:DesignHeight="17"
+            d:DesignWidth="50">
+
+
+    <Button x:Name="ShowGuiOutlineButton"
+            Padding="0"
+            Margin="0"
+            Click="OnShowGuiOutlineClick"
+            BorderBrush="Transparent"
+            Background="{DynamicResource {x:Static platformUi:EnvironmentColors.ScrollBarBackgroundBrushKey}}">
+
+        <imaging:CrispImage
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            StretchDirection="Both"
+            Stretch="UniformToFill"
+            Height="14"
+            Moniker="{x:Static catalog:KnownMonikers.DocumentOutline}" />
+    </Button>
+
+    <Button x:Name="GuiPreviewButton"
+            Padding="0"
+            Margin="0"
+            Click="OnGuiPreviewClick"
+            BorderBrush="Transparent"
+            Background="{DynamicResource {x:Static platformUi:EnvironmentColors.ScrollBarBackgroundBrushKey}}">
+
+        <imaging:CrispImage
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            StretchDirection="Both"
+            Stretch="UniformToFill"
+            Height="14"
+            Moniker="{x:Static catalog:KnownMonikers.SwitchToPreview}" />
+    </Button>
+
+    <Button x:Name="GenerateGuiButton"
+            Padding="0"
+            Margin="0"
+            Click="OnGenerateGuiButtonClick"
+            BorderBrush="Transparent"
+            Background="{DynamicResource {x:Static platformUi:EnvironmentColors.ScrollBarBackgroundBrushKey}}">
+
+        <imaging:CrispImage
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            StretchDirection="Both"
+            Stretch="UniformToFill"
+            Height="14"
+            Moniker="{x:Static catalog:KnownMonikers.GenerateFile}" />
+    </Button>
+
+</StackPanel>

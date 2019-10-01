@@ -103,12 +103,6 @@ namespace Pharmatechnik.Language.Gd.Extension {
             return GetGlobalService(typeof(TService)) as TInterface;
         }
 
-        // ReSharper disable once UnusedMember.Local
-        static IServiceProvider GetServiceProvider() {
-            var serviceProvider = GetGlobalService<GdLanguagePackage, IServiceProvider>();
-            return serviceProvider;
-        }
-
         public static _DTE DTE {
             get {
                 _DTE dte = GetGlobalService<_DTE, _DTE>();

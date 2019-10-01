@@ -93,8 +93,12 @@
     <Compile Include="Diagnostics\DiagnosticSummaryControl.xaml.cs">
       <DependentUpon>DiagnosticSummaryControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Margin\GdMarginControl.xaml.cs">
+      <DependentUpon>GdMarginControl.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Diagnostics\DiagnosticSummaryMargin.cs" />
     <Compile Include="Diagnostics\DiagnosticSummaryMarginProvider.cs" />
+    <Compile Include="Margin\GdMargin.cs" />
     <Compile Include="Document Outline\GdOutlineController.cs" />
     <Compile Include="Document Outline\NavigateToOutlineEventArgs.cs" />
     <Compile Include="Document Outline\OutlineDataEventArgs.cs" />
@@ -125,6 +129,7 @@
     <Compile Include="LanguageService\ProvideShowBraceCompletionAttribute.cs" />
     <Compile Include="LanguageService\ProvideShowDropdownBarOptionAttribute.cs" />
     <Compile Include="Logging\Logger.cs" />
+    <Compile Include="Margin\GdMarginProvider.cs" />
     <Compile Include="NavigationBar\NavigationBarItem.cs" />
     <Compile Include="NavigationBar\NavigationBarProjectItemBuilder.cs" />
     <Compile Include="NavigationBar\NavigationBarSectionItemBuilder.cs" />
@@ -148,14 +153,9 @@
     <Compile Include="SmartIndent\GdSmartIndent.cs" />
     <Compile Include="SmartIndent\GdSmartIndentProvider.cs" />
     <Compile Include="ThisAssembly.generated.cs" />
-    <Compile Include="Utilities\IWaitContext.cs" />
-    <Compile Include="Utilities\IWaitIndicator.cs" />
     <Compile Include="Utilities\ProjectInfo.cs" />
     <Compile Include="Utilities\ProjectMapper.cs" />
     <Compile Include="Utilities\UriBuilder.cs" />
-    <Compile Include="Utilities\VisualStudioWaitContext.Callback.cs" />
-    <Compile Include="Utilities\VisualStudioWaitContext.cs" />
-    <Compile Include="Utilities\VisualStudioWaitIndicator.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="CustomBuild.targets" />
@@ -228,6 +228,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="Diagnostics\DiagnosticSummaryControl.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Margin\GdMarginControl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
