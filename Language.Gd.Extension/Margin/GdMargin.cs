@@ -2,17 +2,15 @@
 
 using System;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
 
-using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Text.Editor;
 
 #endregion
 
 namespace Pharmatechnik.Language.Gd.Extension.Margin {
 
-    sealed class GdMargin:  IWpfTextViewMargin {
+    sealed class GdMargin: IWpfTextViewMargin {
 
         public const string MarginName = GdLanguageContentDefinitions.ContentType + nameof(GdMargin);
 
@@ -24,16 +22,11 @@ namespace Pharmatechnik.Language.Gd.Extension.Margin {
         public GdMargin(IWpfTextView textView) {
             _textView = textView;
 
-
-            _marginControl = new GdMarginControl();
+            _marginControl = new GdMarginControl(textView);
 
             _textView.Closed += OnTextViewClosed;
 
             RenderOptions.SetEdgeMode(_marginControl, EdgeMode.Aliased);
-
-        }
-
-        private void OnOutlineClick(object sender, RoutedEventArgs e) {
 
         }
 

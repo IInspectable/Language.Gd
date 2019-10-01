@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System.ComponentModel.Composition;
+using System.Windows;
 
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.Utilities;
@@ -11,11 +12,14 @@ namespace Pharmatechnik.Language.Gd.Extension.Margin {
 
     [Export(typeof(IWpfTextViewMarginProvider))]
     [Name(GdMargin.MarginName)]
-    [Order(After = PredefinedMarginNames.FileHealthIndicator)]
+    [Order(After  = PredefinedMarginNames.ZoomControl)]
+    [Order(Before = PredefinedMarginNames.FileHealthIndicator)]
     [Order(Before = PredefinedMarginNames.HorizontalScrollBarContainer)]
     [MarginContainer(PredefinedMarginNames.BottomControl)]
     [ContentType(GdLanguageContentDefinitions.ContentType)]
-    [TextViewRole(PredefinedTextViewRoles.Interactive)]
+    [TextViewRole(PredefinedTextViewRoles.Document)]
+    [GridUnitType(GridUnitType.Auto)]
+    [GridCellLength(1.0)]
     sealed class GdMarginProvider: IWpfTextViewMarginProvider {
 
         /// <summary>

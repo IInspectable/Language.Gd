@@ -3,6 +3,8 @@
 using System;
 using System.Windows;
 using System.ComponentModel.Design;
+using System.Linq;
+using System.Windows.Controls;
 
 using EnvDTE;
 
@@ -10,6 +12,7 @@ using JetBrains.Annotations;
 
 using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text.Editor;
 
 using Pharmatechnik.Language.Gd.Extension.Document_Outline;
 
@@ -19,16 +22,24 @@ namespace Pharmatechnik.Language.Gd.Extension.Margin {
 
     public partial class GdMarginControl {
 
-        public GdMarginControl() {
+        public GdMarginControl(IWpfTextView textView) {
             InitializeComponent();
 
             UpdateTooltips();
+
+            var buttonStyle = (Style) textView.VisualElement.TryFindResource("FileHealthIndicatorButtonStyle");
+            if (buttonStyle != null) {
+                foreach (var button in LayoutPanel.Children.OfType<Button>()) {
+                    button.Style = buttonStyle;
+                }
+            }
+
         }
 
         void UpdateTooltips() {
             ShowGuiOutlineButton.ToolTip = GetTooltipText(ShowGdOutlineWindowCommand.CommandId, "Gui Outline");
             GuiPreviewButton.ToolTip     = GetTooltipText(Ids.GuiPreviewCommandId,              "Gui Preview");
-            GenerateGuiButton.ToolTip    = GetTooltipText(Ids.GdGenerateCommandCommandId,       "C# Code aus .gd-Dateien generieren");
+            GenerateGuiButton.ToolTip    = GetTooltipText(Ids.GdGenerateCommandId,       "C# Code aus .gd-Dateien generieren");
         }
 
         private void OnShowGuiOutlineClick(object sender, RoutedEventArgs e) {
@@ -39,7 +50,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Margin {
 
         private void OnGenerateGuiButtonClick(object sender, RoutedEventArgs e) {
             ThreadHelper.ThrowIfNotOnUIThread();
-            InvokeCommand(Ids.GdGenerateCommandCommandId);
+            InvokeCommand(Ids.GdGenerateCommandId);
         }
 
         private void OnGuiPreviewClick(object sender, RoutedEventArgs e) {
@@ -61,8 +72,11 @@ namespace Pharmatechnik.Language.Gd.Extension.Margin {
         }
 
         // TODO Geht das nicht schöner?
-        private static void InvokeCommand(CommandID commandId) {
+        private void InvokeCommand(CommandID commandId) {
             ThreadHelper.ThrowIfNotOnUIThread();
+
+            UpdateTooltips();
+
             var cmd = TryGetCommand(commandId);
 
             if (cmd != null && cmd.IsAvailable) {
@@ -89,15 +103,13 @@ namespace Pharmatechnik.Language.Gd.Extension.Margin {
         // IDS siehe IXOS Essentials
         static class Ids {
 
-            const int GdGenerateCommand         = 0x0251;
+            const int GdGenerateSelectionCommand = 0x0252;
             const int GdPreviewSelectionCommand = 0x0253;
 
-            const  string GuidIXOSEssentialsPackageCmdSetString = "6b794c4c-4923-45f3-a677-8cfca59df62f";
-            static Guid   GuidIXOSEssentialsPackageCmdSet       = new Guid(GuidIXOSEssentialsPackageCmdSetString);
+            const           string GuidIXOSEssentialsPackageCmdSetString = "6b794c4c-4923-45f3-a677-8cfca59df62f";
+            static readonly Guid   GuidIXOSEssentialsPackageCmdSet       = new Guid(GuidIXOSEssentialsPackageCmdSetString);
 
-            public static CommandID GdGenerateCommandCommandId => new CommandID(GuidIXOSEssentialsPackageCmdSet, GdGenerateCommand);
-
-            // TODO
+            public static CommandID GdGenerateCommandId => new CommandID(GuidIXOSEssentialsPackageCmdSet, GdGenerateSelectionCommand);
             public static CommandID GuiPreviewCommandId => new CommandID(GuidIXOSEssentialsPackageCmdSet, GdPreviewSelectionCommand);
 
         }
