@@ -7,7 +7,6 @@ using System.Linq;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Tagging;
 
-using Pharmatechnik.Language.Gd.Extension.Common;
 using Pharmatechnik.Language.Gd.Extension.ParserService;
 
 #endregion
@@ -16,14 +15,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
 
     sealed class DiagnosticErrorTagger: ParserServiceDependent /*SemanticModelServiceDependent,*/, ITagger<DiagnosticErrorTag> {
 
-        DiagnosticErrorTagger(ITextBuffer textBuffer): base(textBuffer) {
-        }
-
-        public static ITagger<T> GetOrCreateSingelton<T>(ITextBuffer textBuffer) where T : ITag {
-            return new TextBufferScopedTagger<T>(
-                textBuffer,
-                typeof(DiagnosticErrorTagger), () =>
-                    new DiagnosticErrorTagger(textBuffer) as ITagger<T>);
+        public DiagnosticErrorTagger(ITextBuffer textBuffer): base(textBuffer) {
         }
 
         public IEnumerable<ITagSpan<DiagnosticErrorTag>> GetTags(NormalizedSnapshotSpanCollection spans) {

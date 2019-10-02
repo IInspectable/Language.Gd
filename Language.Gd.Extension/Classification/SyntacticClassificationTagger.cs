@@ -8,7 +8,6 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 
-using Pharmatechnik.Language.Gd.Extension.Common;
 using Pharmatechnik.Language.Gd.Extension.ParserService;
 using Pharmatechnik.Language.Text;
 
@@ -16,19 +15,13 @@ using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd.Extension.Classification {
 
-    sealed class SyntacticClassificationTagger: ParserServiceDependent, ITagger<IClassificationTag> {
+    sealed class SyntacticClassificationTagger: ParserServiceDependent, ITagger<IClassificationTag>, IDisposable {
 
         readonly ImmutableDictionary<GdClassification, IClassificationType> _classificationMap;
 
-        internal SyntacticClassificationTagger(IClassificationTypeRegistryService registry, ITextBuffer textBuffer): base(textBuffer) {
+        public SyntacticClassificationTagger(IClassificationTypeRegistryService registry, ITextBuffer textBuffer): base(textBuffer) {
 
             _classificationMap = ClassificationTypeDefinitions.GetClassificationMap(registry);
-        }
-
-        public static SyntacticClassificationTagger GetOrCreateSingelton(IClassificationTypeRegistryService registry, ITextBuffer textBuffer) {
-
-            return TextBufferScopedValue<SyntacticClassificationTagger>.GetOrCreate(textBuffer, typeof(SyntacticClassificationTagger), () => new SyntacticClassificationTagger(registry, textBuffer))
-                                                                       .Value;
         }
 
         protected override void OnParseResultChanged(object sender, SnapshotSpanEventArgs e) {

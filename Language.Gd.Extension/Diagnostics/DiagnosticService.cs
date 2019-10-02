@@ -46,6 +46,15 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
             Invalidate();
         }
 
+        public void Dispose() {
+            _textView.Properties.RemoveProperty(this);
+
+            _textView.Closed                       -= OnTextViewClosed;
+            _textView.TextBuffer.Changed           -= OnTextBufferChanged;
+            _errorTagAggregator.BatchedTagsChanged -= OnBatchedTagsChanged;
+            _errorTagAggregator?.Dispose();
+        }
+
         [CanBeNull]
         public DiagnosticSeverity? WorstSeverity { get; private set; }
 
@@ -54,15 +63,6 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
         public static DiagnosticService GetOrCreate(IWpfTextView textView) {
             var componentModel = GdLanguagePackage.GetGlobalService<SComponentModel, IComponentModel>();
             return textView.Properties.GetOrCreateSingletonProperty(() => new DiagnosticService(textView, componentModel));
-        }
-
-        public void Dispose() {
-            _textView.Properties.RemoveProperty(this);
-
-            _textView.Closed                       -= OnTextViewClosed;
-            _textView.TextBuffer.Changed           -= OnTextBufferChanged;
-            _errorTagAggregator.BatchedTagsChanged -= OnBatchedTagsChanged;
-            _errorTagAggregator?.Dispose();
         }
 
         void OnTextBufferChanged(object sender, TextContentChangedEventArgs e) {

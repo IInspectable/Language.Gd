@@ -27,8 +27,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
         }
 
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag {
-
-            return TriviaSpanClassificationTagger.GetOrCreateSingelton(_classificationTypeRegistryService, buffer) as ITagger<T>;
+            return new TriviaSpanClassificationTagger(_classificationTypeRegistryService, buffer) as ITagger<T>;
 
         }
 

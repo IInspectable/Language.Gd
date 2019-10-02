@@ -16,7 +16,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
     sealed class DiagnosticErrorTaggerProvider: ITaggerProvider {
 
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag {
-            return DiagnosticErrorTagger.GetOrCreateSingelton<T>(buffer);
+            return new DiagnosticErrorTagger(buffer) as ITagger<T>;
         }
 
     }

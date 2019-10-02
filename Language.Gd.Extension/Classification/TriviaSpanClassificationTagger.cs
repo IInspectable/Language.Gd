@@ -8,7 +8,6 @@ using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Classification;
 using Microsoft.VisualStudio.Text.Tagging;
 
-using Pharmatechnik.Language.Gd.Extension.Common;
 using Pharmatechnik.Language.Gd.Extension.ParserService;
 using Pharmatechnik.Language.Text;
 
@@ -23,12 +22,6 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
         internal TriviaSpanClassificationTagger(IClassificationTypeRegistryService registry, ITextBuffer textBuffer): base(textBuffer) {
 
             _classificationMap = ClassificationTypeDefinitions.GetClassificationMap(registry);
-        }
-
-        public static TriviaSpanClassificationTagger GetOrCreateSingelton(IClassificationTypeRegistryService registry, ITextBuffer textBuffer) {
-
-            return TextBufferScopedValue<TriviaSpanClassificationTagger>.GetOrCreate(textBuffer, typeof(SyntacticClassificationTagger), () => new TriviaSpanClassificationTagger(registry, textBuffer))
-                                                                        .Value;
         }
 
         protected override void OnParseResultChanged(object sender, SnapshotSpanEventArgs e) {

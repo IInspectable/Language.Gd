@@ -19,17 +19,10 @@ namespace Pharmatechnik.Language.Gd.Extension.Outlining {
         readonly List<ITagSpan<IOutliningRegionTag>> _outliningRegionTags;
         readonly CodeContentControlProvider          _codeContentControlProvider;
 
-        OutliningTagger(ITextBuffer textBuffer, CodeContentControlProvider codeContentControlProvider): base(textBuffer) {
+        public OutliningTagger(ITextBuffer textBuffer, CodeContentControlProvider codeContentControlProvider): base(textBuffer) {
 
             _outliningRegionTags        = new List<ITagSpan<IOutliningRegionTag>>();
             _codeContentControlProvider = codeContentControlProvider;
-        }
-
-        public static ITagger<T> GetOrCreateSingelton<T>(ITextBuffer textBuffer, CodeContentControlProvider codeContentControlProvider) where T : ITag {
-            return new TextBufferScopedTagger<T>(
-                textBuffer: textBuffer,
-                key: typeof(OutliningTagger),
-                createFunc: () => new OutliningTagger(textBuffer, codeContentControlProvider) as ITagger<T>);
         }
 
         public event EventHandler<SnapshotSpanEventArgs> TagsChanged;
@@ -70,9 +63,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Outlining {
 
                 var tag = new OutliningRegionTag(
                     isDefaultCollapsed: outliningDefinition.IsDefaultCollapsed,
-                    isImplementation  : outliningDefinition.IsImplementation,
-                    collapsedForm     : outliningDefinition.CollapsedText,
-                    collapsedHintForm : _codeContentControlProvider.CreateContentControlForOutlining(previewSpan));
+                    isImplementation: outliningDefinition.IsImplementation,
+                    collapsedForm: outliningDefinition.CollapsedText,
+                    collapsedHintForm: _codeContentControlProvider.CreateContentControlForOutlining(previewSpan));
 
                 yield return new TagSpan<IOutliningRegionTag>(foldingSpan, tag);
             }

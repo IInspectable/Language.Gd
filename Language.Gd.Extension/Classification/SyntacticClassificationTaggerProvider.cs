@@ -26,8 +26,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
         }
 
         public ITagger<T> CreateTagger<T>(ITextBuffer buffer) where T : ITag {
-
-            return SyntacticClassificationTagger.GetOrCreateSingelton(_classificationTypeRegistryService, buffer) as ITagger<T>;
+            return new SyntacticClassificationTagger(_classificationTypeRegistryService, buffer) as ITagger<T>;
 
         }
 

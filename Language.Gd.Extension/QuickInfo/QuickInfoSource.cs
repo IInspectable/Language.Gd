@@ -72,9 +72,6 @@ namespace Pharmatechnik.Language.Gd.Extension.QuickInfo {
             return qiItem;
         }
 
-        public void Dispose() {
-        }
-
     }
 
 }

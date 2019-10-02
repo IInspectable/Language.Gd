@@ -33,8 +33,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
     class NavigationBar: ParserServiceDependent,
                          IVsDropdownBarClient,
                          IVsCodeWindowEvents,
-                         IVsDropdownBarClient4,
-                         IDisposable {
+                         IVsDropdownBarClient4 {
 
         static readonly Logger Logger = Logger.Create<NavigationBar>();
 
@@ -94,7 +93,8 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
         }
 
-        public void Dispose() {
+        public override void Dispose() {
+            base.Dispose();
 
             Logger.Trace($"{nameof(NavigationBar)}:{nameof(Dispose)}");
 
