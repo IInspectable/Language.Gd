@@ -24,12 +24,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
         readonly IWpfTextView                       _textView;
         readonly ITagAggregator<DiagnosticErrorTag> _errorTagAggregator;
         readonly IOutliningManagerService           _outliningManagerService;
-        bool                                        _waitingForAnalysis;
 
         [NotNull]
         IReadOnlyDictionary<DiagnosticSeverity, ReadOnlyCollection<IMappingTagSpan<DiagnosticErrorTag>>> _diagnosticMapping;
-
-        DiagnosticSeverity? _worstSeverity;
 
         DiagnosticService(IWpfTextView textView, IComponentModel componentModel) {
             var viewTagAggregatorFactoryService = componentModel.GetService<IViewTagAggregatorFactoryService>();
@@ -38,7 +35,8 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
             _outliningManagerService = componentModel.GetService<IOutliningManagerService>();
             _errorTagAggregator      = viewTagAggregatorFactoryService.CreateTagAggregator<DiagnosticErrorTag>(textView);
             _diagnosticMapping       = new Dictionary<DiagnosticSeverity, ReadOnlyCollection<IMappingTagSpan<DiagnosticErrorTag>>>();
-            _waitingForAnalysis      = true;
+
+            WaitingForAnalysis = true;
 
             _textView.Closed                       += OnTextViewClosed;
             _textView.TextBuffer.Changed           += OnTextBufferChanged;
@@ -47,6 +45,11 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
             // Evtl. gibt es bereits einen Syntaxbaum...
             Invalidate();
         }
+
+        [CanBeNull]
+        public DiagnosticSeverity? WorstSeverity { get; private set; }
+
+        public bool WaitingForAnalysis { get; private set; }
 
         public static DiagnosticService GetOrCreate(IWpfTextView textView) {
             var componentModel = GdLanguagePackage.GetGlobalService<SComponentModel, IComponentModel>();
@@ -78,7 +81,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
 
         void OnDiagnosticsChanging() {
 
-            _waitingForAnalysis = true;
+            WaitingForAnalysis = true;
 
             DiagnosticsChanging?.Invoke(this, EventArgs.Empty);
         }
@@ -87,32 +90,21 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
 
         void OnDiagnosticsChanged() {
 
-            _waitingForAnalysis = false;
+            WaitingForAnalysis = false;
 
             DiagnosticsChanged?.Invoke(this, EventArgs.Empty);
         }
 
-        [CanBeNull]
-        public DiagnosticSeverity? WorstSeverity => _worstSeverity;
-
         public bool NoErrorsOrWarnings => CountDiagnosticsWithSeverity(DiagnosticSeverity.Error)   == 0 &&
                                           CountDiagnosticsWithSeverity(DiagnosticSeverity.Warning) == 0;
-
-        public bool WaitingForAnalysis => _waitingForAnalysis;
 
         public void Invalidate() {
 
             OnDiagnosticsChanging();
 
-            // TODO Invalidate
-            //foreach(var modelService in _textView.BufferGraph
-            //                                     .GetTextBuffers(tb => SemanticModelService.TryGet(tb) != null)
-            //                                     .Select(SemanticModelService.TryGet)) {
-            //    modelService?.Invalidate();
-            //}
         }
 
-        public bool HasDiagnosticsWithSeverity(DiagnosticSeverity severity) {
+        private bool HasDiagnosticsWithSeverity(DiagnosticSeverity severity) {
             return _diagnosticMapping.ContainsKey(severity);
         }
 
@@ -140,7 +132,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
                              .FirstOrDefault();
         }
 
-        public bool GoToNextDiagnostic(DiagnosticSeverity severity) {
+        bool GoToNextDiagnostic(DiagnosticSeverity severity) {
 
             if (!HasDiagnosticsWithSeverity(severity)) {
                 return false;
@@ -148,7 +140,6 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
 
             var caretPos = _textView.Caret.Position.BufferPosition;
 
-            // TODO noch optimieren / überprüfen
             foreach (var tagSpan in GetDiagnosticsWithSeverity(severity).Select(mappingTagSpan => _textView.MapToSingleSnapshotSpan(mappingTagSpan))) {
 
                 if (tagSpan?.Span.Start > caretPos) {
@@ -176,7 +167,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Diagnostics {
                                                                                 .AsReadOnly());
 
             _diagnosticMapping = diagnosticMapping;
-            _worstSeverity     = diagnosticMapping.Keys.GetWorst();
+            WorstSeverity      = diagnosticMapping.Keys.GetWorst();
 
             OnDiagnosticsChanged();
         }

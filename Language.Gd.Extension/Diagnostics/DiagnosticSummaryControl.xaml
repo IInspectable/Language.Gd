@@ -8,7 +8,6 @@
             xmlns:theming         = "clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Imaging"
             xmlns:platformUi="clr-namespace:Microsoft.VisualStudio.PlatformUI;assembly=Microsoft.VisualStudio.Shell.15.0"
             xmlns:catalog="clr-namespace:Microsoft.VisualStudio.Imaging;assembly=Microsoft.VisualStudio.ImageCatalog"
-
             RenderOptions.EdgeMode="Aliased"
             d:DesignHeight        ="300" 
             d:DesignWidth         ="300"
