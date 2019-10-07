@@ -12,19 +12,21 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
     [DebuggerDisplay("{" + nameof(GetDebuggerDisplay) + "(), nq}")]
     public class OutlineElement {
 
-        public OutlineElement(string displayName,
+        public OutlineElement(ImmutableArray<ClassifiedText> displayParts,
                               TextExtent extent,
                               int navigationPoint,
                               Glyph glyph,
                               ImmutableArray<OutlineElement> children = default) {
 
-            DisplayName     = displayName;
+            DisplayParts    = displayParts;
             Extent          = extent;
             NavigationPoint = navigationPoint;
             Glyph           = glyph;
             Children        = children.IsDefault ? ImmutableArray<OutlineElement>.Empty : children;
 
         }
+
+        public ImmutableArray<ClassifiedText> DisplayParts { get; }
 
         /// <summary>
         /// Gibt den gesamten Bereich des Items an, oder null, falls es keinen definierten Bereich gibt (z.B. Projekt Items)
@@ -34,7 +36,7 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
         /// <summary>
         /// Liefert den Anzeigenamen
         /// </summary>
-        public string DisplayName { get; }
+        public string DisplayName => DisplayParts.JoinText();
 
         /// <summary>
         /// Liefert den Moniker für das anzuzeigende Icon

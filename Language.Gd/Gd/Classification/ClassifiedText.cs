@@ -14,6 +14,8 @@ namespace Pharmatechnik.Language.Gd {
 
         }
 
+        public ClassifiedText WithClassification(GdClassification classification) => new ClassifiedText(Text, classification);
+
         [NotNull]
         public string Text => _text ?? String.Empty;
 

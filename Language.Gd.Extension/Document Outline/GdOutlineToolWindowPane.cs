@@ -6,19 +6,23 @@ using JetBrains.Annotations;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
 
+using Pharmatechnik.Language.Gd.Extension.Classification;
+
 namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
-    [Guid("7e927358-0b4d-4953-b2bb-48ef216eb8cb")]
+    [Guid(WindowGuidString)]
     public class GdOutlineToolWindowPane: ToolWindowPane {
+
+        public const string WindowGuidString = "7e927358-0b4d-4953-b2bb-48ef216eb8cb";
 
         private readonly GdOutlineControl    _outlineControl;
         private readonly GdOutlineController _outlineController;
 
-        public GdOutlineToolWindowPane(): base(null) {
+        public GdOutlineToolWindowPane(TextBlockBuilderService textBlockBuilderService): base(null) {
 
             BitmapImageMoniker = KnownMonikers.DocumentOutline;
 
-            _outlineControl                         =  new GdOutlineControl();
+            _outlineControl                         =  new GdOutlineControl(textBlockBuilderService);
             _outlineControl.IsVisibleChanged        += OnOutlineControlIsVisibleChanged;
             _outlineControl.RequestNavigateToSource += OnRequestNavigateToSource;
 
@@ -79,15 +83,17 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             UpdateCaption(e.OutlineData);
         }
 
+        public const string DefaultCaption = "Gui Outline";
+
         private void UpdateCaption([CanBeNull] OutlineData outlineData = null) {
 
-            const string defaultCaption = "Gui Outline";
+           
 
             var file = outlineData?.SyntaxTree.SourceText.FileInfo?.Name;
             if (!String.IsNullOrEmpty(file)) {
-                Caption = $"{defaultCaption} - {file}";
+                Caption = $"{DefaultCaption} - {file}";
             } else {
-                Caption = defaultCaption;
+                Caption = DefaultCaption;
             }
         }
 

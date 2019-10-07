@@ -18,7 +18,7 @@ using Pharmatechnik.Language.Gd.Extension.Common;
 namespace Pharmatechnik.Language.Gd.Extension.Classification {
 
     [Export]
-    sealed class TextBlockBuilderService {
+    public sealed class TextBlockBuilderService {
 
         readonly IClassificationFormatMapService                            _classificationFormatMapService;
         readonly ImmutableDictionary<GdClassification, IClassificationType> _classificationMap;

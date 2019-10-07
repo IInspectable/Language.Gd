@@ -6,6 +6,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
@@ -16,11 +17,14 @@ using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.LanguageServices;
+using Microsoft.VisualStudio.Shell.Interop;
 
+using Pharmatechnik.Language.Gd.Extension.Classification;
 using Pharmatechnik.Language.Gd.Extension.Document_Outline;
 using Pharmatechnik.Language.Gd.Extension.LanguageService;
 using Pharmatechnik.Language.Gd.Extension.Logging;
 
+using Constants = EnvDTE.Constants;
 using Project = Microsoft.CodeAnalysis.Project;
 using Task = System.Threading.Tasks.Task;
 
@@ -61,7 +65,7 @@ namespace Pharmatechnik.Language.Gd.Extension {
         ShowMatchingBrace           = true,
         ShowDropDownOptions         = true)]
     [ProvideLanguageExtension(typeof(GdLanguageService), GdLanguageContentDefinitions.FileExtension)]
-    [PackageRegistration(UseManagedResourcesOnly = true, AllowsBackgroundLoading = true)]
+    [PackageRegistration(UseManagedResourcesOnly                = true, AllowsBackgroundLoading = true)]
     [ProvideService(typeof(GdLanguageService), IsAsyncQueryable = true)]
     [ProvideService(typeof(IServiceProvider), IsAsyncQueryable  = true)]
     [Guid(PackageGuids.GdLanguagePackageGuidString)]
@@ -193,6 +197,39 @@ namespace Pharmatechnik.Language.Gd.Extension {
 
             // ReSharper disable once SuspiciousTypeConversion.Global 
             (textView as Control)?.Focus();
+        }
+
+        public override IVsAsyncToolWindowFactory GetAsyncToolWindowFactory(Guid toolWindowType) {
+
+            if (toolWindowType.Equals(Guid.Parse(GdOutlineToolWindowPane.WindowGuidString))) {
+                return this;
+            }
+
+            return null;
+        }
+
+        protected override string GetToolWindowTitle(Type toolWindowType, int id) {
+           
+            if (toolWindowType == typeof(GdOutlineToolWindowPane)) {
+                return GdOutlineToolWindowPane.DefaultCaption;
+            }
+
+            return base.GetToolWindowTitle(toolWindowType, id);
+
+        }
+
+        protected override async Task<object> InitializeToolWindowAsync(Type toolWindowType, int id, CancellationToken cancellationToken) {
+
+            if (toolWindowType == typeof(GdOutlineToolWindowPane)) {
+                // Perform as much work as possible in this method which is being run on a background thread.
+                // The object returned from this method is passed into the constructor of the SampleToolWindow 
+                var cmp = await GetServiceAsync(typeof(SComponentModel)) as IComponentModel;
+
+                var tbbs = cmp?.GetService<TextBlockBuilderService>();
+                return tbbs;
+            }
+
+            return null;
         }
 
     }

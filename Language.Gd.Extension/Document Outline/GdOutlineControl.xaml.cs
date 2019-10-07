@@ -7,6 +7,7 @@ using System.Windows;
 using JetBrains.Annotations;
 
 using Pharmatechnik.Language.Gd.DocumentOutline;
+using Pharmatechnik.Language.Gd.Extension.Classification;
 using Pharmatechnik.Language.Gd.Extension.Common;
 using Pharmatechnik.Language.Gd.Extension.Imaging;
 
@@ -18,9 +19,12 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
     partial class GdOutlineControl: UserControl {
 
+        private readonly TextBlockBuilderService _textBlockBuilderService;
+
         readonly Dictionary<OutlineElement, TreeViewItem> _flattenTree;
 
-        public GdOutlineControl() {
+        internal GdOutlineControl(TextBlockBuilderService textBlockBuilderService) {
+            _textBlockBuilderService = textBlockBuilderService;
             InitializeComponent();
             _flattenTree = new Dictionary<OutlineElement, TreeViewItem>();
 
@@ -76,7 +80,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                     CrispImage = {
                         Moniker = GdImageMonikers.GetMoniker(outline.Glyph)
                     },
-                    TextContent = {Content = outline.DisplayName}
+                    TextContent = {Content = MakeItemContent(outline)}
                 },
                 Tag        = outline,
                 IsExpanded = true,
@@ -104,6 +108,10 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             itemCollection.Add(item);
             _flattenTree[outline] = item;
 
+        }
+
+        private TextBlock MakeItemContent(OutlineElement outline) {
+            return _textBlockBuilderService.ToTextBlock(outline.DisplayParts);
         }
 
         readonly ScopedProperty<bool> _isHandlingOnItemRequestBringIntoView = ScopedProperty.Boolean();
