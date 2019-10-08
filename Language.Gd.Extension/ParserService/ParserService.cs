@@ -98,14 +98,14 @@ namespace Pharmatechnik.Language.Gd.Extension.ParserService {
             OnRebuildTriggered(EventArgs.Empty);
         }
 
-        public SyntaxTreeAndSnapshot UpdateSynchronously(CancellationToken cancellationToken = default) {
+        public SyntaxTreeAndSnapshot ParseSynchronously(CancellationToken cancellationToken = default) {
             var syntaxTreeAndSnapshot = SyntaxTreeAndSnapshot;
             if (syntaxTreeAndSnapshot != null && syntaxTreeAndSnapshot.IsCurrent(TextBuffer)) {
                 return syntaxTreeAndSnapshot;
             }
 
             syntaxTreeAndSnapshot = BuildSynchronously(CreateBuildResultArgs(), cancellationToken);
-            TrySetResult(syntaxTreeAndSnapshot);
+            TrySetResult(syntaxTreeAndSnapshot, raiseEvents: false);
 
             return syntaxTreeAndSnapshot;
         }
@@ -168,6 +168,10 @@ namespace Pharmatechnik.Language.Gd.Extension.ParserService {
         }
 
         void TrySetResult(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot) {
+            TrySetResult(syntaxTreeAndSnapshot, raiseEvents: true);
+        }
+
+        void TrySetResult(SyntaxTreeAndSnapshot syntaxTreeAndSnapshot, bool raiseEvents) {
 
             // Der Puffer wurde zwischenzeitlich schon wieder geändert. Dieses Ergebnis brauchen wir nicht,
             // da bereits ein neues berechnet wird.
@@ -178,7 +182,9 @@ namespace Pharmatechnik.Language.Gd.Extension.ParserService {
             _syntaxTreeAndSnapshot = syntaxTreeAndSnapshot;
 
             var snapshotSpan = syntaxTreeAndSnapshot.Snapshot.GetFullSpan();
-            OnParseResultChanged(new SnapshotSpanEventArgs(snapshotSpan));
+            if (raiseEvents) {
+                OnParseResultChanged(new SnapshotSpanEventArgs(snapshotSpan));
+            }
         }
 
         // Irgend jemand scheint den ITextBuffer länger als erhofft im Speicher zu halten

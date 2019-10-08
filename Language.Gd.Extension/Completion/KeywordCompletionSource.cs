@@ -151,7 +151,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Completion {
 
             var parserService = ParserService.ParserService.GetOrCreateSingelton(triggerLocation.Snapshot.TextBuffer);
 
-            var generationUnitAndSnapshot = parserService.UpdateSynchronously();
+            var generationUnitAndSnapshot = parserService.ParseSynchronously();
             var codeGenerationUnit        = generationUnitAndSnapshot.SyntaxTree.Root as GuiDescriptionSyntax;
 
             return codeGenerationUnit;

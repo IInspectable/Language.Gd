@@ -93,7 +93,7 @@ namespace Pharmatechnik.Language.Gd.Extension.SmartIndent {
 
             var parserService = ParserService.ParserService.TryGet(textBuffer);
             if (updateSyntax) {
-                parserService.UpdateSynchronously();
+                parserService.ParseSynchronously();
             }
 
             return parserService?.SyntaxTreeAndSnapshot?.SyntaxTree;
