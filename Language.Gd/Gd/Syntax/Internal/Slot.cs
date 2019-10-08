@@ -95,6 +95,32 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return node;
         }
 
+        static int GetFirstNonNullChildIndex(Slot slot) {
+            var slotCount  = slot.SlotCount;
+            var firstIndex = 0;
+            for (; firstIndex < slotCount; firstIndex++) {
+                var child = slot.GetSlot(firstIndex);
+                if (child != null) {
+                    break;
+                }
+            }
+
+            return firstIndex;
+        }
+
+        static int GetLastNonNullChildIndex(Slot slot) {
+            var slotCount = slot.SlotCount;
+            var lastIndex = slotCount - 1;
+            for (; lastIndex >= 0; lastIndex--) {
+                var child = slot.GetSlot(lastIndex);
+                if (child != null) {
+                    break;
+                }
+            }
+
+            return lastIndex;
+        }
+
         public SlotFlags Flags { get; }
 
         public SyntaxKind Kind { get; }
