@@ -1,8 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.Linq;
 
-using Pharmatechnik.Language.Text;
-
 namespace Pharmatechnik.Language.Gd.Internal {
 
     class TokenBuilder {
@@ -11,10 +9,11 @@ namespace Pharmatechnik.Language.Gd.Internal {
         readonly List<TriviaSlot> _trailingTrivia = new List<TriviaSlot>();
         readonly List<TriviaSlot> _pendingTrivia  = new List<TriviaSlot>();
 
-        TextExtent? _tokenExtent;
+        string      _tokenText;
+        int?        _tokenStart;
         SyntaxKind? _tokenKind;
 
-        private bool HasToken => _tokenExtent != null;
+        private bool HasToken => _tokenStart != null;
 
         public void AddTrivia(TriviaSlot trivia) {
             if (!HasToken) {
@@ -24,7 +23,7 @@ namespace Pharmatechnik.Language.Gd.Internal {
             }
         }
 
-        public void AddToken(TextExtent textExtent, SyntaxKind syntaxKind, out (int Start, TokenSlot Token) completedTokenInfo) {
+        public void AddToken(int start, string text, SyntaxKind syntaxKind, out (int Start, TokenSlot Token) completedTokenInfo) {
 
             completedTokenInfo = (-1, null);
 
@@ -48,19 +47,21 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
             }
 
-            _tokenExtent = textExtent;
-            _tokenKind   = syntaxKind;
+            _tokenStart = start;
+            _tokenText  = text;
+            _tokenKind  = syntaxKind;
 
         }
 
         public (int Start, TokenSlot Token) TryCompleteToken() {
 
-            if (_tokenExtent == null || _tokenKind == null) {
+            if (_tokenStart == null || _tokenKind == null) {
                 return (Start: 0, Token: null);
             }
 
-            var start     = _tokenExtent.Value.Start;
-            var tokenSlot = TokenSlot.Create(_tokenExtent.Value.Length, _tokenKind.Value, _leadingTrivia, _trailingTrivia);
+            var start     = _tokenStart.Value;
+            var tokenKind = _tokenKind.Value;
+            var tokenSlot = TokenSlot.Create(_tokenText, tokenKind, _leadingTrivia, _trailingTrivia);
 
             Clear();
 
@@ -70,8 +71,9 @@ namespace Pharmatechnik.Language.Gd.Internal {
         private void Clear() {
 
             _leadingTrivia.Clear();
-            _tokenExtent = null;
-            _tokenKind   = null;
+            _tokenText  = null;
+            _tokenStart = null;
+            _tokenKind  = null;
             _trailingTrivia.Clear();
         }
 

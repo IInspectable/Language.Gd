@@ -26,14 +26,14 @@ namespace Pharmatechnik.Language.Gd.Internal {
                 var isSkipedTokenTrivia = skippedTokens.Contains(rawToken);
 
                 if (rawToken.Channel == GdTokens.TriviaChannel ||
-                    rawToken.Channel == Lexer.Hidden        ||
+                    rawToken.Channel == Lexer.Hidden           ||
                     isSkipedTokenTrivia) {
 
-                    var trivia = TriviaSlot.Create(extent.Length, kind, isSkipedTokenTrivia);
+                    var trivia = TriviaSlot.Create(rawToken.Text, kind, isSkipedTokenTrivia);
                     tokenBuilder.AddTrivia(trivia);
                 } else {
 
-                    tokenBuilder.AddToken(extent, kind, out var completedTokenInfo);
+                    tokenBuilder.AddToken(extent.Start, rawToken.Text, kind, out var completedTokenInfo);
                     if (completedTokenInfo.Token != null) {
                         tokens.Add(completedTokenInfo.Start, completedTokenInfo.Token);
                     }

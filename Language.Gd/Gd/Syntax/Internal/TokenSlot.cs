@@ -1,5 +1,6 @@
 ﻿#region Using Directives
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -11,8 +12,9 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
     partial class TokenSlot: Slot {
 
-        TokenSlot(int fullLength, SyntaxKind kind)
-            : base(fullLength, kind) {
+        TokenSlot(string text, SyntaxKind kind)
+            : base(text.Length, kind) {
+
         }
 
         [CanBeNull]
@@ -25,15 +27,24 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return new SyntaxToken(syntaxTree, this, parent, position);
         }
 
-        public static TokenSlot Create(int length, SyntaxKind kind,
+        public static TokenSlot CreateMissingToken(SyntaxKind kind) {
+            return new TokenSlot(String.Empty, kind: kind);
+        }
+
+        public static TokenSlot Create(string text, SyntaxKind kind,
                                        IReadOnlyList<TriviaSlot> leadingTrivia = null,
                                        IReadOnlyList<TriviaSlot> trailingTrivia = null) {
+
+            text = text ?? string.Empty;
+            if (kind == SyntaxKind.Eof) {
+                text = String.Empty;
+            }
 
             if (leadingTrivia  != null && leadingTrivia.Any() &&
                 trailingTrivia != null && trailingTrivia.Any()) {
 
                 return new TokenWithTriviaSlot(
-                    length: length,
+                    text: text,
                     kind: kind,
                     leadingTrivia: SlotList.Create(leadingTrivia),
                     trailingTrivia: SlotList.Create(trailingTrivia));
@@ -41,20 +52,20 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
             if (leadingTrivia != null && leadingTrivia.Any()) {
                 return new TokenWithLeadingTriviaSlot(
-                    length: length,
+                    text: text,
                     kind: kind,
                     leadingTrivia: SlotList.Create(leadingTrivia));
             }
 
             if (trailingTrivia != null && trailingTrivia.Any()) {
                 return new TokenWithTrailingTriviaSlot(
-                    length: length,
+                    text: text,
                     kind: kind,
                     trailingTrivia: SlotList.Create(trailingTrivia));
             }
 
             return new TokenSlot(
-                fullLength: length,
+                text: text,
                 kind: kind);
         }
 

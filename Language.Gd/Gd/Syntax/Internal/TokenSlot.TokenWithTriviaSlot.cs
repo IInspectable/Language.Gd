@@ -4,9 +4,9 @@
 
         class TokenWithTriviaSlot: TokenSlot {
 
-            public TokenWithTriviaSlot(int length, SyntaxKind kind,
+            public TokenWithTriviaSlot(string text, SyntaxKind kind,
                                        Slot leadingTrivia, Slot trailingTrivia)
-                : base(length, kind) {
+                : base(text, kind) {
 
                 LeadingTrivia  = leadingTrivia;
                 TrailingTrivia = trailingTrivia;

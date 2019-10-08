@@ -38,7 +38,7 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return GetDebuggerDisplay();
         }
 
-        public bool IsMissing           => FullLength == 0;
+        public bool IsMissing           => FullLength == 0 && Kind != SyntaxKind.Eof;
         public bool IsSkipedTokenTrivia => IsFlagPresent(SlotFlags.IsSkipedTokenTrivia);
 
         protected TSlot AdjustLength<TSlot>(TSlot slot) where TSlot : Slot {

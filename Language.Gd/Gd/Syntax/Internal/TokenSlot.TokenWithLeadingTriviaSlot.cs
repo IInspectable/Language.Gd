@@ -4,8 +4,8 @@
 
         private class TokenWithLeadingTriviaSlot: TokenSlot {
 
-            public TokenWithLeadingTriviaSlot(int length, SyntaxKind kind, Slot leadingTrivia)
-                : base(length, kind) {
+            public TokenWithLeadingTriviaSlot(string text, SyntaxKind kind, Slot leadingTrivia)
+                : base(text, kind) {
 
                 LeadingTrivia = leadingTrivia;
 

@@ -31,7 +31,7 @@ namespace Pharmatechnik.Language.Gd.Antlr {
                     }
                 }
 
-                return TokenSlot.Create(length: 0, kind: syntaxKind);
+                return TokenSlot.CreateMissingToken(kind: syntaxKind);
             }
 
             return _tokens[extent.Start];

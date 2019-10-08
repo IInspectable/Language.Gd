@@ -2,13 +2,14 @@
 
     class TriviaSlot: Slot {
 
-        TriviaSlot(int fullLength, SyntaxKind kind, SlotFlags flags)
-            : base(fullLength, kind, flags) {
+        TriviaSlot(string text, SyntaxKind kind, SlotFlags flags)
+            : base(text.Length, kind, flags) {
+
         }
 
-        internal static TriviaSlot Create(int fullLength, SyntaxKind kind, bool isSkipedTokenTrivia) {
+        internal static TriviaSlot Create(string text, SyntaxKind kind, bool isSkipedTokenTrivia) {
             var flags = isSkipedTokenTrivia ? SlotFlags.IsSkipedTokenTrivia : SlotFlags.None;
-            return new TriviaSlot(fullLength, kind, flags);
+            return new TriviaSlot(text, kind, flags);
         }
 
         internal SyntaxTrivia Realize(SyntaxTree syntaxTree, SyntaxToken token, int position) {

@@ -4,8 +4,8 @@
 
         private class TokenWithTrailingTriviaSlot: TokenSlot {
 
-            public TokenWithTrailingTriviaSlot(int length, SyntaxKind kind, Slot trailingTrivia)
-                : base(length, kind) {
+            public TokenWithTrailingTriviaSlot(string text, SyntaxKind kind, Slot trailingTrivia)
+                : base(text, kind) {
 
                 TrailingTrivia = trailingTrivia;
                 AdjustLength(trailingTrivia);
