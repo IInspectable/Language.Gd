@@ -169,7 +169,7 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
                 if (textCandidate &&
                     controlSection.PropertiesSection is PropertiesSectionSyntax propertiesSection) {
 
-                    var text = propertiesSection.Propertys.OfType<PropertyAssignSyntax>()
+                    var text = propertiesSection.Properties.OfType<PropertyAssignSyntax>()
                                                 .Where(pa => pa.Rvalue is StringValueSyntax)
                                                 .FirstOrDefault(p => p.LvalueExpression?.GetText() == "Text")
                                                ?.Rvalue

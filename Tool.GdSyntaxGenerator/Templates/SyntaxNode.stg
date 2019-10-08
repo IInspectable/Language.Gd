@@ -99,7 +99,7 @@ public <syntaxSlot.Name>Syntax <syntaxSlot.Name> => (<syntaxSlot.Name>Syntax) Ge
 >>
 
 writeSyntaxPropertyToN(syntaxSlot)::=<<
-public SyntaxList\<<syntaxSlot.Name>Syntax> <syntaxSlot.Name><syntaxSlot:pl()> => SyntaxList\<<syntaxSlot.Name>Syntax>.CreateList(GetSyntaxNode(<syntaxSlot.SlotIndex>));
+public SyntaxList\<<syntaxSlot.Name>Syntax> <syntaxSlot.PropertyName> => SyntaxList\<<syntaxSlot.Name>Syntax>.CreateList(GetSyntaxNode(<syntaxSlot.SlotIndex>));
 >>
 
 writeSyntaxNodeFields(syntaxSlots) ::=<<
@@ -107,15 +107,11 @@ writeSyntaxNodeFields(syntaxSlots) ::=<<
 >>
 
 writeSyntaxNodeField(syntaxSlot)::=<<
-<syntaxFieldType(syntaxSlot)> <syntaxSlot.FieldName><syntaxSlot:pl()>;
+<syntaxFieldType(syntaxSlot)> <syntaxSlot.FieldName>;
 >>
 
 syntaxFieldType(syntaxSlot)::=<<
 <if(syntaxSlot.IsToN)>SyntaxNodeList<else><syntaxSlot.Name>Syntax<endif>
->>
-
-pl(slotModel)::=<<
-<if(slotModel.IsToN)>s<endif>
 >>
 
 // GetCachedSyntaxNodeMethod
@@ -135,7 +131,7 @@ private protected override SyntaxNode GetCachedSyntaxNode(int index) {
 writeGetCachedSyntaxNodeCase(slotModel) ::=<<
 <if(slotModel.IsSyntaxNode)>
 case <slotModel.SlotIndex>:
-	return <slotModel.FieldName><slotModel:pl()>;<endif>
+	return <slotModel.FieldName>;<endif>
 >>
 
 // GetSyntaxNodeMethod
@@ -155,7 +151,7 @@ internal override SyntaxNode GetSyntaxNode(int index) {
 writeGetSyntaxNodeCase(slotModel) ::=<<
 <if(slotModel.IsSyntaxNode)>
 case <slotModel.SlotIndex>:
-	return GetSyntaxNode(ref <slotModel.FieldName><slotModel:pl()>, Slot.<slotModel.Name><slotModel:pl()>, index: <slotModel.SlotIndex>);<endif>
+	return GetSyntaxNode(ref <slotModel.FieldName>, Slot.<slotModel.PropertyName>, index: <slotModel.SlotIndex>);<endif>
 >>
 
 writeSectionSyntaxImplementation(slot) ::=<<

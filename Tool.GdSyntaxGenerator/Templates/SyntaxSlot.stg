@@ -71,19 +71,15 @@ writeProperty(slotModel)::=<<
 >>
 
 writeTokenProperty(slotModel)::=<<
-public TokenSlot <slotModel.Name>Token { get; }
+public TokenSlot <slotModel.PropertyName>Token { get; }
 >>
 
 writeSyntaxProperty(slotModel)::=<<
-public <syntaxPropertyType(slotModel)> <slotModel.Name><slotModel:pl()> { get; }
+public <syntaxPropertyType(slotModel)> <slotModel.PropertyName> { get; }
 >>
 
 syntaxPropertyType(slotModel)::=<<
 <if(slotModel.IsToN)>SlotList<else><slotModel.Name>SyntaxSlot<endif>
->>
-
-pl(slotModel)::=<<
-<if(slotModel.IsToN)>s<endif>
 >>
 
 // Parameter
@@ -101,7 +97,7 @@ TokenSlot <slotModel.ParameterName>Token
 >>
 
 writeSyntaxParameter(slotModel) ::=<<
-<syntaxPropertyType(slotModel)> <slotModel.ParameterName><slotModel:pl()>
+<syntaxPropertyType(slotModel)> <slotModel.ParameterName>
 >>
 
 
@@ -116,11 +112,11 @@ writePropertyInit(slotModel) ::=<<
 >>
 
 writeTokenPropertyInit(slotModel) ::=<<
-<slotModel.Name>Token = AdjustLength(<slotModel.ParameterName>Token);
+<slotModel.PropertyName>Token = AdjustLength(<slotModel.ParameterName>Token);
 >>
 
 writeSyntaxPropertyInit(slotModel) ::=<<
-<slotModel.Name><slotModel:pl()> = AdjustLength(<slotModel.ParameterName><slotModel:pl()>);
+<slotModel.PropertyName> = AdjustLength(<slotModel.ParameterName>);
 >>
 
 // Slot method 
@@ -141,6 +137,6 @@ public override Slot GetSlot(int index) {
 
 writeSlotCase(slotModel) ::=<<
 case <slotModel.SlotIndex>:
-	return <slotModel.Name><if(slotModel.IsToken)>Token<else><slotModel:pl()><endif>;
+	return <slotModel.PropertyName><if(slotModel.IsToken)>Token<else><endif>;
 >>
 

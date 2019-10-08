@@ -32,7 +32,7 @@ writeParameterList(slots) ::=<<
 >>
 
 writeParameter(slot) ::=<<
-<if(slot.IsToken)><slot.ParameterName>Token: <slot:writeTokenParameter()><else><slot.ParameterName><slot:pl()>: <slot:writeSyntaxParameter()><endif>
+<if(slot.IsToken)><slot.ParameterName>Token: <slot:writeTokenParameter()><else><slot.ParameterName>: <slot:writeSyntaxParameter()><endif>
 >>
 
 // TODO Optionale Tokens!!
@@ -56,29 +56,25 @@ writeSyntaxParameter(syntaxSlot) ::=<%
 %>
 
 writeOptionalParameter(syntaxSlot) ::=<<
-context?.<syntaxSlot.ParameterName>()
+context?.<syntaxSlot.ParserRuleName>()
        .Optional(Visit<syntaxSlot.Name>)
        .OfType\<<syntaxSlot.Name>SyntaxSlot>()
 >>
 
 writeRequiredParameter(syntaxSlot) ::=<<
-context?.<syntaxSlot.ParameterName>()
+context?.<syntaxSlot.ParserRuleName>()
        .Required(Visit<syntaxSlot.Name>)
        .OfType\<<syntaxSlot.Name>SyntaxSlot>()
 >>
 
 writeOneOrMoreParameter(syntaxSlot) ::=<<
-context?.<syntaxSlot.ParameterName>()
+context?.<syntaxSlot.ParserRuleName>()
        .OneOrMore(Visit<syntaxSlot.Name>)
        .OfType\<<syntaxSlot.Name>SyntaxSlot>()
 >>
 
 writeZeroOrMoreParameter(syntaxSlot) ::=<<
-context?.<syntaxSlot.ParameterName>()
+context?.<syntaxSlot.ParserRuleName>()
        .ZeroOrMore(Visit<syntaxSlot.Name>)
        .OfType\<<syntaxSlot.Name>SyntaxSlot>()
->>
-
-pl(slotModel)::=<<
-<if(slotModel.IsToN)>s<endif>
 >>

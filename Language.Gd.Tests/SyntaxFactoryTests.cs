@@ -30,7 +30,7 @@ namespace Pharmatechnik.Language.Gd.Tests {
             Assert.That(node.SyntaxTree.Diagnostics.Length, Is.EqualTo(1));
 
             Assert.That(node.PropertiesSectionBegin?.IsMissing, Is.True);
-            Assert.That(node.Propertys.Count,                   Is.EqualTo(0));
+            Assert.That(node.Properties.Count,                  Is.EqualTo(0));
             Assert.That(node.PropertiesSectionEnd?.IsMissing,   Is.False);
 
         }
