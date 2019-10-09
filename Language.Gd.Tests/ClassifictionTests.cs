@@ -74,6 +74,7 @@ END NAMESPACE
             var syntax = SyntaxFactory.ParseControlSectionBeginSyntax(source);
             var tree   = syntax.SyntaxTree;
 
+            Assert.That(tree, Is.Not.Null);
             Assert.That(tree.Diagnostics.Length, Is.EqualTo(0));
 
             var parts = syntax.ToSimplifiedText();
@@ -89,6 +90,7 @@ END NAMESPACE
             var syntax = SyntaxFactory.ParsePropertiesSectionSyntax(source);
             var tree   = syntax.SyntaxTree;
 
+            Assert.That(tree, Is.Not.Null);
             Assert.That(tree.Diagnostics.Length, Is.EqualTo(0));
 
             var parts = syntax.ToSimplifiedText();
@@ -114,6 +116,7 @@ END PROPERTIES";
             var syntax = SyntaxFactory.ParseQualifiedNameSyntax(source);
             var tree   = syntax.SyntaxTree;
 
+            Assert.That(tree, Is.Not.Null);
             Assert.That(tree.Diagnostics.Length, Is.EqualTo(0));
 
             var parts = syntax.ToSimplifiedText();
@@ -132,6 +135,7 @@ END PROPERTIES";
             var syntax = SyntaxFactory.ParseHotkeyDeclarationSyntax(source);
             var tree   = syntax.SyntaxTree;
 
+            Assert.That(tree, Is.Not.Null);
             Assert.That(tree.Diagnostics.Length, Is.EqualTo(0));
 
             var parts = syntax.ToSimplifiedText();

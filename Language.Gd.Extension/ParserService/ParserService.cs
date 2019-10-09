@@ -162,8 +162,8 @@ namespace Pharmatechnik.Language.Gd.Extension.ParserService {
 
         static SyntaxTreeAndSnapshot BuildSynchronously(BuildResultArgs args, CancellationToken cancellationToken) {
 
-            var syntaxTree = args.ParseMethod(args.SourceText, cancellationToken).SyntaxTree;
-
+            var syntaxTree = args.ParseMethod(args.SourceText, cancellationToken).SyntaxTree ?? throw new NullReferenceException("Syntax Tree should not be null.");
+            
             return new SyntaxTreeAndSnapshot(syntaxTree, args.Snapshot);
         }
 

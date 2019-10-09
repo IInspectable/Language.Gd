@@ -14,6 +14,7 @@ namespace Pharmatechnik.Language.Gd.Tests {
 
             var syntax = SyntaxFactory.ParseNamespaceDeclarationSectionBeginSyntax(testGd);
 
+            Assert.That(syntax.SyntaxTree, Is.Not.Null);
             Assert.That(syntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 
             var qiDef=QuickInfoProvider.GetQuickInfoDefinition(syntax.SyntaxTree, 0);

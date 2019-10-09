@@ -14,6 +14,7 @@ namespace Pharmatechnik.Language.Gd.Tests {
 
             Assert.That(node,                               Is.Not.Null);
             Assert.That(node.GetFullText(),                 Is.EqualTo(props));
+            Assert.That(node.SyntaxTree,                    Is.Not.Null);
             Assert.That(node.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));
 
         }
@@ -27,6 +28,7 @@ namespace Pharmatechnik.Language.Gd.Tests {
 
             Assert.That(node,                               Is.Not.Null);
             Assert.That(node.GetFullText(),                 Is.EqualTo(props));
+            Assert.That(node.SyntaxTree,                    Is.Not.Null);
             Assert.That(node.SyntaxTree.Diagnostics.Length, Is.EqualTo(1));
 
             Assert.That(node.PropertiesSectionBegin?.IsMissing, Is.True);
