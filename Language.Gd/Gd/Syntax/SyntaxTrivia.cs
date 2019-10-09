@@ -13,14 +13,11 @@ namespace Pharmatechnik.Language.Gd {
 
     public readonly struct SyntaxTrivia: IEquatable<SyntaxTrivia> {
 
-        [CanBeNull]
-        private readonly TriviaSlot _slot;
-
         internal SyntaxTrivia(SyntaxTree syntaxTree, SyntaxToken token, TriviaSlot slot, int position) {
             Position   = position;
             SyntaxTree = syntaxTree;
             Token      = token;
-            _slot      = slot;
+            Slot       = slot;
         }
 
         [CanBeNull]
@@ -28,21 +25,24 @@ namespace Pharmatechnik.Language.Gd {
 
         public SyntaxToken Token { get; }
 
-        public SyntaxKind Kind => _slot?.Kind ?? SyntaxKind.None;
+        [CanBeNull]
+        internal TriviaSlot Slot { get; }
 
-        public bool IsSkipedTokenTrivia => _slot?.IsSkipedTokenTrivia ?? false;
+        public SyntaxKind Kind => Slot?.Kind ?? SyntaxKind.None;
 
-        public int        ExtentStart => Position + _slot?.GetLeadingTriviaWidth() ?? default;
-        public TextExtent Extent      => _slot != null ? new TextExtent(start: Position + _slot.GetLeadingTriviaWidth(), length: _slot.Length) : default;
-        public TextExtent FullExtent  => _slot != null ? new TextExtent(start: Position,                                 length: _slot.FullLength) : default;
+        public bool IsSkipedTokenTrivia => Slot?.IsSkipedTokenTrivia ?? false;
+
+        public int        ExtentStart => Position + Slot?.GetLeadingTriviaWidth() ?? default;
+        public TextExtent Extent      => Slot != null ? new TextExtent(start: Position + Slot.GetLeadingTriviaWidth(), length: Slot.Length) : default;
+        public TextExtent FullExtent  => Slot != null ? new TextExtent(start: Position,                                length: Slot.FullLength) : default;
 
         internal int Position    { get; }
-        internal int EndPosition => Position + _slot?.FullLength ?? 0;
+        internal int EndPosition => Position + Slot?.FullLength ?? 0;
 
-        public int Length     => _slot?.Length     ?? 0;
-        public int FullLength => _slot?.FullLength ?? 0;
+        public int Length     => Slot?.Length     ?? 0;
+        public int FullLength => Slot?.FullLength ?? 0;
 
-        public string Text => SyntaxTree?.SourceText.Substring(Extent) ?? String.Empty;
+        public string Text => Slot?.Text ?? String.Empty;
 
         public Location GetLocation() {
             return SyntaxTree?.GetLocation(Extent) ?? Location.None;
@@ -53,7 +53,7 @@ namespace Pharmatechnik.Language.Gd {
         }
 
         public bool Equals(SyntaxTrivia other) {
-            return Equals(_slot,      other._slot)      &&
+            return Equals(Slot,       other.Slot)       &&
                    Equals(SyntaxTree, other.SyntaxTree) &&
                    Token.Equals(other.Token)            &&
                    Position == other.Position;
@@ -65,7 +65,7 @@ namespace Pharmatechnik.Language.Gd {
 
         public override int GetHashCode() {
             unchecked {
-                var hashCode = (_slot != null ? _slot.GetHashCode() : 0);
+                var hashCode = (Slot != null ? Slot.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ (SyntaxTree != null ? SyntaxTree.GetHashCode() : 0);
                 hashCode = (hashCode * 397) ^ Token.GetHashCode();
                 hashCode = (hashCode * 397) ^ Position;
