@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Pharmatechnik.Language.Text {
 
@@ -132,6 +134,34 @@ namespace Pharmatechnik.Language.Text {
         /// </summary>
         public override int GetHashCode() {
             return Start ^ End;
+        }
+
+        public TextExtent MergeWithAdjacent(IReadOnlyList<TextExtent> candidates) {
+
+            int start = Start;
+            int end   = End;
+
+            var byEnd = candidates.ToDictionary(e => e.End);
+            while (true) {
+                var found = byEnd.TryGetValue(start, out var e);
+                if (!found) {
+                    break;
+                }
+
+                start = e.Start;
+            }
+
+            var byStart = candidates.ToDictionary(e => e.Start);
+            while (true) {
+                var found = byStart.TryGetValue(end, out var e);
+                if (!found) {
+                    break;
+                }
+
+                end = e.End;
+            }
+
+            return TextExtent.FromBounds(start, end);
         }
 
     }

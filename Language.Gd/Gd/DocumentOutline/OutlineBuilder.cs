@@ -15,19 +15,26 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
 
     public class OutlineBuilder: SyntaxVisitor<OutlineElement> {
 
+        OutlineBuilder(bool detailed) {
+            Detailed = detailed;
+
+        }
+
+        bool Detailed { get; }
+
         [CanBeNull]
-        public static OutlineElement Build(SyntaxNode node) {
-            return Build(node as GuiDescriptionSyntax);
+        public static OutlineElement Build(SyntaxNode node, bool detailed) {
+            return Build(node as GuiDescriptionSyntax, detailed);
         }
 
         [CanBeNull]
-        public static OutlineElement Build(GuiDescriptionSyntax syntaxRoot) {
+        public static OutlineElement Build(GuiDescriptionSyntax syntaxRoot, bool detailed) {
 
             if (syntaxRoot == null) {
                 return null;
             }
 
-            var builder = new OutlineBuilder();
+            var builder = new OutlineBuilder(detailed);
 
             // Startpunkt ist bisweilen immer der Container
             var container = syntaxRoot.DescendantNodes().OfType<ContainerSyntax>().FirstOrDefault();
@@ -57,6 +64,67 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
 
         protected internal override OutlineElement VisitGuiElementSyntax(GuiElementSyntax guiElement) {
             return CreateSectionElement(guiElement);
+        }
+
+        protected internal override OutlineElement VisitControlSectionSyntax(ControlSectionSyntax controlSection) {
+
+            if (Detailed && controlSection.SectionBegin?.ControlTypeToken.GetText() == "Table") {
+
+                // Spaltendefinitionen als Kinder der Tabelle
+                if (controlSection.PropertiesSection != null) {
+
+                    var columnInfos = controlSection.PropertiesSection.Properties.OfType<PropertyAssignSyntax>().Where(
+                                                         pa => pa.LvalueExpression?.MemberAccessExpression is ElementAccessExpressionSyntax mae &&
+                                                               mae.IdentifierName?.GetText() == "ColumnInfos"                                   &&
+                                                               pa.LvalueExpression?.LvalueExpressionContinuation?.LvalueExpression?.MemberAccessExpression is SimpleMemberAccessExpressionSyntax)
+                                                    .Select(pa => {
+                                                             var mae = (ElementAccessExpressionSyntax) pa.LvalueExpression?.MemberAccessExpression;
+                                                             var sae = ((SimpleMemberAccessExpressionSyntax) pa.LvalueExpression?.LvalueExpressionContinuation?.LvalueExpression?.MemberAccessExpression);
+                                                             return new {
+                                                                 Name       = sae.IdentifierName?.GetText(),
+                                                                 Value      = pa.Rvalue?.GetText() ?? String.Empty,
+                                                                 Index      = mae.IntegerToken.GetText(),
+                                                                 Extent     = pa.Extent,
+                                                                 FullExtent = pa.FullExtent
+                                                             };
+                                                         }
+                                                     ).GroupBy(item => item.Index);
+
+                    var columnOutlines = new List<OutlineElement>();
+                    foreach (var column in columnInfos) {
+
+                        var keyProperty     = column.FirstOrDefault(ci => ci.Name == "Key");
+                        var captionProperty = column.FirstOrDefault(ci => ci.Name == "Caption");
+
+                        if (keyProperty != null) {
+
+                            var displayParts = new List<ClassifiedText>(2);
+
+                            var caption = captionProperty?.Value;
+                            if (!caption.IsNullOrWhiteSpace()) {
+                                displayParts.Add(new ClassifiedText(caption, GdClassification.StringLiteral));
+                                displayParts.Add(WhiteSpace);
+                            }
+
+                            displayParts.Add(new ClassifiedText(keyProperty.Value.Trim('"'), GdClassification.Text));
+
+                            var extent          = keyProperty.FullExtent.MergeWithAdjacent(column.Select(c => c.FullExtent).ToList());
+                            var navigationPoint = keyProperty.Extent.Start;
+
+                            columnOutlines.Add(new OutlineElement(displayParts: displayParts.ToImmutableArray(),
+                                                                  extent: extent,
+                                                                  navigationPoint: navigationPoint,
+                                                                  glyph: Glyph.Column));
+                        }
+
+                    }
+
+                    return CreateSectionElement(controlSection, columnOutlines.ToImmutableArray());
+                }
+
+            }
+
+            return base.VisitControlSectionSyntax(controlSection);
         }
 
         protected internal override OutlineElement VisitBarManagerSectionSyntax(BarManagerSectionSyntax barManagerSection) {

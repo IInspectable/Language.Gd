@@ -10,7 +10,7 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
 
         public static ImmutableArray<OutlineElement> GetItems(GuiDescriptionSyntax syntaxRoot) {
 
-            var outlineElement = OutlineBuilder.Build(syntaxRoot);
+            var outlineElement = OutlineBuilder.Build(syntaxRoot, detailed: true);
             if (outlineElement == null) {
                 return ImmutableArray<OutlineElement>.Empty;
             }

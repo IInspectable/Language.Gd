@@ -130,7 +130,7 @@ END NAMESPACE
 
             Assert.That(tree.Diagnostics.Length, Is.EqualTo(0));
 
-            var outlineElement = OutlineBuilder.Build(tree.Root as GuiDescriptionSyntax);
+            var outlineElement = OutlineBuilder.Build(tree.Root as GuiDescriptionSyntax, detailed: true);
 
             Assert.That(outlineElement,                 Is.Not.Null);
             Assert.That(outlineElement.Children.Length, Is.EqualTo(3));

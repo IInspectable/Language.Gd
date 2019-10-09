@@ -192,7 +192,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
             var syntaxTree     = sts?.SyntaxTree;
             var snapshot       = sts?.Snapshot;
-            var outlineElement = OutlineBuilder.Build(syntaxTree?.Root);
+            var outlineElement = OutlineBuilder.Build(syntaxTree?.Root, detailed: true);
 
             OutlineData outlineData = null;
             if (syntaxTree != null && outlineElement != null) {

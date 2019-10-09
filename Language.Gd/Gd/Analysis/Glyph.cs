@@ -48,6 +48,7 @@
         ReportPreview,
         Scanner,
         Table,
+        Column,
         Textbox,
         TimeTextbox,
         Tree,
