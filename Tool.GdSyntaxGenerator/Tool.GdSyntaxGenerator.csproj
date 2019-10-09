@@ -8,7 +8,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>Tool.GdSyntaxGenerator</RootNamespace>
     <AssemblyName>Tool.GdSyntaxGenerator</AssemblyName>
-    <LangVersion>default</LangVersion>
+    <LangVersion>8</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ApplicationIcon />
     <StartupObject />

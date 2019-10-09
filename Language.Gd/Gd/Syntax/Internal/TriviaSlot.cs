@@ -17,8 +17,8 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return new TriviaSlot(text, kind, flags);
         }
 
-        internal SyntaxTrivia Realize(SyntaxTree syntaxTree, SyntaxToken token, int position) {
-            return new SyntaxTrivia(syntaxTree: syntaxTree, token: token, slot: this, position: position);
+        internal SyntaxTrivia Realize( SyntaxToken token, int position) {
+            return new SyntaxTrivia(token: token, slot: this, position: position);
         }
 
         public override int GetLeadingTriviaWidth() {

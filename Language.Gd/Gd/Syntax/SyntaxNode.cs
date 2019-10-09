@@ -52,13 +52,8 @@ namespace Pharmatechnik.Language.Gd {
         internal bool IsList    => Slot.IsList;
         internal int  SlotCount => Slot.SlotCount;
 
-        public string GetText() {
-            return Slot?.GetText() ?? String.Empty;
-        }
-
-        public string GetFullText() {
-            return Slot?.GetFullText() ?? String.Empty;
-        }
+        public string GetText() => Slot?.GetText()         ?? String.Empty;
+        public string GetFullText() => Slot?.GetFullText() ?? String.Empty;
 
         public override string ToString() {
             return $"N: {Kind} {Extent}";

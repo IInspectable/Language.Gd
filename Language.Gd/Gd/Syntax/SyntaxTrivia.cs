@@ -13,15 +13,14 @@ namespace Pharmatechnik.Language.Gd {
 
     public readonly struct SyntaxTrivia: IEquatable<SyntaxTrivia> {
 
-        internal SyntaxTrivia(SyntaxTree syntaxTree, SyntaxToken token, TriviaSlot slot, int position) {
-            Position   = position;
-            SyntaxTree = syntaxTree;
-            Token      = token;
-            Slot       = slot;
+        internal SyntaxTrivia(SyntaxToken token, TriviaSlot slot, int position) {
+            Position = position;
+            Token    = token;
+            Slot     = slot;
         }
 
         [CanBeNull]
-        public SyntaxTree SyntaxTree { get; }
+        public SyntaxTree SyntaxTree => Token.SyntaxTree;
 
         public SyntaxToken Token { get; }
 
@@ -33,16 +32,13 @@ namespace Pharmatechnik.Language.Gd {
         public bool IsSkipedTokenTrivia => Slot?.IsSkipedTokenTrivia ?? false;
 
         public int        ExtentStart => Position + Slot?.GetLeadingTriviaWidth() ?? default;
-        public TextExtent Extent      => Slot != null ? new TextExtent(start: Position + Slot.GetLeadingTriviaWidth(), length: Slot.Length) : default;
-        public TextExtent FullExtent  => Slot != null ? new TextExtent(start: Position,                                length: Slot.FullLength) : default;
+        public TextExtent Extent      => Slot != null ? new TextExtent(start: Position, length: Slot.FullLength) : default;
 
         internal int Position    { get; }
         internal int EndPosition => Position + Slot?.FullLength ?? 0;
 
-        public int Length     => Slot?.Length     ?? 0;
-        public int FullLength => Slot?.FullLength ?? 0;
-
-        public string Text => Slot?.Text ?? String.Empty;
+        public int    Length => Slot?.Length ?? 0;
+        public string Text   => Slot?.Text   ?? String.Empty;
 
         public Location GetLocation() {
             return SyntaxTree?.GetLocation(Extent) ?? Location.None;

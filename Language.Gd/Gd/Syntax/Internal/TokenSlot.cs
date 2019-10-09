@@ -19,7 +19,7 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
         }
 
-        public string Text { get; }
+        string Text { get; }
 
         [CanBeNull]
         public virtual Slot LeadingTrivia => null;
@@ -39,9 +39,10 @@ namespace Pharmatechnik.Language.Gd.Internal {
                                        IReadOnlyList<TriviaSlot> leadingTrivia = null,
                                        IReadOnlyList<TriviaSlot> trailingTrivia = null) {
 
-            text = text ?? string.Empty;
             if (kind == SyntaxKind.Eof) {
                 text = String.Empty;
+            } else {
+                text ??= string.Empty;
             }
 
             if (leadingTrivia  != null && leadingTrivia.Any() &&

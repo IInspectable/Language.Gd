@@ -221,7 +221,7 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
             if (node is ControlSectionBeginSyntax controlBeginSection &&
                 controlBeginSection.Parent is ControlSectionSyntax controlSection) {
 
-                if (controlSection.HotkeysSection is HotkeysSectionSyntax hotkeysSection) {
+                if (controlSection.HotkeysSection is { } hotkeysSection) {
 
                     result = hotkeysSection.HotkeyDeclarations
                                            .Select(GetBindingParts)
@@ -235,7 +235,7 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
                                     controlBeginSection.ControlTypeToken.GetText() == "Button";
 
                 if (textCandidate &&
-                    controlSection.PropertiesSection is PropertiesSectionSyntax propertiesSection) {
+                    controlSection.PropertiesSection is { } propertiesSection) {
 
                     var text = propertiesSection.Properties.OfType<PropertyAssignSyntax>()
                                                 .Where(pa => pa.Rvalue is StringValueSyntax)

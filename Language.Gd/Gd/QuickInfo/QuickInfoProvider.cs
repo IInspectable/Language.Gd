@@ -74,7 +74,7 @@ namespace Pharmatechnik.Language.Gd.QuickInfo {
                 // END NAMESPACE
                 if (triggerToken.Parent is NamespaceDeclarationSectionEndSyntax namespaceSectionEnd      &&
                     namespaceSectionEnd.Parent is NamespaceDeclarationSectionSyntax namespaceDeclaration &&
-                    namespaceDeclaration.SectionBegin is NamespaceDeclarationSectionBeginSyntax namespaceSectionBegin) {
+                    namespaceDeclaration.SectionBegin is { } namespaceSectionBegin) {
 
                     var glyph   = SectionGlyphs.GetGlyph(namespaceDeclaration);
                     var content = namespaceSectionBegin.ToSimplifiedText();

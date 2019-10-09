@@ -77,9 +77,9 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return node;
         }
 
-        protected int GetFirstNonMissingChildIndex() => GetFirstNonMissingChildIndex(this);
+        int GetFirstNonMissingChildIndex() => GetFirstNonMissingChildIndex(this);
 
-        protected static int GetFirstNonMissingChildIndex(Slot slot) {
+        static int GetFirstNonMissingChildIndex(Slot slot) {
             var slotCount  = slot.SlotCount;
             var firstIndex = 0;
             for (; firstIndex < slotCount; firstIndex++) {
@@ -111,9 +111,9 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return node;
         }
 
-        protected int GetLastNonMissingChildIndex() => GetLastNonMissingChildIndex(this);
+        int GetLastNonMissingChildIndex() => GetLastNonMissingChildIndex(this);
 
-        protected static int GetLastNonMissingChildIndex(Slot slot) {
+        static int GetLastNonMissingChildIndex(Slot slot) {
             var slotCount = slot.SlotCount;
             var lastIndex = slotCount - 1;
             for (; lastIndex >= 0; lastIndex--) {
@@ -126,7 +126,7 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return lastIndex;
         }
 
-        public SlotFlags Flags { get; }
+        SlotFlags Flags { get; }
 
         public SyntaxKind Kind { get; }
 
@@ -156,11 +156,11 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return new TextExtent(start, length);
         }
 
-        public virtual int FindSlotIndexContainingOffset(int offset) {
+        public int FindSlotIndexContainingOffset(int offset) {
             Debug.Assert(0 <= offset && offset < FullLength);
 
             int i;
-            int accumulatedWidth = 0;
+            var accumulatedWidth = 0;
             for (i = 0;; i++) {
                 Debug.Assert(i < SlotCount);
                 var child = GetSlot(i);
@@ -175,9 +175,9 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return i;
         }
 
-        public virtual int GetSlotOffset(int index) {
-            int offset = 0;
-            for (int i = 0; i < index; i++) {
+        public int GetSlotOffset(int index) {
+            var offset = 0;
+            for (var i = 0; i < index; i++) {
                 var child = GetSlot(i);
                 if (child != null) {
                     offset += child.FullLength;
@@ -188,13 +188,13 @@ namespace Pharmatechnik.Language.Gd.Internal {
         }
 
         public string GetFullText() {
-            var sb = new StringBuilder();
+            var sb = new StringBuilder(FullLength);
             WriteTo(sb, includeLeadingTrivia: true, includeTrailingTrivia: true);
             return sb.ToString();
         }
 
         public string GetText() {
-            var sb = new StringBuilder();
+            var sb = new StringBuilder(Length);
             WriteTo(sb, includeLeadingTrivia: false, includeTrailingTrivia: false);
             return sb.ToString();
         }

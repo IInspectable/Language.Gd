@@ -46,7 +46,7 @@ namespace Pharmatechnik.Language.Gd {
                     throw new ArgumentOutOfRangeException();
                 }
 
-                return triviaSlot.Realize(_token.SyntaxTree, _token, position);
+                return triviaSlot.Realize(_token, position);
             }
         }
 
@@ -57,8 +57,8 @@ namespace Pharmatechnik.Language.Gd {
                 }
 
                 return TextExtent.FromBounds(
-                    this[0].FullExtent.Start,
-                    this[Count - 1].FullExtent.End);
+                    this[0].Position,
+                    this[Count - 1].EndPosition);
             }
         }
 

@@ -36,7 +36,7 @@ namespace Pharmatechnik.Language.Gd {
         public bool IsMissing => Slot?.IsMissing ?? false;
         public bool IsKeyword => SyntaxFacts.IsKeyword(Kind);
 
-        public string GetText() => Slot?.GetText() ?? String.Empty;
+        public string GetText() => Slot?.GetText()         ?? String.Empty;
         public string GetFullText() => Slot?.GetFullText() ?? String.Empty;
 
         public bool HasLeadingTrivia  => Slot?.GetLeadingTriviaWidth()  > 0;
@@ -94,12 +94,8 @@ namespace Pharmatechnik.Language.Gd {
         public static bool operator !=(SyntaxToken left, SyntaxToken right) {
             return !left.Equals(right);
         }
-
-        public ImmutableArray<ClassifiedText> ToSimplifiedText() {
-            return ToSimplifiedText(null);
-        }
-
-        public ImmutableArray<ClassifiedText> ToSimplifiedText(TextEditorSettings editorSettings) {
+        
+        public ImmutableArray<ClassifiedText> ToSimplifiedText(TextEditorSettings editorSettings = null) {
             return SimplifiedClassificationBuilder.Classify(this, editorSettings);
         }
 

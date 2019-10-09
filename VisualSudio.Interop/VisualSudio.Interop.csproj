@@ -8,7 +8,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>VisualStudio.Interop</RootNamespace>
     <AssemblyName>VisualStudio.Interop</AssemblyName>
-    <LangVersion>default</LangVersion>
+    <LangVersion>8</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 

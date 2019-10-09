@@ -18,10 +18,10 @@ namespace Pharmatechnik.Language.Gd {
 
         SimplifiedClassificationBuilder(TextEditorSettings editorSettings): base(SyntaxListenerDepth.Token) {
 
-            editorSettings = editorSettings ?? TextEditorSettings.Default;
-            _parts         = new List<ClassifiedText>();
-            _emptyLine     = true;
-            _indentLevel   = 0;
+            editorSettings??=TextEditorSettings.Default;
+            _parts        =  new List<ClassifiedText>();
+            _emptyLine    =  true;
+            _indentLevel  =  0;
 
             WhiteSpace = new ClassifiedText(" ",                                     GdClassification.WhiteSpace);
             NewLine    = new ClassifiedText(editorSettings.NewLine,                  GdClassification.WhiteSpace);
