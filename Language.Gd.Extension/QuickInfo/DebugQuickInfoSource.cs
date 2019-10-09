@@ -53,7 +53,7 @@ namespace Pharmatechnik.Language.Gd.Extension.QuickInfo {
                 SpanTrackingMode.EdgeExclusive);
 
             var location  = triggerToken.GetLocation();
-            var qiContent = $"{triggerToken.Text}\r\n{triggerToken.Kind} Ln {location?.StartLine + 1} Ch {location?.StartCharacter + 1}\r\n{triggerToken.Parent?.GetType().Name}";
+            var qiContent = $"{triggerToken.GetText()}\r\n{triggerToken.Kind} Ln {location?.StartLine + 1} Ch {location?.StartCharacter + 1}\r\n{triggerToken.Parent?.GetType().Name}";
 
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();
 

@@ -3,6 +3,7 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.Linq;
+using System.Text;
 
 #endregion
 
@@ -42,6 +43,10 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
         public SyntaxNodeList Realize(SyntaxTree syntaxTree, SyntaxNode parent, int position) {
             return new SyntaxNodeList(syntaxTree, this, parent, position);
+        }
+
+        public override void WriteTo(StringBuilder sb, bool includeLeadingTrivia, bool includeTrailingTrivia) {
+            WriteChildSlotsTo(sb, includeLeadingTrivia, includeTrailingTrivia);
         }
 
     }

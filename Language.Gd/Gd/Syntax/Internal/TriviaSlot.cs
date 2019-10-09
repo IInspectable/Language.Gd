@@ -1,11 +1,16 @@
-﻿namespace Pharmatechnik.Language.Gd.Internal {
+﻿using System.Text;
+
+namespace Pharmatechnik.Language.Gd.Internal {
 
     class TriviaSlot: Slot {
 
         TriviaSlot(string text, SyntaxKind kind, SlotFlags flags)
             : base(text.Length, kind, flags) {
+            Text = text;
 
         }
+
+        public string Text { get; }
 
         internal static TriviaSlot Create(string text, SyntaxKind kind, bool isSkipedTokenTrivia) {
             var flags = isSkipedTokenTrivia ? SlotFlags.IsSkipedTokenTrivia : SlotFlags.None;
@@ -22,6 +27,10 @@
 
         public override int GetTrailingTriviaWidth() {
             return 0;
+        }
+
+        public override void WriteTo(StringBuilder sb, bool includeLeadingTrivia, bool includeTrailingTrivia) {
+            sb.Append(Text);
         }
 
     }

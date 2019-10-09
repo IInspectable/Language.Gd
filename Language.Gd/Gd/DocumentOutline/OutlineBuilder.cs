@@ -161,10 +161,10 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
                 }
 
                 // TODO: Entweder via Visitor abfrühstücken, oder per Semantic Model
-                var textCandidate = controlBeginSection.ControlTypeToken.Text == "Label"                 ||
-                                    controlBeginSection.ControlTypeToken.Text == "DynamicFunctionButton" ||
-                                    controlBeginSection.ControlTypeToken.Text == "FunctionButton"        ||
-                                    controlBeginSection.ControlTypeToken.Text == "Button";
+                var textCandidate = controlBeginSection.ControlTypeToken.GetText() == "Label"                 ||
+                                    controlBeginSection.ControlTypeToken.GetText() == "DynamicFunctionButton" ||
+                                    controlBeginSection.ControlTypeToken.GetText() == "FunctionButton"        ||
+                                    controlBeginSection.ControlTypeToken.GetText() == "Button";
 
                 if (textCandidate &&
                     controlSection.PropertiesSection is PropertiesSectionSyntax propertiesSection) {
@@ -195,7 +195,7 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
 
         static IReadOnlyCollection<ClassifiedText> GetBindingParts(HotkeyDeclarationSyntax hotkeyDeclarationSyntax) {
 
-            var hotKeyText = hotkeyDeclarationSyntax?.HotKeyNameToken.Text;
+            var hotKeyText = hotkeyDeclarationSyntax?.HotKeyNameToken.GetText();
             if (hotKeyText.IsNullOrWhiteSpace()) {
                 return ImmutableArray<ClassifiedText>.Empty;
             }

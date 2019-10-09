@@ -3,6 +3,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 using JetBrains.Annotations;
 
@@ -14,8 +15,11 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
         TokenSlot(string text, SyntaxKind kind)
             : base(text.Length, kind) {
+            Text = text;
 
         }
+
+        public string Text { get; }
 
         [CanBeNull]
         public virtual Slot LeadingTrivia => null;
@@ -75,6 +79,19 @@ namespace Pharmatechnik.Language.Gd.Internal {
 
         public override int GetTrailingTriviaWidth() {
             return TrailingTrivia?.FullLength ?? 0;
+        }
+
+        public override void WriteTo(StringBuilder sb, bool includeLeadingTrivia, bool includeTrailingTrivia) {
+
+            if (includeLeadingTrivia) {
+                LeadingTrivia?.WriteTo(sb, includeLeadingTrivia: true, includeTrailingTrivia: true);
+            }
+
+            sb.Append(Text);
+
+            if (includeTrailingTrivia) {
+                TrailingTrivia?.WriteTo(sb, includeLeadingTrivia: true, includeTrailingTrivia: true);
+            }
         }
 
     }

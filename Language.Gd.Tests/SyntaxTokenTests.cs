@@ -19,7 +19,7 @@ namespace Pharmatechnik.Language.Gd.Tests {
             Assert.That(token, Is.EqualTo(default(SyntaxToken)));
 
             Assert.That(token.SyntaxTree, Is.Null);
-            Assert.That(token.Text,       Is.EqualTo(""));
+            Assert.That(token.GetText(),  Is.EqualTo(""));
 
             Assert.That(token.Slot,   Is.Null);
             Assert.That(token.Parent, Is.Null);

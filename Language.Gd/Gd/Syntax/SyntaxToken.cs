@@ -36,7 +36,8 @@ namespace Pharmatechnik.Language.Gd {
         public bool IsMissing => Slot?.IsMissing ?? false;
         public bool IsKeyword => SyntaxFacts.IsKeyword(Kind);
 
-        public string Text => SyntaxTree?.SourceText.Substring(Extent) ?? String.Empty;
+        public string GetText() => Slot?.GetText() ?? String.Empty;
+        public string GetFullText() => Slot?.GetFullText() ?? String.Empty;
 
         public bool HasLeadingTrivia  => Slot?.GetLeadingTriviaWidth()  > 0;
         public bool HasTrailingTrivia => Slot?.GetTrailingTriviaWidth() > 0;
@@ -46,7 +47,7 @@ namespace Pharmatechnik.Language.Gd {
 
         internal int LeadingWidth  => Slot?.GetLeadingTriviaWidth()  ?? 0;
         internal int TrailingWidth => Slot?.GetTrailingTriviaWidth() ?? 0;
-        
+
         public int        ExtentStart => Position + Slot?.GetLeadingTriviaWidth() ?? 0;
         public TextExtent Extent      => Slot?.GetExtent(Position)                ?? default;
         public TextExtent FullExtent  => TextExtent.FromBounds(start: Position, end: EndPosition);
@@ -58,7 +59,7 @@ namespace Pharmatechnik.Language.Gd {
         internal int FullLength => Slot?.FullLength ?? 0;
 
         public override string ToString() {
-            return $"T: {Kind}: {Text}";
+            return $"T: {Kind}: {GetText()}";
         }
 
         public Location GetLocation() {

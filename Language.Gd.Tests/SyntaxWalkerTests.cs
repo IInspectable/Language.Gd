@@ -45,7 +45,7 @@ END NAMESPACE";
             }
 
             protected override void VisitToken(SyntaxToken token) {
-                _sb.Append(token.Text);
+                _sb.Append(token.GetText());
             }
 
             protected override void VisitTrivia(SyntaxTrivia trivia) {

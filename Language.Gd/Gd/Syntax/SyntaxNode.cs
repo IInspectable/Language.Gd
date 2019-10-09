@@ -20,8 +20,8 @@ namespace Pharmatechnik.Language.Gd {
 
         private protected SyntaxNode(SyntaxTree syntaxTree, Slot slot, SyntaxNode parent, int position) {
 
-            SyntaxTree = syntaxTree ?? throw new ArgumentNullException(nameof(syntaxTree));
-            Slot       = slot       ?? throw new ArgumentNullException(nameof(slot));
+            SyntaxTree = syntaxTree;
+            Slot       = slot ?? throw new ArgumentNullException(nameof(slot));
             Parent     = parent;
             Position   = position;
 
@@ -29,6 +29,7 @@ namespace Pharmatechnik.Language.Gd {
 
         internal Slot Slot { get; }
 
+        [CanBeNull]
         public SyntaxTree SyntaxTree { get; }
 
         public bool IsMissing => Slot.IsMissing;
@@ -52,19 +53,19 @@ namespace Pharmatechnik.Language.Gd {
         internal int  SlotCount => Slot.SlotCount;
 
         public string GetText() {
-            return SyntaxTree.SourceText.Substring(Extent);
+            return Slot?.GetText() ?? String.Empty;
         }
 
         public string GetFullText() {
-            return SyntaxTree.SourceText.Substring(FullExtent);
+            return Slot?.GetFullText() ?? String.Empty;
         }
 
         public override string ToString() {
-            return $"N: {Kind}: {GetText()}";
+            return $"N: {Kind} {Extent}";
         }
 
         public Location GetLocation() {
-            return SyntaxTree.GetLocation(Extent);
+            return SyntaxTree?.GetLocation(Extent) ?? Location.None;
         }
 
         // TODO Descendants Childs etc...
@@ -116,9 +117,9 @@ namespace Pharmatechnik.Language.Gd {
         }
 
         public SyntaxToken FindToken(int position, bool excludeTrivia) {
-            
+
             var token = FindToken(position);
-            
+
             if (excludeTrivia && !token.Extent.IntersectsWith(position)) {
                 return default;
             }

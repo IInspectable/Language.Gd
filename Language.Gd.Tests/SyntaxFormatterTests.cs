@@ -68,7 +68,7 @@ END PROPERTIES
             }
 
             protected override void VisitToken(SyntaxToken token) {
-                Write(token.Text);
+                Write(token.GetText());
             }
 
             protected override void VisitTrivia(SyntaxTrivia trivia) {
@@ -125,19 +125,19 @@ END PROPERTIES
                             }
 
                             if (trivia.IsSkipedTokenTrivia) {
-                                builder.WritePart(token.Text);
+                                builder.WritePart(token.GetText());
                             }
 
                             // Whitespaces sind uninteressant
                         }
 
-                        builder.WriteOnNewLine(token.Text);
+                        builder.WriteOnNewLine(token.GetText());
 
                     }
 
                     while (enumerator.MoveNext()) {
                         var token = enumerator.Current;
-                        builder.WritePart(token.Text);
+                        builder.WritePart(token.GetText());
                     }
 
                 }

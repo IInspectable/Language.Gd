@@ -79,7 +79,7 @@ namespace Pharmatechnik.Language.Gd {
             }
 
             AddTokenSeparator();
-            Add(token.Text, SyntaxClassifierHelper.ClassifyToken(token));
+            Add(token.GetText(), SyntaxClassifierHelper.ClassifyToken(token));
 
             // Komma Verschiebung: Eigentlich gehört das Komma zur ModifierSyntax,
             // wir wollen das Leerzeichen aber rechts vom Komma haben:

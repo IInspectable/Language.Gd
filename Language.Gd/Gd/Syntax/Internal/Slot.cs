@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Text;
 
 using Pharmatechnik.Language.Text;
 
@@ -57,7 +58,7 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return FullLength != 0 ? GetLastNonMissingChild().GetTrailingTriviaWidth() : 0;
         }
 
-        internal Slot GetFirstNonMissingChild() {
+        Slot GetFirstNonMissingChild() {
             Slot node = this;
 
             do {
@@ -76,7 +77,22 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return node;
         }
 
-        internal Slot GetLastNonMissingChild() {
+        protected int GetFirstNonMissingChildIndex() => GetFirstNonMissingChildIndex(this);
+
+        protected static int GetFirstNonMissingChildIndex(Slot slot) {
+            var slotCount  = slot.SlotCount;
+            var firstIndex = 0;
+            for (; firstIndex < slotCount; firstIndex++) {
+                var child = slot.GetSlot(firstIndex);
+                if (child != null && !child.IsMissing) {
+                    break;
+                }
+            }
+
+            return firstIndex;
+        }
+
+        Slot GetLastNonMissingChild() {
             Slot node = this;
 
             do {
@@ -95,25 +111,14 @@ namespace Pharmatechnik.Language.Gd.Internal {
             return node;
         }
 
-        static int GetFirstNonNullChildIndex(Slot slot) {
-            var slotCount  = slot.SlotCount;
-            var firstIndex = 0;
-            for (; firstIndex < slotCount; firstIndex++) {
-                var child = slot.GetSlot(firstIndex);
-                if (child != null) {
-                    break;
-                }
-            }
+        protected int GetLastNonMissingChildIndex() => GetLastNonMissingChildIndex(this);
 
-            return firstIndex;
-        }
-
-        static int GetLastNonNullChildIndex(Slot slot) {
+        protected static int GetLastNonMissingChildIndex(Slot slot) {
             var slotCount = slot.SlotCount;
             var lastIndex = slotCount - 1;
             for (; lastIndex >= 0; lastIndex--) {
                 var child = slot.GetSlot(lastIndex);
-                if (child != null) {
+                if (child != null && !child.IsMissing) {
                     break;
                 }
             }
@@ -180,6 +185,34 @@ namespace Pharmatechnik.Language.Gd.Internal {
             }
 
             return offset;
+        }
+
+        public string GetFullText() {
+            var sb = new StringBuilder();
+            WriteTo(sb, includeLeadingTrivia: true, includeTrailingTrivia: true);
+            return sb.ToString();
+        }
+
+        public string GetText() {
+            var sb = new StringBuilder();
+            WriteTo(sb, includeLeadingTrivia: false, includeTrailingTrivia: false);
+            return sb.ToString();
+        }
+
+        public abstract void WriteTo(StringBuilder sb, bool includeLeadingTrivia, bool includeTrailingTrivia);
+
+        protected void WriteChildSlotsTo(StringBuilder sb, bool includeLeadingTrivia, bool includeTrailingTrivia) {
+
+            var firstIndex = GetFirstNonMissingChildIndex();
+            var lastIndex  = GetLastNonMissingChildIndex();
+
+            for (var i = firstIndex; i <= lastIndex; i++) {
+                var childSlot = GetSlot(i);
+                var first     = i == firstIndex;
+                var last      = i == lastIndex;
+                childSlot?.WriteTo(sb, includeLeadingTrivia: includeLeadingTrivia | !first, includeTrailingTrivia: includeTrailingTrivia | !last);
+
+            }
         }
 
     }

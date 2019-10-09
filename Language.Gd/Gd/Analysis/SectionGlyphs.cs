@@ -36,7 +36,7 @@ namespace Pharmatechnik.Language.Gd {
                 return Glyph.DetailsPanel;
             }
 
-            if (section is MultiViewSectionSyntax  || section is MultiViewSectionBeginSyntax) {
+            if (section is MultiViewSectionSyntax || section is MultiViewSectionBeginSyntax) {
                 return Glyph.MultiView;
             }
 
@@ -55,7 +55,7 @@ namespace Pharmatechnik.Language.Gd {
 
             if (section is ControlSectionSyntax control) {
 
-                var controlTypeText = control.ControlSectionBegin?.ControlTypeToken.Text;
+                var controlTypeText = control.ControlSectionBegin?.ControlTypeToken.GetText();
                 var controlType     = GetControlType(controlTypeText);
 
                 return Enum.TryParse<Glyph>(controlType.ToString(), out var controlGlyph) ? controlGlyph : Glyph.None;
