@@ -61,7 +61,7 @@ namespace Pharmatechnik.Language.Gd.QuickInfo {
             {
                 // NAMESPACE Foo.Bar.Baz
                 //           ^----------^- Nur dieser Bereich triggert den Tooltip
-                if (triggerToken.Parent.HasAncestorOfType<NamespaceDeclarationSectionBeginSyntax>(out var namespaceSectionBegin) &&
+                if (triggerToken.Parent.HasAncestorOfType<NamespaceSectionBeginSyntax>(out var namespaceSectionBegin) &&
                     triggerToken.Parent.HasAncestorOfType<QualifiedNameSyntax>()) {
 
                     var glyph   = SectionGlyphs.GetGlyph(namespaceSectionBegin);
@@ -72,8 +72,8 @@ namespace Pharmatechnik.Language.Gd.QuickInfo {
             }
             {
                 // END NAMESPACE
-                if (triggerToken.Parent is NamespaceDeclarationSectionEndSyntax namespaceSectionEnd      &&
-                    namespaceSectionEnd.Parent is NamespaceDeclarationSectionSyntax namespaceDeclaration &&
+                if (triggerToken.Parent is NamespaceSectionEndSyntax namespaceSectionEnd      &&
+                    namespaceSectionEnd.Parent is NamespaceSectionSyntax namespaceDeclaration &&
                     namespaceDeclaration.SectionBegin is { } namespaceSectionBegin) {
 
                     var glyph   = SectionGlyphs.GetGlyph(namespaceDeclaration);

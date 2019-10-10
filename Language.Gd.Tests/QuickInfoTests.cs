@@ -12,7 +12,7 @@ namespace Pharmatechnik.Language.Gd.Tests {
 
             string testGd = @"NAMESPACE    Pharmatechnik.Apotheke.XTplus.Verkauf.GUI   ";
 
-            var syntax = SyntaxFactory.ParseNamespaceDeclarationSectionBeginSyntax(testGd);
+            var syntax = SyntaxFactory.ParseNamespaceSectionBeginSyntax(testGd);
 
             Assert.That(syntax.SyntaxTree, Is.Not.Null);
             Assert.That(syntax.SyntaxTree.Diagnostics.Length, Is.EqualTo(0));

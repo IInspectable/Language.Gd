@@ -4,6 +4,8 @@ namespace Pharmatechnik.Language.Gd {
 
     public interface ISectionSyntax {
 
+        SyntaxToken? SectionName { get; }
+
         [CanBeNull]
         SyntaxNode SectionBegin { get; }
 

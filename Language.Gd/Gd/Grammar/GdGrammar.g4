@@ -54,37 +54,37 @@ options
 }
 
 guiDescription 
-    :   usingDeclarationSection* 
-        namespaceDeclarationSection 
+    :   usingSection* 
+        namespaceSection 
         EOF
     ;
 
-usingDeclarationSection
-    :   usingDeclarationSectionBegin 
+usingSection
+    :   usingSectionBegin 
             qualifiedName 
-        usingDeclarationSectionEnd
+        usingSectionEnd
     ;
 
-usingDeclarationSectionBegin
+usingSectionBegin
     : Using
     ;
 
-usingDeclarationSectionEnd
+usingSectionEnd
     : End Using
     ;
 
-namespaceDeclarationSection 
-    :   namespaceDeclarationSectionBegin
+namespaceSection 
+    :   namespaceSectionBegin
             container+ 
-        namespaceDeclarationSectionEnd
+        namespaceSectionEnd
     ;
 
-namespaceDeclarationSectionBegin
+namespaceSectionBegin
     :   Namespace qualifiedName
     ;
 
 
-namespaceDeclarationSectionEnd
+namespaceSectionEnd
     :   End Namespace
     ;
 

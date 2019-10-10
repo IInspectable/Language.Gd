@@ -8,7 +8,7 @@ namespace Pharmatechnik.Language.Gd {
 
         public static Glyph GetGlyph([CanBeNull] SyntaxNode section) {
 
-            if (section is NamespaceDeclarationSectionSyntax || section is NamespaceDeclarationSectionBeginSyntax) {
+            if (section is NamespaceSectionSyntax || section is NamespaceSectionBeginSyntax) {
                 return Glyph.Namespace;
             }
 

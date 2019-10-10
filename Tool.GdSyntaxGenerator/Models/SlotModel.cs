@@ -77,6 +77,35 @@ namespace Tool.GdSyntaxGenerator.Models {
 
         public bool IsSection => RuleName.EndsWith("Section");
 
+        public string SectionName => IsSection ? RuleName.Replace("Section", "") : String.Empty;
+
+        public string SectionTokenName {
+            get {
+
+                if (!IsSection) {
+                    return String.Empty;
+                }
+
+                var name = SectionName;
+
+                if (name == "UserControl") {
+                    name = "User";
+
+                }
+
+                if (name == "UserControls") {
+                    name = "Controls";
+                }
+
+                // Wegen name clashing nicht anders möglich
+                if (name == "Control") {
+                    name = "ControlKeyword";
+                }
+
+                return $"{name}Token";
+            }
+        }
+
         public string SectionBeginName => IsSection ? RuleName + "Begin" : "";
         public string SectionEndName   => IsSection ? RuleName + "End" : "";
 
