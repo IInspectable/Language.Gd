@@ -56,18 +56,12 @@ namespace Pharmatechnik.Language.Gd {
             if (section is ControlSectionSyntax control) {
 
                 var controlTypeText = control.ControlSectionBegin?.ControlTypeToken.GetText();
-                var controlType     = GetControlType(controlTypeText);
 
-                return Enum.TryParse<Glyph>(controlType.ToString(), out var controlGlyph) ? controlGlyph : Glyph.None;
+                return Enum.TryParse<Glyph>(controlTypeText, out var controlGlyph) ? controlGlyph : Glyph.None;
 
             }
 
             return default;
-        }
-
-        static ControlType GetControlType([CanBeNull] string controlTypeText) {
-            return Enum.TryParse<ControlType>(controlTypeText, out var controlType) ? controlType : ControlType.None;
-
         }
 
     }

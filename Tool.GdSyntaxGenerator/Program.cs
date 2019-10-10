@@ -3,6 +3,7 @@
 #region Using Directives
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -12,6 +13,7 @@ using Antlr4.Runtime;
 
 using JetBrains.Annotations;
 
+using Pharmatechnik.Apotheke.XTplus.Framework.Tools.Generators.GuiModelGenerator;
 using Pharmatechnik.Apotheke.XTplus.Framework.Tools.Generators.GuiModelGenerator.GuiMetaModel;
 
 using Tool.GdSyntaxGenerator.Grammar;
@@ -219,12 +221,78 @@ namespace Tool.GdSyntaxGenerator {
 
             // TODO WriteMetaModel
 
-            var derivedTypes = from t in typeof(GuiElement).Assembly.GetTypes()
-                               where t.IsSubclassOf(typeof(GuiElement))
-                               select t;
+            var guiElements = from t in typeof(GuiElement).Assembly.GetTypes()
+                              where t.IsSubclassOf(typeof(GuiElement))
+                              select t;
 
-            foreach (var c in derivedTypes) {
-                WriteVerbose(c.Name);
+            foreach (var c in guiElements) {
+                Console.WriteLine($"{c.Name} {c.BaseType?.Name}");
+                //WriteVerbose(c.Name);
+            }
+
+            var controls = from t in typeof(GuiElement).Assembly.GetTypes()
+                           where t.IsSubclassOf(typeof(Control))
+                           select t;
+
+            var controlTypesToSkip = new[] {
+                (Type: typeof(EditorUIControl), SkipDerivates: true),
+                (Type: typeof(FunctionButtonBar), SkipDerivates: true),
+                (Type: typeof(FormFunctionBar), SkipDerivates: true),
+                (Type: typeof(CustomControl), SkipDerivates: true),
+                (Type: typeof(SelectionList), SkipDerivates: true),
+                (Type: typeof(RadiobuttonGroup), SkipDerivates: true),
+                (Type: typeof(TableWithPaging), SkipDerivates: true),
+                (Type: typeof(ExtendedControl), SkipDerivates: true),
+                (Type: typeof(TabNavigation), SkipDerivates: true),
+                (Type: typeof(TabPage), SkipDerivates: true),
+                (Type: typeof(TabStrip), SkipDerivates: true),
+                (Type: typeof(Listbox), SkipDerivates: true),
+
+            }.ToDictionary(i => i.Type);
+
+            Console.WriteLine("--------------------");
+
+            var unknownProperties = new List<(string ControlName, string PropertyName)>();
+
+            foreach (var c in controls.OrderBy(c => c.Name)) {
+
+                if (controlTypesToSkip.ContainsKey(c)) {
+                    continue;
+                }
+
+                if (c.BaseType != null && controlTypesToSkip.TryGetValue(c.BaseType, out var skipInfo) && skipInfo.SkipDerivates) {
+                    continue;
+                }
+
+                var s = (SupportedPropertiesAttribute[]) Attribute.GetCustomAttributes(c, typeof(SupportedPropertiesAttribute), true);
+
+                var props = s.Where(sp => sp.GetType() == typeof(SupportedPropertiesAttribute))
+                             .SelectMany(spa => spa.Properties)
+                             .Select(p => new {
+                                  Name     = p.Name,
+                                  Reqired  = p.Required,
+                                  Property = c.GetProperty(p.Name)
+                              })
+                             .ToList();
+
+                Console.WriteLine($"{c.Name},");
+                foreach (var prop in props) {
+
+                    if (prop.Property == null) {
+                        unknownProperties.Add((ControlName: c.Name, PropertyName: prop.Name));
+                        continue;
+                    }
+
+                    Console.WriteLine($"    {(prop.Reqired ? "*" : "")}{prop.Name}: {prop.Property.PropertyType.Name}");
+
+                }
+
+                //Console.WriteLine($"{c.Name} {c.BaseType?.Name}");
+                //WriteVerbose(c.Name);
+            }
+
+            foreach (var up in unknownProperties) {
+                Console.WriteLine($"## {up.ControlName}.{up.PropertyName}");
             }
         }
 

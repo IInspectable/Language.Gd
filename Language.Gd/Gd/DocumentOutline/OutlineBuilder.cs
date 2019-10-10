@@ -221,7 +221,12 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
             if (node is ControlSectionBeginSyntax controlBeginSection &&
                 controlBeginSection.Parent is ControlSectionSyntax controlSection) {
 
-                if (controlSection.HotkeysSection is { } hotkeysSection) {
+                // TODO: Entweder via Visitor abfrühstücken, oder per Semantic Model
+                var hotkeysCandidate = controlBeginSection.ControlTypeToken.GetText() == "DynamicFunctionButton" ||
+                                       controlBeginSection.ControlTypeToken.GetText() == "FunctionButton"        ||
+                                       controlBeginSection.ControlTypeToken.GetText() == "Button";
+
+                if (hotkeysCandidate && controlSection.HotkeysSection is { } hotkeysSection) {
 
                     result = hotkeysSection.HotkeyDeclarations
                                            .Select(GetBindingParts)
