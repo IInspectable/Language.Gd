@@ -56,7 +56,7 @@ namespace Pharmatechnik.Language.Gd {
 
         [CanBeNull]
         public static UIElementMetaInfo FromSection(ISectionSyntax sectionSyntax) {
-            ControlSectionSyntax
+            //ControlSectionSyntax
             return null;
         }
 
