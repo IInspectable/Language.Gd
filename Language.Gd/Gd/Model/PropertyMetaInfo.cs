@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.Immutable;
 
 namespace Pharmatechnik.Language.Gd {
@@ -8,11 +9,12 @@ namespace Pharmatechnik.Language.Gd {
         internal PropertyMetaInfo(string name,
                                   bool required,
                                   Type propertyType,
-                                  ImmutableArray<ValueSuggestion> suggestions) {
+                                  IEnumerable<ValueSuggestion> suggestions = default) {
+
             Name         = name ?? throw new ArgumentNullException(nameof(name));
             Required     = required;
-            PropertyType = propertyType ?? throw new ArgumentNullException(nameof(propertyType));
-            Suggestions  = suggestions.IsDefault ? ImmutableArray<ValueSuggestion>.Empty : suggestions;
+            PropertyType = propertyType                    ?? throw new ArgumentNullException(nameof(propertyType));
+            Suggestions  = suggestions?.ToImmutableArray() ?? ImmutableArray<ValueSuggestion>.Empty;
 
         }
 
