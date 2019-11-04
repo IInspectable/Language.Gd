@@ -23,6 +23,10 @@ namespace Pharmatechnik.Language.Gd.Extension
     /// </summary>
     internal sealed partial class PackageIds
     {
+        public const int DocumentOutlineToolWindowToolbar = 0x1000;
+        public const int ExpandCollapseGroup = 0x2000;
+        public const int ExpandAllId = 0x3000;
+        public const int CollapseAllId = 0x3001;
         public const int ShowGdOutlineWindow = 0x0100;
     }
 }

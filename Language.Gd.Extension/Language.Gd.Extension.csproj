@@ -94,6 +94,13 @@
     <Compile Include="Diagnostics\DiagnosticSummaryControl.xaml.cs">
       <DependentUpon>DiagnosticSummaryControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Document Outline\CollapseAllCommand.cs" />
+    <Compile Include="Document Outline\ExpandAllCommand.cs" />
+    <Compile Include="GdLanguagePackage2.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>GdLanguagePackage.vsct</DependentUpon>
+    </Compile>
     <Compile Include="Margin\GdMarginControl.xaml.cs">
       <DependentUpon>GdMarginControl.xaml</DependentUpon>
     </Compile>
@@ -115,11 +122,6 @@
     </Compile>
     <Compile Include="Common\ScopedValue.cs" />
     <Compile Include="GdLanguageContentDefinitions.cs" />
-    <Compile Include="GdLanguagePackage1.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>GdLanguagePackage.vsct</DependentUpon>
-    </Compile>
     <Compile Include="HACK_ThemeColorFixer.cs" />
     <Compile Include="Imaging\GdImageMonikers.cs" />
     <Compile Include="Imaging\ImageMonikers.cs" />
@@ -153,6 +155,11 @@
     </Compile>
     <Compile Include="SmartIndent\GdSmartIndent.cs" />
     <Compile Include="SmartIndent\GdSmartIndentProvider.cs" />
+    <Compile Include="source.extension.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>source.extension.vsixmanifest</DependentUpon>
+    </Compile>
     <Compile Include="ThisAssembly.generated.cs" />
     <Compile Include="Utilities\ProjectInfo.cs" />
     <Compile Include="Utilities\ProjectMapper.cs" />
@@ -162,6 +169,8 @@
     <None Include="CustomBuild.targets" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>
+      <Generator>VsixManifestGenerator</Generator>
+      <LastGenOutput>source.extension.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>
@@ -217,6 +226,8 @@
   <ItemGroup>
     <VSCTCompile Include="GdLanguagePackage.vsct">
       <ResourceName>Menus.ctmenu</ResourceName>
+      <Generator>VsctGenerator</Generator>
+      <LastGenOutput>GdLanguagePackage2.cs</LastGenOutput>
     </VSCTCompile>
     <Content Include="Resources\GuiDefinition.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>

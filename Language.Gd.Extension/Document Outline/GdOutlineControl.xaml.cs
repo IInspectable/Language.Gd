@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Windows;
 
 using JetBrains.Annotations;
@@ -42,6 +43,33 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             } else {
                 TreeView.Visibility  = Visibility.Visible;
                 Watermark.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        public bool CanExpandCollapse => TreeView.Items.Count > 0;
+
+        public void CollapseAll() {
+            ExpandCollapseItems(expand: false);
+        }
+
+        public void ExpandAll() {
+            ExpandCollapseItems(expand: true);
+        }
+
+        void ExpandCollapseItems(bool expand) {
+            foreach (var item in TreeView.Items.OfType<TreeViewItem>()) {
+                ExpandCollapseItems(item);
+            }
+
+            void ExpandCollapseItems(TreeViewItem item) {
+                item.IsExpanded = expand;
+
+                foreach (TreeViewItem childItem in item.Items) {
+                    childItem.IsExpanded = expand;
+
+                    if (childItem.HasItems)
+                        ExpandCollapseItems(childItem);
+                }
             }
         }
 
@@ -137,6 +165,8 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                 }
             }
         }
+
+       
 
     }
 

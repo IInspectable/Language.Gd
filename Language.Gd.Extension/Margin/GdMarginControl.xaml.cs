@@ -33,14 +33,14 @@ namespace Pharmatechnik.Language.Gd.Extension.Margin {
         }
 
         void UpdateTooltips() {
-            ShowGuiOutlineButton.ToolTip = GetTooltipText(ShowGdOutlineWindowCommand.CommandId,         "Gui Outline");
-            GuiPreviewButton.ToolTip     = GetTooltipText(IxosEssentialsCommandIds.GuiPreviewCommandId, "Gui Preview");
-            GenerateGuiButton.ToolTip    = GetTooltipText(IxosEssentialsCommandIds.GdGenerateCommandId, "C# Code aus .gd-Dateien generieren");
+            ShowGuiOutlineButton.ToolTip = GetTooltipText(ShowGdOutlineWindowCommand.Instance.CommandId, "Gui Outline");
+            GuiPreviewButton.ToolTip     = GetTooltipText(IxosEssentialsCommandIds.GuiPreviewCommandId,  "Gui Preview");
+            GenerateGuiButton.ToolTip    = GetTooltipText(IxosEssentialsCommandIds.GdGenerateCommandId,  "C# Code aus .gd-Dateien generieren");
         }
 
         private void OnShowGuiOutlineClick(object sender, RoutedEventArgs e) {
             ThreadHelper.ThrowIfNotOnUIThread();
-            InvokeCommand(ShowGdOutlineWindowCommand.CommandId);
+            InvokeCommand(ShowGdOutlineWindowCommand.Instance.CommandId);
             //ShowGdOutlineWindowCommand.Instance.Execute();
         }
 

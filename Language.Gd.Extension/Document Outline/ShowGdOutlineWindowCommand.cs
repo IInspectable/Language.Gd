@@ -2,7 +2,6 @@
 
 using System;
 using System.ComponentModel.Design;
-using System.Threading.Tasks;
 
 using JetBrains.Annotations;
 
@@ -13,50 +12,73 @@ using Microsoft.VisualStudio.Shell;
 
 namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
-    // TODO ggf allgemeine Command Infrastruktur aufbauen
-    internal sealed class ShowGdOutlineWindowCommand {
+    internal abstract class Command {
 
-        readonly AsyncPackage _package;
-
-        public static ShowGdOutlineWindowCommand Instance { get; private set; }
-
-        public static readonly CommandID CommandId = new CommandID(PackageGuids.GdLanguagePackageCmdSetGuid, PackageIds.ShowGdOutlineWindow);
-
-        private ShowGdOutlineWindowCommand(AsyncPackage package, OleMenuCommandService commandService) {
-
-            _package       = package        ?? throw new ArgumentNullException(nameof(package));
+        protected Command(AsyncPackage package, OleMenuCommandService commandService, int commandID) {
             commandService = commandService ?? throw new ArgumentNullException(nameof(commandService));
+            Package        = package        ?? throw new ArgumentNullException(nameof(package));
+            CommandId      = new CommandID(PackageGuids.GdLanguagePackageCmdSetGuid, commandID);
 
-            var menuItem = new MenuCommand(OnExecute, CommandId);
+            var menuItem = new OleMenuCommand(OnExecute, CommandId, queryStatusSupported: true);
+
+            menuItem.BeforeQueryStatus += OnBeforeQueryStatus;
+
             commandService.AddCommand(menuItem);
 
-            Instance = this;
         }
 
-        [UsedImplicitly]
-        public static async Task<ShowGdOutlineWindowCommand> RegisterAsync(AsyncPackage package) {
+        private void OnBeforeQueryStatus(object sender, EventArgs e) {
 
-            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
+            var menuCommand = sender as OleMenuCommand;
+            if (menuCommand == null) {
+                return;
+            }
 
-            OleMenuCommandService commandService = await package.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-            return new ShowGdOutlineWindowCommand(package, commandService);
+            menuCommand.Enabled = ShouldEnable();
         }
+
+        public AsyncPackage Package   { get; }
+        public CommandID    CommandId { get; }
 
         private void OnExecute(object sender, EventArgs e) {
             Execute();
         }
 
-        public void Execute() {
+        public abstract void Execute();
 
-            _package.JoinableTaskFactory.RunAsync(async delegate {
-                var window = await _package.ShowToolWindowAsync(typeof(GdOutlineToolWindowPane), id: 0, create: true, _package.DisposalToken);
+        protected abstract bool ShouldEnable();
+
+    }
+
+    internal sealed class ShowGdOutlineWindowCommand: Command {
+
+        public static ShowGdOutlineWindowCommand Instance { get; private set; }
+
+        private ShowGdOutlineWindowCommand(AsyncPackage package, OleMenuCommandService commandService):
+            base(package, commandService,
+                 PackageIds.ShowGdOutlineWindow) {
+
+            Instance = this;
+        }
+
+        [UsedImplicitly]
+        public static ShowGdOutlineWindowCommand Register(AsyncPackage package, OleMenuCommandService commandService) {
+            return new ShowGdOutlineWindowCommand(package, commandService);
+        }
+
+        protected override bool ShouldEnable() => true;
+
+        public override void Execute() {
+
+            Package.JoinableTaskFactory.RunAsync(async delegate {
+                var window = await Package.ShowToolWindowAsync(typeof(GdOutlineToolWindowPane), id: 0, create: true, Package.DisposalToken);
 
                 if (window?.Frame == null) {
                     throw new NotSupportedException("Cannot create tool window");
                 }
 
                 // Bug in Studio: Wenn das Fenster das erste mal erstellt wird, wird es nicht angezeigt...
-                await _package.ShowToolWindowAsync(typeof(GdOutlineToolWindowPane), id: 0, create: false, _package.DisposalToken);
+                await Package.ShowToolWindowAsync(typeof(GdOutlineToolWindowPane), id: 0, create: false, Package.DisposalToken);
             });
         }
 

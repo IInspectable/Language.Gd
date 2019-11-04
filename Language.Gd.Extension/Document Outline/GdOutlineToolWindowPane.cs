@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
 
 using JetBrains.Annotations;
@@ -30,8 +31,15 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             _outlineController.RequestNavigateToOutline += OnRequestNavigateToOutline;
             _outlineController.OutlineDataChanged       += OnOutlineDataChanged;
 
+            ToolBar = new CommandID(PackageGuids.GdLanguagePackageCmdSetGuid, PackageIds.DocumentOutlineToolWindowToolbar);
+
             UpdateCaption();
+
+            Instance = this;
         }
+
+        [CanBeNull]
+        public static GdOutlineToolWindowPane Instance { get; private set; }
 
         protected override void Dispose(bool disposing) {
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -49,6 +57,16 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         public override object Content {
             get => _outlineControl;
             set { }
+        }
+
+        public bool CanExpandCollapse => _outlineControl.CanExpandCollapse;
+
+        public void CollapseAll() {
+            _outlineControl.CollapseAll();
+        }
+
+        public void ExpandAll() {
+            _outlineControl.ExpandAll();
         }
 
         void OnRequestNavigateToSource(object sender, RequestNavigateToEventArgs e) {
@@ -86,8 +104,6 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         public const string DefaultCaption = "Gui Outline";
 
         private void UpdateCaption([CanBeNull] OutlineData outlineData = null) {
-
-           
 
             var file = outlineData?.SyntaxTree.SourceText.FileInfo?.Name;
             if (!String.IsNullOrEmpty(file)) {

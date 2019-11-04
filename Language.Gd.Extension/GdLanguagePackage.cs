@@ -2,6 +2,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -96,8 +97,11 @@ namespace Pharmatechnik.Language.Gd.Extension {
                        (container, ct, type) => Task.FromResult<object>(this), promote: true);
 
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+            var commandService = await GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
 
-            await ShowGdOutlineWindowCommand.RegisterAsync(this);
+            ShowGdOutlineWindowCommand.Register(this, commandService);
+            ExpandAllCommand.Register(this, commandService);
+            CollapseAllCommand.Register(this, commandService);
 
         }
 

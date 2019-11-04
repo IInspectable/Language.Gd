@@ -33,6 +33,24 @@
     group; your package should define its own command set in order to avoid collisions
     with command ids defined by other packages. -->
 
+
+    <Menus>
+      <Menu guid="GdLanguagePackageCmdSetGuid" id="DocumentOutlineToolWindowToolbar"
+            type="ToolWindowToolbar">
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>Gui Outline Toolbar</ButtonText>
+          <CommandName>Gui Outline Toolbar</CommandName>
+        </Strings>
+      </Menu>
+    </Menus>
+
+    <Groups>
+      <Group guid="GdLanguagePackageCmdSetGuid" id="ExpandCollapseGroup" priority="0">
+        <Parent guid="GdLanguagePackageCmdSetGuid" id="DocumentOutlineToolWindowToolbar" />
+      </Group>
+    </Groups>
+
     <!--Buttons section. -->
     <!--This section defines the elements the user can interact with, like a menu command or a button
         or combo box in a toolbar. -->
@@ -55,6 +73,28 @@
           <ButtonText>Gui Outl&amp;ine</ButtonText>
         </Strings>
       </Button>
+
+      <!-- Gui Outline Toolbar Buttons -->
+      <Button guid="GdLanguagePackageCmdSetGuid" id="ExpandAllId" priority="0" type="Button">
+        <Parent guid="GdLanguagePackageCmdSetGuid" id="ExpandCollapseGroup" />
+        <Icon guid="ImageCatalogGuid" id="ExpandAll" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Expand All</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="GdLanguagePackageCmdSetGuid" id="CollapseAllId" priority="1" type="Button">
+        <Parent guid="GdLanguagePackageCmdSetGuid" id="ExpandCollapseGroup" />
+        <Icon guid="ImageCatalogGuid" id="CollapseAll" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Collapse All</ButtonText>
+        </Strings>
+      </Button> 
+
     </Buttons>
 
 
@@ -71,7 +111,19 @@
 
     <!-- This is the guid used to group the menu commands together -->
     <GuidSymbol name="GdLanguagePackageCmdSetGuid" value="{a6c3ace3-0816-4c80-943d-d043c438deb8}">
+      
+      <!-- Document Outline Toolbar-->
+      <IDSymbol name="DocumentOutlineToolWindowToolbar" value="0x1000" />
+
+      <!--Groups-->
+      <IDSymbol name="ExpandCollapseGroup" value="0x2000" />
+
+      <!-- Command Ids-->
+      <IDSymbol name="ExpandAllId" value="0x3000" />
+      <IDSymbol name="CollapseAllId" value="0x3001" />
+
       <IDSymbol name="ShowGdOutlineWindow" value="0x0100" />
+
     </GuidSymbol>
 
 
