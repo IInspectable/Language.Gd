@@ -19,6 +19,7 @@
 
   <!--This header contains the command ids for the menus provided by the shell. -->
   <Extern href="vsshlids.h"/>
+  <Extern href="IXOSEssentials.h"/>
 
   <Include href="KnownImageIds.vsct"/>
 
@@ -47,6 +48,9 @@
 
     <Groups>
       <Group guid="GdLanguagePackageCmdSetGuid" id="ExpandCollapseGroup" priority="0">
+        <Parent guid="GdLanguagePackageCmdSetGuid" id="DocumentOutlineToolWindowToolbar" />
+      </Group>
+      <Group guid="GdLanguagePackageCmdSetGuid" id="GdToolsGroup" priority="1">
         <Parent guid="GdLanguagePackageCmdSetGuid" id="DocumentOutlineToolWindowToolbar" />
       </Group>
     </Groups>
@@ -100,10 +104,24 @@
 
   </Commands>
 
+  <CommandPlacements>
+    <CommandPlacement guid="GuidIXOSEssentialsPackageCmdSet" id="GdGenerateSelectionCommand" priority="0">
+      <Parent guid="GdLanguagePackageCmdSetGuid" id="GdToolsGroup" />
+    </CommandPlacement>
+    <CommandPlacement guid="GuidIXOSEssentialsPackageCmdSet" id="GdPreviewSelectionCommand" priority="1">
+      <Parent guid="GdLanguagePackageCmdSetGuid" id="GdToolsGroup" />
+    </CommandPlacement>
+  </CommandPlacements>
+
   <KeyBindings>
     <KeyBinding guid="GdLanguagePackageCmdSetGuid" id="ShowGdOutlineWindow" key1="w" mod1="Control" key2="i"
                 editor="guidVSStd97" />
   </KeyBindings>
+
+  <UsedCommands>
+    <UsedCommand guid="GuidIXOSEssentialsPackageCmdSet" id="GdGenerateSelectionCommand"/>
+    <UsedCommand guid="GuidIXOSEssentialsPackageCmdSet" id="GdPreviewSelectionCommand"/>
+  </UsedCommands>
 
   <Symbols>
     <!-- This is the package guid. -->
@@ -117,6 +135,7 @@
 
       <!--Groups-->
       <IDSymbol name="ExpandCollapseGroup" value="0x2000" />
+      <IDSymbol name="GdToolsGroup" value="0x2001" />
 
       <!-- Command Ids-->
       <IDSymbol name="ExpandAllId" value="0x3000" />
@@ -125,7 +144,6 @@
       <IDSymbol name="ShowGdOutlineWindow" value="0x0100" />
 
     </GuidSymbol>
-
 
   </Symbols>
 </CommandTable>

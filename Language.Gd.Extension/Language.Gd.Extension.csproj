@@ -229,6 +229,7 @@
       <Generator>VsctGenerator</Generator>
       <LastGenOutput>GdLanguagePackage2.cs</LastGenOutput>
     </VSCTCompile>
+    <None Include="IXOSEssentials.h" />
     <Content Include="Resources\GuiDefinition.ico">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
       <IncludeInVSIX>true</IncludeInVSIX>
