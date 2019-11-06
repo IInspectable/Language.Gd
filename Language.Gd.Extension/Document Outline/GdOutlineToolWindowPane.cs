@@ -6,6 +6,7 @@ using JetBrains.Annotations;
 
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 
 using Pharmatechnik.Language.Gd.Extension.Classification;
 
@@ -38,6 +39,22 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             Instance = this;
         }
 
+        public override bool SearchEnabled => true;
+
+        public override IVsSearchTask CreateSearch(uint dwCookie, IVsSearchQuery pSearchQuery, IVsSearchCallback pSearchCallback) {
+          
+            if (pSearchQuery == null || pSearchCallback == null)
+                return null;
+
+            return new GdOutlineToolWindowSearch(dwCookie, pSearchQuery, pSearchCallback, _outlineController);
+        }
+
+        public override void ClearSearch() {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            _outlineController.SearchString = null;
+            base.ClearSearch();
+        }
+
         [CanBeNull]
         public static GdOutlineToolWindowPane Instance { get; private set; }
 
@@ -59,7 +76,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             set { }
         }
 
-        public bool CanExpandCollapse => _outlineControl.CanExpandCollapse;
+        public bool CanExpandCollapse => _outlineControl.HasItems;
 
         public void CollapseAll() {
             _outlineControl.CollapseAll();
@@ -78,6 +95,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         }
 
         void OnOutlineControlIsVisibleChanged(object sender, System.Windows.DependencyPropertyChangedEventArgs e) {
+          
             ThreadHelper.ThrowIfNotOnUIThread();
 
             if (_outlineControl.IsVisible) {
@@ -95,9 +113,11 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         }
 
         private void OnOutlineDataChanged(object sender, OutlineDataEventArgs e) {
+            
+            ThreadHelper.ThrowIfNotOnUIThread();
 
-            _outlineControl.ShowOutline(e.OutlineData);
-
+            _outlineControl.ShowOutline(e.OutlineData, e.SearchString);
+            
             UpdateCaption(e.OutlineData);
         }
 

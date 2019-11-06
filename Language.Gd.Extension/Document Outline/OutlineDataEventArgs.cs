@@ -27,13 +27,16 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
     class OutlineDataEventArgs: EventArgs {
 
-        public OutlineDataEventArgs(OutlineData outlineData) {
+        public OutlineDataEventArgs(OutlineData outlineData, string searchString) {
             OutlineData = outlineData;
+            SearchString = searchString;
 
         }
 
         [CanBeNull]
         public OutlineData OutlineData { get; }
+
+        public string SearchString { get; }
 
     }
 

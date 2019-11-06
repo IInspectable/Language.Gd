@@ -3,12 +3,18 @@
 using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
+using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Media;
 using System.Windows.Controls;
 using System.Windows.Documents;
 
 using JetBrains.Annotations;
 
+using Microsoft.VisualStudio.PlatformUI;
+using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text.Classification;
 
 using Pharmatechnik.Language.Gd.Extension.Common;
@@ -35,45 +41,120 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
         public IClassificationFormatMap ClassificationFormatMap => _classificationFormatMapService.GetClassificationFormatMap("tooltip");
 
         [CanBeNull]
-        public TextBlock ToTextBlock(string text, GdClassification classification) {
-            return ToTextBlock(new ClassifiedText(text, classification));
-        }
-
-        [CanBeNull]
-        public TextBlock ToTextBlock(params ClassifiedText[] parts) {
-            return ToTextBlock(parts.ToImmutableArray());
-        }
-
-        [CanBeNull]
         public TextBlock ToTextBlock(IReadOnlyCollection<ClassifiedText> parts) {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            return ToTextBlock(parts, null, out _);
+        }
+
+        [CanBeNull]
+        public TextBlock ToTextBlock(IReadOnlyCollection<ClassifiedText> parts, [CanBeNull] Regex searchPattern, out bool hasMatch) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            hasMatch = false;
 
             if (parts.Count == 0) {
                 return null;
             }
 
+            var runInfos  = ToRunInfo(parts, searchPattern, out hasMatch);
             var textBlock = new TextBlock {TextWrapping = TextWrapping.Wrap};
 
             textBlock.SetDefaultTextProperties(ClassificationFormatMap);
 
-            foreach (var part in parts) {
-                var inline = ToInline(part.Text, part.Classification, ClassificationFormatMap);
+            var highlightedSpanBrush = hasMatch ? GetHighlightedSpanBrush() : Brushes.Transparent;
+            foreach (var runInfo in runInfos) {
+                var inline = ToInline(runInfo, ClassificationFormatMap, highlightedSpanBrush);
                 textBlock.Inlines.Add(inline);
             }
 
             return textBlock;
         }
 
-        Run ToInline(string text, GdClassification classification, IClassificationFormatMap formatMap) {
+        IList<RunInfo> ToRunInfo(IReadOnlyCollection<ClassifiedText> parts, [CanBeNull] Regex searchPattern, out bool hasMatches) {
+            hasMatches = false;
 
-            var inline = new Run(text);
+            if (searchPattern == null) {
+                return parts.Select(part => new RunInfo(part, isMatch: false)).ToList();
+            }
 
-            _classificationMap.TryGetValue(classification, out var ct);
+            var runInfos = new List<RunInfo>();
+            foreach (var part in parts) {
+
+                var matches = searchPattern.Matches(part.Text);
+                if (matches.Count > 0) {
+
+                    var currentIndex = 0;
+                    foreach (Match match in matches) {
+
+                        // Der Text vor dem Treffertext
+                        if (match.Index > currentIndex) {
+                            var text = part.Text.Substring(currentIndex, length: match.Index - currentIndex);
+                            runInfos.Add(new RunInfo(new ClassifiedText(text, part.Classification), isMatch: false));
+                        }
+
+                        // Der Treffertext
+                        runInfos.Add(new RunInfo(new ClassifiedText(match.Value, part.Classification), isMatch: true));
+                        currentIndex = match.Index + match.Length;
+
+                    }
+
+                    // Der Text nach dem letzten Treffertext
+                    if (currentIndex < part.Text.Length) {
+                        var text = part.Text.Substring(currentIndex, length: part.Text.Length - currentIndex);
+                        runInfos.Add(new RunInfo(new ClassifiedText(text, part.Classification), isMatch: false));
+                    }
+
+                    hasMatches = true;
+                } else {
+                    runInfos.Add(new RunInfo(part, false));
+                }
+            }
+
+            return runInfos;
+        }
+
+        Run ToInline(RunInfo runInfo, IClassificationFormatMap formatMap, Brush highlightedSpanBrush) {
+
+            var inline = new Run(runInfo.Text);
+
+            _classificationMap.TryGetValue(runInfo.Classification, out var ct);
             if (ct != null) {
                 var props = formatMap.GetTextProperties(ct);
                 inline.SetTextProperties(props);
+
+                if (runInfo.IsMatch) {
+                    inline.Background = highlightedSpanBrush;
+                }
             }
 
             return inline;
+        }
+
+        private static SolidColorBrush GetHighlightedSpanBrush() {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            var uiShell5 = GdLanguagePackage.ServiceProvider.GetService(typeof(SVsUIShell)) as IVsUIShell5;
+            var color    = uiShell5?.GetThemedWPFColor(TreeViewColors.HighlightedSpanColorKey) ?? Colors.Orange;
+
+            return new SolidColorBrush(color);
+        }
+
+        struct RunInfo {
+
+            readonly ClassifiedText _classifiedText;
+
+            public RunInfo(ClassifiedText classifiedText, bool isMatch) {
+                _classifiedText = classifiedText;
+                IsMatch         = isMatch;
+            }
+
+            public string           Text           => _classifiedText.Text;
+            public GdClassification Classification => _classifiedText.Classification;
+            public bool             IsMatch        { get; }
+
         }
 
     }

@@ -105,6 +105,21 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         public event EventHandler<OutlineDataEventArgs>       OutlineDataChanged;
         public event EventHandler<NavigateToOutlineEventArgs> RequestNavigateToOutline;
 
+        string _searchString;
+
+        public String SearchString {
+            get => _searchString;
+            set {
+
+                if (_searchString == value) {
+                    return;
+                }
+
+                _searchString=value;
+                RaiseOutlineDataChanged();
+            }
+        }
+
         void OnParseResultChanged(object sender, SnapshotSpanEventArgs e) {
             RaiseOutlineDataChanged();
         }
@@ -119,7 +134,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                 return;
             }
 
-            OutlineDataChanged?.Invoke(this, new OutlineDataEventArgs(TryGetOutlineData()));
+            OutlineDataChanged?.Invoke(this, new OutlineDataEventArgs(TryGetOutlineData(), SearchString));
             RaiseRequestNavigateToOutline();
         }
 
@@ -147,7 +162,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             if (_activeWpfTextView == wpfTextView || !IsRunning) {
                 return;
             }
-
+            
             // Disconnect from current view
             if (_activeWpfTextView != null) {
 
@@ -157,6 +172,8 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                 ParserService.ParserService.GetOrCreateSingelton(_activeWpfTextView.TextBuffer).ParseResultChanged -= OnParseResultChanged;
 
                 _activeWpfTextView = null;
+                // TODO evtl. Searchtext im Buffer speichern
+                //_searchString = null;
             }
 
             // Connect to active view

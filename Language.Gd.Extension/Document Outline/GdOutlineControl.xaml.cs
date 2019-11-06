@@ -3,9 +3,12 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
 using System.Windows;
 
 using JetBrains.Annotations;
+
+using Microsoft.VisualStudio.Shell;
 
 using Pharmatechnik.Language.Gd.DocumentOutline;
 using Pharmatechnik.Language.Gd.Extension.Classification;
@@ -33,9 +36,13 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         public event EventHandler<RequestNavigateToEventArgs> RequestNavigateToSource;
 
-        internal void ShowOutline([CanBeNull] OutlineData outlineData) {
+        internal void ShowOutline([CanBeNull] OutlineData outlineData, [CanBeNull] string searchString) {
 
-            AddOutlineElement(null, outlineData?.OutlineElement);
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            var searchPattern = String.IsNullOrWhiteSpace(searchString) ? null : new Regex(searchString, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+
+            AddOutlineElement(null, outlineData?.OutlineElement, searchPattern);
 
             if (TreeView.Items.Count == 0) {
                 TreeView.Visibility  = Visibility.Collapsed;
@@ -46,7 +53,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             }
         }
 
-        public bool CanExpandCollapse => TreeView.Items.Count > 0;
+        public bool HasItems => TreeView.Items.Count > 0;
 
         public void CollapseAll() {
             ExpandCollapseItems(expand: false);
@@ -90,7 +97,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             }
         }
 
-        private void AddOutlineElement(TreeViewItem parent, [CanBeNull] OutlineElement outline) {
+        private void AddOutlineElement(TreeViewItem parent, [CanBeNull] OutlineElement outline, [CanBeNull] Regex searchPattern) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (parent == null) {
                 TreeView.Items.Clear();
@@ -108,38 +117,44 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                     CrispImage = {
                         Moniker = GdImageMonikers.GetMoniker(outline.Glyph)
                     },
-                    TextContent = {Content = MakeItemContent(outline)}
+                    TextContent = {Content = MakeItemContent(outline, searchPattern, out var hasMatch)}
                 },
                 Tag        = outline,
                 IsExpanded = true,
             };
 
-            item.Selected += (o, e) => {
-
-                e.Handled = true;
-
-                if (_isNavigatingToOutline) {
-                    return;
-                }
-
-                var outlineElement = (OutlineElement) ((TreeViewItem) o).Tag;
-                RequestNavigateToSource?.Invoke(this, new RequestNavigateToEventArgs(outlineElement));
-
-            };
-
-            item.RequestBringIntoView += OnItemRequestBringIntoView;
-
             foreach (var child in outline.Children) {
-                AddOutlineElement(item, child);
+                AddOutlineElement(item, child, searchPattern);
             }
 
-            itemCollection.Add(item);
-            _flattenTree[outline] = item;
+            var isMatch = searchPattern == null || hasMatch;
+
+            if (isMatch || item.Items.Count > 0) {
+
+                item.Selected += (o, e) => {
+
+                    e.Handled = true;
+
+                    if (_isNavigatingToOutline) {
+                        return;
+                    }
+
+                    var outlineElement = (OutlineElement) ((TreeViewItem) o).Tag;
+                    RequestNavigateToSource?.Invoke(this, new RequestNavigateToEventArgs(outlineElement));
+
+                };
+
+                item.RequestBringIntoView += OnItemRequestBringIntoView;
+
+                itemCollection.Add(item);
+                _flattenTree[outline] = item;
+            }
 
         }
 
-        private TextBlock MakeItemContent(OutlineElement outline) {
-            return _textBlockBuilderService.ToTextBlock(outline.DisplayParts);
+        private TextBlock MakeItemContent(OutlineElement outline, [CanBeNull] Regex searchPattern, out bool hasMatch) {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return _textBlockBuilderService.ToTextBlock(outline.DisplayParts, searchPattern, out hasMatch);
         }
 
         readonly ScopedProperty<bool> _isHandlingOnItemRequestBringIntoView = ScopedProperty.Boolean();
@@ -165,8 +180,6 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                 }
             }
         }
-
-       
 
     }
 
