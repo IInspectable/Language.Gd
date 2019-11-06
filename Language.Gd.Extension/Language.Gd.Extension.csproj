@@ -97,6 +97,7 @@
     <Compile Include="Document Outline\CollapseAllCommand.cs" />
     <Compile Include="Document Outline\ExpandAllCommand.cs" />
     <Compile Include="Document Outline\GdOutlineToolWindowSearch.cs" />
+    <Compile Include="Document Outline\GdOutlineToolWindowSearchOptions.cs" />
     <Compile Include="GdLanguagePackage2.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>

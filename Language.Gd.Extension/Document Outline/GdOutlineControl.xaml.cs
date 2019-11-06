@@ -36,11 +36,11 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         public event EventHandler<RequestNavigateToEventArgs> RequestNavigateToSource;
 
-        internal void ShowOutline([CanBeNull] OutlineData outlineData, [CanBeNull] string searchString) {
+        internal void ShowOutline([CanBeNull] OutlineData outlineData, [CanBeNull] string searchString, GdOutlineToolWindowSearchOptions searchOptions) {
 
             ThreadHelper.ThrowIfNotOnUIThread();
-
-            var searchPattern = String.IsNullOrWhiteSpace(searchString) ? null : new Regex(searchString, RegexOptions.IgnoreCase | RegexOptions.Singleline);
+          
+            var searchPattern = BuildSearchPattern(searchString, searchOptions);
 
             AddOutlineElement(null, outlineData?.OutlineElement, searchPattern);
 
@@ -51,6 +51,18 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                 TreeView.Visibility  = Visibility.Visible;
                 Watermark.Visibility = Visibility.Collapsed;
             }
+        }
+
+        [CanBeNull]
+        static Regex BuildSearchPattern([CanBeNull] string searchString, GdOutlineToolWindowSearchOptions searchOptions) {
+            var regexOptions = RegexOptions.Singleline;
+            if (!searchOptions.MatchCase) {
+                regexOptions |= RegexOptions.IgnoreCase;
+            }
+
+            var searchPattern = String.IsNullOrWhiteSpace(searchString) ? null : new Regex(searchString, regexOptions);
+
+            return searchPattern;
         }
 
         public bool HasItems => TreeView.Items.Count > 0;

@@ -25,6 +25,8 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         bool IsRunning { get; set; }
 
+        public bool HasActiveTextView => _activeWpfTextView != null;
+
         public void Run() {
 
             ThreadHelper.ThrowIfNotOnUIThread();
@@ -118,6 +120,10 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                 _searchString=value;
                 RaiseOutlineDataChanged();
             }
+        }
+
+        public void OnSearchOptionsChanged() {
+            RaiseOutlineDataChanged();
         }
 
         void OnParseResultChanged(object sender, SnapshotSpanEventArgs e) {
