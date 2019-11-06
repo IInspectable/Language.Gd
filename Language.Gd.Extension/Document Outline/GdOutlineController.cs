@@ -1,6 +1,7 @@
 ﻿#region Using Directives
 
 using System;
+using System.ComponentModel;
 using System.Reactive.Linq;
 using System.Threading;
 
@@ -21,11 +22,19 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
     class GdOutlineController: IVsRunningDocTableEvents, IDisposable {
 
+        private readonly GdOutlineToolWindowSearchOptions _searchOptions;
+
+        public GdOutlineController() {
+            _searchOptions                 =  new GdOutlineToolWindowSearchOptions();
+            _searchOptions.PropertyChanged += OnSearchOptionsChanged;
+        }
+
         IWpfTextView _activeWpfTextView;
 
         bool IsRunning { get; set; }
 
         public bool HasActiveTextView => _activeWpfTextView != null;
+        public GdOutlineToolWindowSearchOptions SearchOptions => _searchOptions;
 
         public void Run() {
 
@@ -122,7 +131,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             }
         }
 
-        public void OnSearchOptionsChanged() {
+        void OnSearchOptionsChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs) {
             RaiseOutlineDataChanged();
         }
 
@@ -140,7 +149,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                 return;
             }
 
-            OutlineDataChanged?.Invoke(this, new OutlineDataEventArgs(TryGetOutlineData(), SearchString));
+            OutlineDataChanged?.Invoke(this, new OutlineDataEventArgs(TryGetOutlineData(), SearchString, SearchOptions));
             RaiseRequestNavigateToOutline();
         }
 

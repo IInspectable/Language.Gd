@@ -24,13 +24,13 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         public const string WindowGuidString = "7e927358-0b4d-4953-b2bb-48ef216eb8cb";
 
-        private readonly GdOutlineControl                 _outlineControl;
-        private readonly GdOutlineController              _outlineController;
-        private readonly GdOutlineToolWindowSearchOptions _searchOptions;
+        private readonly GdOutlineControl    _outlineControl;
+        private readonly GdOutlineController _outlineController;
 
         public GdOutlineToolWindowPane(TextBlockBuilderService textBlockBuilderService): base(null) {
 
             BitmapImageMoniker = KnownMonikers.DocumentOutline;
+            ToolBar            = new CommandID(PackageGuids.GdLanguagePackageCmdSetGuid, PackageIds.DocumentOutlineToolWindowToolbar);
 
             _outlineControl                         =  new GdOutlineControl(textBlockBuilderService);
             _outlineControl.IsVisibleChanged        += OnOutlineControlIsVisibleChanged;
@@ -40,19 +40,10 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             _outlineController.RequestNavigateToOutline += OnRequestNavigateToOutline;
             _outlineController.OutlineDataChanged       += OnOutlineDataChanged;
 
-            _searchOptions                 =  new GdOutlineToolWindowSearchOptions();
-            _searchOptions.PropertyChanged += OnSearchOptionsChanged;
-
-            ToolBar = new CommandID(PackageGuids.GdLanguagePackageCmdSetGuid, PackageIds.DocumentOutlineToolWindowToolbar);
-
             UpdateCaption();
 
             Instance = this;
 
-        }
-
-        private void OnSearchOptionsChanged(object sender, System.ComponentModel.PropertyChangedEventArgs e) {
-            _outlineController.OnSearchOptionsChanged();
         }
 
         public override bool SearchEnabled => true;
@@ -69,20 +60,44 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             );
         }
 
-        public override IVsEnumWindowSearchOptions SearchOptionsEnum => _searchOptions.SearchOptionsEnum;
+        public override IVsEnumWindowSearchOptions SearchOptionsEnum => _outlineController.SearchOptions.SearchOptionsEnum;
 
         public override void ProvideSearchSettings(IVsUIDataSource pSearchSettings) {
             Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchStartTypeProperty.Name,         (uint) VSSEARCHSTARTTYPE.SST_DELAYED);
             Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchProgressTypeProperty.Name,      (uint) VSSEARCHPROGRESSTYPE.SPT_NONE);
             Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchUseMRUProperty.Name,            true);
+            Util.SetValue(pSearchSettings, SearchSettingsDataSource.MaximumMRUItemsProperty.Name,         (uint) 5);
             Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchPopupAutoDropdownProperty.Name, false);
-            //Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchWatermarkProperty.Name, GetWatermark());
+            Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchWatermarkProperty.Name,         GetSearchWatermark());
+        }
+
+        private string GetSearchWatermark() {
+            return "Search";
         }
 
         public override void ClearSearch() {
             ThreadHelper.ThrowIfNotOnUIThread();
             _outlineController.SearchString = null;
             base.ClearSearch();
+        }
+
+        public override bool OnNavigationKeyDown(uint dwNavigationKey, uint dwModifiers) {
+
+            var modifier      = (__VSUIACCELMODIFIERS) dwModifiers;
+            var navigationKey = (__VSSEARCHNAVIGATIONKEY) dwNavigationKey;
+
+            if (modifier != __VSUIACCELMODIFIERS.VSAM_NONE) {
+                return false;
+            }
+
+            switch (navigationKey) {
+                case __VSSEARCHNAVIGATIONKEY.SNK_DOWN:
+                    return _outlineControl.NavigateDown();
+                case __VSSEARCHNAVIGATIONKEY.SNK_UP:
+                    return _outlineControl.NavigateUp();
+            }
+
+            return false;
         }
 
         [CanBeNull]
@@ -93,8 +108,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
             base.Dispose(disposing);
 
-            _outlineControl.IsVisibleChanged            -= OnOutlineControlIsVisibleChanged;
-            _outlineControl.RequestNavigateToSource     -= OnRequestNavigateToSource;
+            _outlineControl.IsVisibleChanged        -= OnOutlineControlIsVisibleChanged;
+            _outlineControl.RequestNavigateToSource -= OnRequestNavigateToSource;
+
             _outlineController.RequestNavigateToOutline -= OnRequestNavigateToOutline;
             _outlineController.OutlineDataChanged       -= OnOutlineDataChanged;
 
@@ -146,7 +162,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         private void OnOutlineDataChanged(object sender, OutlineDataEventArgs e) {
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            _outlineControl.ShowOutline(e.OutlineData, e.SearchString, _searchOptions);
+            _outlineControl.ShowOutline(e.OutlineData, e.SearchString, e.SearchOptions);
 
             UpdateSearchBox();
             UpdateCaption(e.OutlineData);

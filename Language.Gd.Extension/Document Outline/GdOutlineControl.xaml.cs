@@ -36,10 +36,57 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         public event EventHandler<RequestNavigateToEventArgs> RequestNavigateToSource;
 
+        public bool NavigateDown() {
+            return Navigate(up: false);
+        }
+
+        public bool NavigateUp() {
+            return Navigate(up: true);
+        }
+
+        bool Navigate(bool up) {
+
+            var items = _flattenTree.Values.ToList();
+
+            if (items.Count == 0) {
+                return false;
+            }
+
+            var currentIndex = items.IndexOf(TreeView.SelectedItem as TreeViewItem);
+
+            if (up) {
+                // keine Selektion
+                if (currentIndex < 0) {
+                    currentIndex = items.Count;
+                }
+
+                currentIndex -= 1;
+
+                if (currentIndex < 0) {
+                    currentIndex = items.Count - 1;
+                }
+            } else {
+                // keine Selektion
+                if (currentIndex < 0) {
+                    currentIndex = -1;
+                }
+
+                currentIndex += 1;
+
+                if (currentIndex >= items.Count) {
+                    currentIndex = 0;
+                }
+            }
+
+            items[currentIndex].IsSelected = true;
+            return true;
+
+        }
+
         internal void ShowOutline([CanBeNull] OutlineData outlineData, [CanBeNull] string searchString, GdOutlineToolWindowSearchOptions searchOptions) {
 
             ThreadHelper.ThrowIfNotOnUIThread();
-          
+
             var searchPattern = BuildSearchPattern(searchString, searchOptions);
 
             AddOutlineElement(null, outlineData?.OutlineElement, searchPattern);
@@ -135,6 +182,8 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                 IsExpanded = true,
             };
 
+            _flattenTree[outline] = item;
+
             foreach (var child in outline.Children) {
                 AddOutlineElement(item, child, searchPattern);
             }
@@ -159,7 +208,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                 item.RequestBringIntoView += OnItemRequestBringIntoView;
 
                 itemCollection.Add(item);
-                _flattenTree[outline] = item;
+
+            } else {
+                _flattenTree.Remove(outline);
             }
 
         }
