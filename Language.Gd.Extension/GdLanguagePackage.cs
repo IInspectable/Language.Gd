@@ -13,6 +13,7 @@ using System.Windows.Threading;
 
 using EnvDTE;
 
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
@@ -98,6 +99,18 @@ namespace Pharmatechnik.Language.Gd.Extension {
 
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             var commandService = await GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
+            
+            // Leider hilft uns das Laden der IXOS Essentials an dieser Stelle gar nichts, da die Toolbar des Gui Outline Fensters schon
+            // vor dem Laden dieses Pakets angezeigt werden kann. Und bereits da würden die Befehle der IXOS Essentials gebraucht...
+
+            //var shell          = await GetServiceAsync(typeof(SVsShell)) as IVsShell;
+
+            //// ReSharper disable once SuspiciousTypeConversion.Global
+            //if (shell is IVsShell7 shell7                                                                                                   &&
+            //    ErrorHandler.Succeeded(shell.IsPackageInstalled(ref IxosEssentialsCommandIds.GuidIXOSEssentialsPackage, out var installed)) &&
+            //    installed != 0) {
+            //    await shell7.LoadPackageAsync(IxosEssentialsCommandIds.GuidIXOSEssentialsPackage);
+            //}
 
             ShowGdOutlineWindowCommand.Register(this, commandService);
             ExpandAllCommand.Register(this, commandService);

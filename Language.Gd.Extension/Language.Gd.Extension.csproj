@@ -133,6 +133,7 @@
     <Compile Include="LanguageService\ProvideShowDropdownBarOptionAttribute.cs" />
     <Compile Include="Logging\Logger.cs" />
     <Compile Include="Margin\GdMarginProvider.cs" />
+    <Compile Include="IxosEssentialsCommandIds.cs" />
     <Compile Include="NavigationBar\NavigationBarItem.cs" />
     <Compile Include="NavigationBar\NavigationBarProjectItemBuilder.cs" />
     <Compile Include="NavigationBar\NavigationBarSectionItemBuilder.cs" />
