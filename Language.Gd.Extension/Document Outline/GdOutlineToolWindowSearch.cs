@@ -22,13 +22,10 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
             });
 
-            //SearchResults = 5;
-
             base.OnStartSearch();
         }
 
         protected override void OnStopSearch() {
-            SearchResults = 0;
         }
 
     }

@@ -15,12 +15,17 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
     class GdOutlineToolWindowSearchOptions: INotifyPropertyChanged {
 
-        private readonly WindowSearchBooleanOption  _matchCaseOption;
-        private          IVsEnumWindowSearchOptions _optionsEnum;
-
         public GdOutlineToolWindowSearchOptions() {
-            _matchCaseOption = new WindowSearchBooleanOption("Match case", "Match case", getter: () => MatchCase, setter: value => MatchCase = value);
+
+            var list = new List<IVsWindowSearchOption> {
+                new WindowSearchBooleanOption(displayText: "Match case",              tooltip: "Match case",              getter: () => MatchCase,             setter: value => MatchCase = value),
+                new WindowSearchBooleanOption(displayText: "Use Regular Expressions", tooltip: "Use Regular Expressions", getter: () => UseRegularExpressions, setter: value => UseRegularExpressions = value)
+            };
+
+            SearchOptionsEnum = new WindowSearchOptionEnumerator(list);
         }
+
+        public IVsEnumWindowSearchOptions SearchOptionsEnum { get; }
 
         private bool _matchCase;
 
@@ -37,25 +42,25 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             }
         }
 
-        public IVsEnumWindowSearchOptions SearchOptionsEnum {
-            get {
-                if (_optionsEnum == null) {
+        private bool _useRegularExpressions;
 
-                    var list = new List<IVsWindowSearchOption> {
-                        _matchCaseOption
-                    };
-
-                    _optionsEnum = new WindowSearchOptionEnumerator(list);
+        public bool UseRegularExpressions {
+            get => _useRegularExpressions;
+            set {
+                if (value == _useRegularExpressions) {
+                    return;
                 }
 
-                return _optionsEnum;
+                _useRegularExpressions = value;
+
+                OnPropertyChanged(nameof(UseRegularExpressions));
             }
         }
 
         public event PropertyChangedEventHandler PropertyChanged;
 
         [NotifyPropertyChangedInvocator]
-        protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null) {
+        void OnPropertyChanged([CallerMemberName] string propertyName = null) {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
 

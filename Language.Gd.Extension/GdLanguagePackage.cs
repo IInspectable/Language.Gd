@@ -13,7 +13,6 @@ using System.Windows.Threading;
 
 using EnvDTE;
 
-using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
@@ -112,9 +111,12 @@ namespace Pharmatechnik.Language.Gd.Extension {
             //    await shell7.LoadPackageAsync(IxosEssentialsCommandIds.GuidIXOSEssentialsPackage);
             //}
 
-            ShowGdOutlineWindowCommand.Register(this, commandService);
-            ExpandAllCommand.Register(this, commandService);
-            CollapseAllCommand.Register(this, commandService);
+            OutlineWindowShowCommand.Register(this, commandService);
+            OutlineWindowSearchCommand.Register(this, commandService);
+            OutlineWindowExpandAllCommand.Register(this, commandService);
+            OutlineWindowCollapseAllCommand.Register(this, commandService);
+            GdPreviewSelectionCommand.Register(this, commandService);
+            GdGenerateSelectionCommand.Register(this, commandService);
 
         }
 
@@ -133,8 +135,16 @@ namespace Pharmatechnik.Language.Gd.Extension {
             }
         }
 
-        public static IServiceProvider ServiceProvider {
-            get { return GetGlobalService<IServiceProvider, IServiceProvider>(); }
+        public static IServiceProvider ServiceProvider => GetGlobalService<IServiceProvider, IServiceProvider>();
+
+        public static void InvokeCommand(CommandID commandId) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            var oleCommandTarget = ServiceProvider.GetService(typeof(IMenuCommandService)) as IMenuCommandService;
+
+            oleCommandTarget?.GlobalInvoke(commandId);
+
         }
 
         public static GdLanguageService Language => GetGlobalService<GdLanguageService, GdLanguageService>();

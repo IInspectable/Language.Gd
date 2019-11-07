@@ -19,7 +19,6 @@
 
   <!--This header contains the command ids for the menus provided by the shell. -->
   <Extern href="vsshlids.h"/>
-  <Extern href="IXOSEssentials.h"/>
 
   <Include href="KnownImageIds.vsct"/>
 
@@ -67,7 +66,7 @@
               <CommandFlag>DynamicVisibility</CommandFlag>
           If you do not want an image next to your command, remove the Icon node /> -->
       <Button guid     = "GdLanguagePackageCmdSetGuid"
-              id       = "ShowGdOutlineWindow"
+              id       = "OutlineWindowShowId"
               priority = "0x0100"
               type     = "Button">
         <Parent guid="guidSHLMainMenu" id="IDG_VS_VIEW_CODEBROWSENAV_WINDOWS" />
@@ -78,8 +77,19 @@
         </Strings>
       </Button>
 
+      <Button guid     = "GdLanguagePackageCmdSetGuid"
+              id       = "OutlineWindowSearchId"
+              priority = "0x0101"
+              type     = "Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WINDOW_NAVIGATION" />
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <ButtonText>Activate Gui Outline Search</ButtonText>
+        </Strings>
+      </Button>
+
       <!-- Gui Outline Toolbar Buttons -->
-      <Button guid="GdLanguagePackageCmdSetGuid" id="ExpandAllId" priority="0" type="Button">
+      <Button guid="GdLanguagePackageCmdSetGuid" id="OutlineWindowExpandAllId" priority="0" type="Button">
         <Parent guid="GdLanguagePackageCmdSetGuid" id="ExpandCollapseGroup" />
         <Icon guid="ImageCatalogGuid" id="ExpandAll" />
         <CommandFlag>IconIsMoniker</CommandFlag>
@@ -89,7 +99,7 @@
         </Strings>
       </Button>
 
-      <Button guid="GdLanguagePackageCmdSetGuid" id="CollapseAllId" priority="1" type="Button">
+      <Button guid="GdLanguagePackageCmdSetGuid" id="OutlineWindowCollapseAllId" priority="1" type="Button">
         <Parent guid="GdLanguagePackageCmdSetGuid" id="ExpandCollapseGroup" />
         <Icon guid="ImageCatalogGuid" id="CollapseAll" />
         <CommandFlag>IconIsMoniker</CommandFlag>
@@ -99,29 +109,36 @@
         </Strings>
       </Button> 
 
+      <Button guid="GdLanguagePackageCmdSetGuid" id="GdPreviewSelectionId" priority="0" type="Button">
+        <Parent guid="GdLanguagePackageCmdSetGuid" id="GdToolsGroup" />
+        <Icon guid="ImageCatalogGuid" id="SwitchToPreview" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Preview GUI</ButtonText>
+        </Strings>
+      </Button> 
+
+      <Button guid="GdLanguagePackageCmdSetGuid" id="GdGenerateSelectionId" priority="1" type="Button">
+        <Parent guid="GdLanguagePackageCmdSetGuid" id="GdToolsGroup" />
+        <Icon guid="ImageCatalogGuid" id="GenerateFile" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Generate GUI</ButtonText>
+        </Strings>
+      </Button> 
+      
+
     </Buttons>
 
 
   </Commands>
 
-  <CommandPlacements>
-    <CommandPlacement guid="GuidIXOSEssentialsPackageCmdSet" id="GdGenerateSelectionCommand" priority="0">
-      <Parent guid="GdLanguagePackageCmdSetGuid" id="GdToolsGroup" />
-    </CommandPlacement>
-    <CommandPlacement guid="GuidIXOSEssentialsPackageCmdSet" id="GdPreviewSelectionCommand" priority="1">
-      <Parent guid="GdLanguagePackageCmdSetGuid" id="GdToolsGroup" />
-    </CommandPlacement>
-  </CommandPlacements>
-
   <KeyBindings>
-    <KeyBinding guid="GdLanguagePackageCmdSetGuid" id="ShowGdOutlineWindow" key1="w" mod1="Control" key2="i"
+    <KeyBinding guid="GdLanguagePackageCmdSetGuid" id="OutlineWindowShowId" key1="w" mod1="Control" key2="i"
                 editor="guidVSStd97" />
   </KeyBindings>
-
-  <UsedCommands>
-    <UsedCommand guid="GuidIXOSEssentialsPackageCmdSet" id="GdGenerateSelectionCommand"/>
-    <UsedCommand guid="GuidIXOSEssentialsPackageCmdSet" id="GdPreviewSelectionCommand"/>
-  </UsedCommands>
 
   <Symbols>
     <!-- This is the package guid. -->
@@ -138,10 +155,14 @@
       <IDSymbol name="GdToolsGroup" value="0x2001" />
 
       <!-- Command Ids-->
-      <IDSymbol name="ExpandAllId" value="0x3000" />
-      <IDSymbol name="CollapseAllId" value="0x3001" />
+      <IDSymbol name="OutlineWindowShowId" value="0x3000" />
+      <IDSymbol name="OutlineWindowSearchId" value="0x3001" />
+      <IDSymbol name="OutlineWindowExpandAllId" value="0x3002" />
+      <IDSymbol name="OutlineWindowCollapseAllId" value="0x3003" />
 
-      <IDSymbol name="ShowGdOutlineWindow" value="0x0100" />
+
+      <IDSymbol name="GdGenerateSelectionId" value="0x3004" />
+      <IDSymbol name="GdPreviewSelectionId" value="0x3005" />
 
     </GuidSymbol>
 

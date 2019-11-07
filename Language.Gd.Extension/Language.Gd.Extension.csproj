@@ -59,6 +59,7 @@
     <Compile Include="Common\CodeContentControlProvider.cs" />
     <Compile Include="Common\ComEventSink.cs" />
     <Compile Include="Common\DependencyObjectExtensions.cs" />
+    <Compile Include="Common\RegexUtil.cs" />
     <Compile Include="Common\ScopedProperty.cs" />
     <Compile Include="Common\ServiceProperties.cs" />
     <Compile Include="Common\ServiceProviderExtensions.cs" />
@@ -94,10 +95,14 @@
     <Compile Include="Diagnostics\DiagnosticSummaryControl.xaml.cs">
       <DependentUpon>DiagnosticSummaryControl.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Document Outline\CollapseAllCommand.cs" />
-    <Compile Include="Document Outline\ExpandAllCommand.cs" />
+    <Compile Include="Document Outline\GdGenerateSelectionCommand.cs" />
+    <Compile Include="Document Outline\GdPreviewSelectionCommand.cs" />
+    <Compile Include="Document Outline\OutlineWindowCollapseAllCommand.cs" />
+    <Compile Include="Common\Command.cs" />
+    <Compile Include="Document Outline\OutlineWindowExpandAllCommand.cs" />
     <Compile Include="Document Outline\GdOutlineToolWindowSearch.cs" />
     <Compile Include="Document Outline\GdOutlineToolWindowSearchOptions.cs" />
+    <Compile Include="Document Outline\OutlineWindowSearchCommand.cs" />
     <Compile Include="GdLanguagePackage2.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -114,7 +119,7 @@
     <Compile Include="Document Outline\OutlineDataEventArgs.cs" />
     <Compile Include="Document Outline\GdOutlineToolWindowPane.cs" />
     <Compile Include="Document Outline\RequestNavigateToEventArgs.cs" />
-    <Compile Include="Document Outline\ShowGdOutlineWindowCommand.cs" />
+    <Compile Include="Document Outline\OutlineWindowShowCommand.cs" />
     <Compile Include="Document Outline\GdOutlineControl.xaml.cs">
       <DependentUpon>GdOutlineControl.xaml</DependentUpon>
     </Compile>
@@ -169,6 +174,7 @@
     <Compile Include="Utilities\UriBuilder.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include=".editorconfig" />
     <None Include="CustomBuild.targets" />
     <None Include="source.extension.vsixmanifest">
       <SubType>Designer</SubType>

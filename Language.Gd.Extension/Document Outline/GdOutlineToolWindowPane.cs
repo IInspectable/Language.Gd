@@ -3,15 +3,18 @@
 using System;
 using System.ComponentModel.Design;
 using System.Runtime.InteropServices;
+using System.Text.RegularExpressions;
 
 using JetBrains.Annotations;
 
+using Microsoft.Internal.VisualStudio.Shell;
 using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 
 using Pharmatechnik.Language.Gd.Extension.Classification;
+using Pharmatechnik.Language.Gd.Extension.Common;
 
 using Util = Microsoft.Internal.VisualStudio.PlatformUI.Utilities;
 
@@ -72,7 +75,16 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         }
 
         private string GetSearchWatermark() {
-            return "Search";
+
+            var watermark = "Search Outline";
+
+            var keyBinding = KeyBindingHelper.GetGlobalKeyBinding(PackageGuids.GdLanguagePackageCmdSetGuid, PackageIds.OutlineWindowSearchId);
+            if (!String.IsNullOrEmpty(keyBinding)) {
+                watermark += $" ({keyBinding})";
+            }
+
+            return watermark;
+
         }
 
         public override void ClearSearch() {
@@ -122,7 +134,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             set { }
         }
 
-        public bool CanExpandCollapse => _outlineControl.HasItems;
+        public bool HasContent => _outlineControl.HasItems;
 
         public void CollapseAll() {
             _outlineControl.CollapseAll();
@@ -160,12 +172,24 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         }
 
         private void OnOutlineDataChanged(object sender, OutlineDataEventArgs e) {
+            
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            _outlineControl.ShowOutline(e.OutlineData, e.SearchString, e.SearchOptions);
+            var searchPattern = BuildSearchPattern(e);
+
+            _outlineControl.ShowOutline(e.OutlineData, searchPattern);
 
             UpdateSearchBox();
             UpdateCaption(e.OutlineData);
+        }
+
+        private static Regex BuildSearchPattern(OutlineDataEventArgs e) {
+
+            // TODO Hier könnte man evtl. Syntaxfehler abfangen und als Infobar anzeigen
+            var searchPattern = RegexUtil.BuildSearchPattern(searchString: e.SearchString,
+                                                             matchCase: e.SearchOptions.MatchCase,
+                                                             useRegularExpressions: e.SearchOptions.UseRegularExpressions);
+            return searchPattern;
         }
 
         public const string DefaultCaption = "Gui Outline";
@@ -184,6 +208,11 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             } else {
                 Caption = DefaultCaption;
             }
+        }
+
+        public void ActivateSearch() {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            SearchHost?.Activate();
         }
 
     }

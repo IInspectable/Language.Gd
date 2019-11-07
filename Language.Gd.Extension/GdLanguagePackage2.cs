@@ -26,8 +26,11 @@ namespace Pharmatechnik.Language.Gd.Extension
         public const int DocumentOutlineToolWindowToolbar = 0x1000;
         public const int ExpandCollapseGroup = 0x2000;
         public const int GdToolsGroup = 0x2001;
-        public const int ExpandAllId = 0x3000;
-        public const int CollapseAllId = 0x3001;
-        public const int ShowGdOutlineWindow = 0x0100;
+        public const int OutlineWindowShowId = 0x3000;
+        public const int OutlineWindowSearchId = 0x3001;
+        public const int OutlineWindowExpandAllId = 0x3002;
+        public const int OutlineWindowCollapseAllId = 0x3003;
+        public const int GdGenerateSelectionId = 0x3004;
+        public const int GdPreviewSelectionId = 0x3005;
     }
 }

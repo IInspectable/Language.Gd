@@ -33,50 +33,27 @@ namespace Pharmatechnik.Language.Gd.Extension.Margin {
         }
 
         void UpdateTooltips() {
-            ShowGuiOutlineButton.ToolTip = GetTooltipText(ShowGdOutlineWindowCommand.Instance.CommandId, "Gui Outline");
-            GuiPreviewButton.ToolTip     = GetTooltipText(IxosEssentialsCommandIds.GuiPreviewCommandId,  "Gui Preview");
-            GenerateGuiButton.ToolTip    = GetTooltipText(IxosEssentialsCommandIds.GdGenerateCommandId,  "C# Code aus .gd-Dateien generieren");
+            ShowGuiOutlineButton.ToolTip = GetTooltipText(OutlineWindowShowCommand.Instance.CommandId,  "Gui Outline");
+            GuiPreviewButton.ToolTip     = GetTooltipText(IxosEssentialsCommandIds.GuiPreviewCommandId, "Gui Preview");
+            GenerateGuiButton.ToolTip    = GetTooltipText(IxosEssentialsCommandIds.GdGenerateCommandId, "C# Code aus .gd-Dateien generieren");
         }
 
         private void OnShowGuiOutlineClick(object sender, RoutedEventArgs e) {
             ThreadHelper.ThrowIfNotOnUIThread();
-            InvokeCommand(ShowGdOutlineWindowCommand.Instance.CommandId);
-            //ShowGdOutlineWindowCommand.Instance.Execute();
+            OutlineWindowShowCommand.Instance?.Execute();
+            UpdateTooltips();
         }
 
         private void OnGenerateGuiButtonClick(object sender, RoutedEventArgs e) {
             ThreadHelper.ThrowIfNotOnUIThread();
-            InvokeCommand(IxosEssentialsCommandIds.GdGenerateCommandId);
+            GdGenerateSelectionCommand.Instance?.Execute();
+            UpdateTooltips();
         }
 
         private void OnGuiPreviewClick(object sender, RoutedEventArgs e) {
             ThreadHelper.ThrowIfNotOnUIThread();
-            InvokeCommand(IxosEssentialsCommandIds.GuiPreviewCommandId);
-        }
-
-        //[CanBeNull]
-        //static Command TryGetCommand(CommandID commandId) {
-
-        //    try {
-        //        ThreadHelper.ThrowIfNotOnUIThread();
-        //        return GdLanguagePackage.DTE.Commands.Item(commandId.Guid.ToString("B"), commandId.ID);
-        //    } catch (ArgumentException) {
-
-        //    }
-
-        //    return null;
-        //}
-
-        private void InvokeCommand(CommandID commandId) {
-
-            ThreadHelper.ThrowIfNotOnUIThread();
-
-            var oleCommandTarget = GdLanguagePackage.ServiceProvider.GetService(typeof(IMenuCommandService)) as IMenuCommandService;
-
-            oleCommandTarget?.GlobalInvoke(commandId);
-
+            GdPreviewSelectionCommand.Instance?.Execute();
             UpdateTooltips();
-
         }
 
         static string GetTooltipText(CommandID commandId, string commandName) {
@@ -92,7 +69,5 @@ namespace Pharmatechnik.Language.Gd.Extension.Margin {
         }
 
     }
-
-    // IDS siehe IXOS Essentials
 
 }

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
+using System.Windows.Controls;
 
 using JetBrains.Annotations;
 
@@ -18,8 +19,6 @@ using Pharmatechnik.Language.Gd.Extension.Imaging;
 #endregion
 
 namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
-
-    using System.Windows.Controls;
 
     partial class GdOutlineControl: UserControl {
 
@@ -83,11 +82,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         }
 
-        internal void ShowOutline([CanBeNull] OutlineData outlineData, [CanBeNull] string searchString, GdOutlineToolWindowSearchOptions searchOptions) {
+        internal void ShowOutline([CanBeNull] OutlineData outlineData, [CanBeNull] Regex searchPattern) {
 
             ThreadHelper.ThrowIfNotOnUIThread();
-
-            var searchPattern = BuildSearchPattern(searchString, searchOptions);
 
             AddOutlineElement(null, outlineData?.OutlineElement, searchPattern);
 
@@ -98,18 +95,6 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                 TreeView.Visibility  = Visibility.Visible;
                 Watermark.Visibility = Visibility.Collapsed;
             }
-        }
-
-        [CanBeNull]
-        static Regex BuildSearchPattern([CanBeNull] string searchString, GdOutlineToolWindowSearchOptions searchOptions) {
-            var regexOptions = RegexOptions.Singleline;
-            if (!searchOptions.MatchCase) {
-                regexOptions |= RegexOptions.IgnoreCase;
-            }
-
-            var searchPattern = String.IsNullOrWhiteSpace(searchString) ? null : new Regex(searchString, regexOptions);
-
-            return searchPattern;
         }
 
         public bool HasItems => TreeView.Items.Count > 0;
