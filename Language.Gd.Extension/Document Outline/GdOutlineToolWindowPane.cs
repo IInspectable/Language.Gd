@@ -72,6 +72,10 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             Util.SetValue(pSearchSettings, SearchSettingsDataSource.MaximumMRUItemsProperty.Name,         (uint) 5);
             Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchPopupAutoDropdownProperty.Name, false);
             Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchWatermarkProperty.Name,         GetSearchWatermark());
+            Util.SetValue(pSearchSettings, SearchSettingsDataSource.ControlMaxWidthProperty.Name,         uint.MaxValue);
+            Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchStartDelayProperty.Name,        (uint) 500);
+
+            //var t=Util.QueryValue(pSearchSettings, SearchSettingsDataSource.SearchStartDelayProperty.Name);
         }
 
         private string GetSearchWatermark() {
@@ -172,7 +176,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         }
 
         private void OnOutlineDataChanged(object sender, OutlineDataEventArgs e) {
-            
+
             ThreadHelper.ThrowIfNotOnUIThread();
 
             var searchPattern = BuildSearchPattern(e);
