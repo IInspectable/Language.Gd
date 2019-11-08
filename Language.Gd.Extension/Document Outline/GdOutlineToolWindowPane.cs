@@ -69,11 +69,12 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchStartTypeProperty.Name,         (uint) VSSEARCHSTARTTYPE.SST_DELAYED);
             Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchProgressTypeProperty.Name,      (uint) VSSEARCHPROGRESSTYPE.SPT_NONE);
             Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchUseMRUProperty.Name,            true);
-            Util.SetValue(pSearchSettings, SearchSettingsDataSource.MaximumMRUItemsProperty.Name,         (uint) 5);
+            Util.SetValue(pSearchSettings, SearchSettingsDataSource.MaximumMRUItemsProperty.Name,         5u);
             Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchPopupAutoDropdownProperty.Name, false);
             Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchWatermarkProperty.Name,         GetSearchWatermark());
+            Util.SetValue(pSearchSettings, SearchSettingsDataSource.ControlMinWidthProperty.Name,         200u);
             Util.SetValue(pSearchSettings, SearchSettingsDataSource.ControlMaxWidthProperty.Name,         uint.MaxValue);
-            Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchStartDelayProperty.Name,        (uint) 500);
+            Util.SetValue(pSearchSettings, SearchSettingsDataSource.SearchStartDelayProperty.Name,        500u);
 
             //var t=Util.QueryValue(pSearchSettings, SearchSettingsDataSource.SearchStartDelayProperty.Name);
         }

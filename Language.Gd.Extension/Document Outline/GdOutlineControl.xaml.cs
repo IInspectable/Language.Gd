@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 
 using JetBrains.Annotations;
 
@@ -191,6 +192,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                 };
 
                 item.RequestBringIntoView += OnItemRequestBringIntoView;
+                item.KeyDown              += OnTreeViewItemKeyDown;
 
                 itemCollection.Add(item);
 
@@ -226,6 +228,23 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                     e.Handled = true;
 
                 }
+            }
+        }
+
+        private void OnTreeViewItemKeyDown(object sender, KeyEventArgs e) {
+
+            if (!(e.Source is TreeViewItem item) ||
+                Keyboard.Modifiers != ModifierKeys.None) {
+                return;
+            }
+
+            switch (e.Key) {
+
+                case Key.Space:
+                    item.IsExpanded = !item.IsExpanded;
+                    e.Handled       = true;
+                    break;
+
             }
         }
 
