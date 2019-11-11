@@ -16,13 +16,15 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
                               TextExtent extent,
                               int navigationPoint,
                               Glyph glyph,
-                              ImmutableArray<OutlineElement> children = default) {
+                              ImmutableArray<OutlineElement> children = default,
+                              Location secondaryNavigationLocation = default) {
 
-            DisplayParts    = displayParts;
-            Extent          = extent;
-            NavigationPoint = navigationPoint;
-            Glyph           = glyph;
-            Children        = children.IsDefault ? ImmutableArray<OutlineElement>.Empty : children;
+            DisplayParts                = displayParts;
+            Extent                      = extent;
+            NavigationPoint             = navigationPoint;
+            SecondaryNavigationLocation = secondaryNavigationLocation;
+            Glyph                       = glyph;
+            Children                    = children.IsDefault ? ImmutableArray<OutlineElement>.Empty : children;
 
         }
 
@@ -47,6 +49,12 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
         /// Gibt die Stelle an, an die bei Auswahl des Items hinnavigiert werden soll.
         /// </summary>
         public int NavigationPoint { get; }
+
+        /// <summary>
+        /// Gibt den sekundären Navigationspunkt an, falls vorhanden.
+        /// </summary>
+        [CanBeNull]
+        public Location SecondaryNavigationLocation { get; }
 
         public ImmutableArray<OutlineElement> Children { get; }
 

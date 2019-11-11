@@ -59,6 +59,7 @@
     <Compile Include="Common\CodeContentControlProvider.cs" />
     <Compile Include="Common\ComEventSink.cs" />
     <Compile Include="Common\DependencyObjectExtensions.cs" />
+    <Compile Include="Common\LocationExtensions.cs" />
     <Compile Include="Common\RegexUtil.cs" />
     <Compile Include="Common\ScopedProperty.cs" />
     <Compile Include="Common\ServiceProperties.cs" />

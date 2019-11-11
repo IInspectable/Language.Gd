@@ -13,17 +13,25 @@ using System.Windows.Threading;
 
 using EnvDTE;
 
+using JetBrains.Annotations;
+
+using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.ComponentModelHost;
+using Microsoft.VisualStudio.Editor;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Text;
 using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Text.Outlining;
+using Microsoft.VisualStudio.TextManager.Interop;
 
 using Pharmatechnik.Language.Gd.Extension.Classification;
+using Pharmatechnik.Language.Gd.Extension.Common;
 using Pharmatechnik.Language.Gd.Extension.Document_Outline;
 using Pharmatechnik.Language.Gd.Extension.LanguageService;
 using Pharmatechnik.Language.Gd.Extension.Logging;
+using Pharmatechnik.Language.Text;
 
 using Constants = EnvDTE.Constants;
 using Project = Microsoft.CodeAnalysis.Project;
@@ -79,6 +87,9 @@ namespace Pharmatechnik.Language.Gd.Extension {
 
         static readonly Logger Logger = Logger.Create<GdLanguagePackage>();
 
+        [CanBeNull]
+        private static GdLanguagePackage _instance;
+
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
         /// where you can put all the initialization code that rely on services provided by VisualStudio.
@@ -98,7 +109,7 @@ namespace Pharmatechnik.Language.Gd.Extension {
 
             await JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             var commandService = await GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
-            
+
             // Leider hilft uns das Laden der IXOS Essentials an dieser Stelle gar nichts, da die Toolbar des Gui Outline Fensters schon
             // vor dem Laden dieses Pakets angezeigt werden kann. Und bereits da würden die Befehle der IXOS Essentials gebraucht...
 
@@ -118,6 +129,13 @@ namespace Pharmatechnik.Language.Gd.Extension {
             GdPreviewSelectionCommand.Register(this, commandService);
             GdGenerateSelectionCommand.Register(this, commandService);
 
+            _instance = this;
+
+        }
+
+        [CanBeNull]
+        static IServiceProvider GetServiceProvider() {
+            return _instance;
         }
 
         public static object GetGlobalService<TService>() where TService : class {
@@ -226,6 +244,99 @@ namespace Pharmatechnik.Language.Gd.Extension {
             (textView as Control)?.Focus();
         }
 
+        [CanBeNull]
+        public static IWpfTextView GoToLocationInPreviewTab(Location location) {
+
+            using (Logger.LogBlock(nameof(GoToLocationInPreviewTab))) {
+
+                ThreadHelper.ThrowIfNotOnUIThread();
+
+                if (location == null) {
+                    return null;
+                }
+
+                IWpfTextView wpfTextView = null;
+                if (location.FilePath != null) {
+                    wpfTextView = OpenFileInPreviewTab(location.FilePath);
+                }
+
+                if (wpfTextView == null) {
+                    return null;
+                }
+
+                if (location.Start == 0 && location.Length == 0) {
+                    return wpfTextView;
+                }
+
+                var outliningManagerService = GetServiceProvider().GetMefService<IOutliningManagerService>();
+
+                var snapshotSpan = location.ToSnapshotSpan(wpfTextView.TextSnapshot);
+                if (wpfTextView.TryMoveCaretToAndEnsureVisible(snapshotSpan.Start, outliningManagerService)) {
+                    wpfTextView.SetSelection(snapshotSpan);
+                }
+
+                return wpfTextView;
+            }
+        }
+
+        [CanBeNull]
+        static IWpfTextView GetWpfTextViewFromFrame(IVsWindowFrame frame) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            using (Logger.LogBlock(nameof(GetWpfTextViewFromFrame))) {
+                if (ErrorHandler.Failed(frame.GetProperty((int) __VSFPROPID.VSFPROPID_DocView, out var docView))) {
+                    Logger.Error("Get __VSFPROPID.VSFPROPID_DocView failed");
+                    return null;
+                }
+
+                if (docView is IVsCodeWindow window) {
+                    if (ErrorHandler.Failed(window.GetPrimaryView(out var textView))) {
+                        Logger.Error("GetPrimaryView failed");
+                        return null;
+                    }
+
+                    var model          = (IComponentModel) GetGlobalService(typeof(SComponentModel));
+                    var adapterFactory = model.GetService<IVsEditorAdaptersFactoryService>();
+                    var wpfTextView    = adapterFactory.GetWpfTextView(textView);
+                    return wpfTextView;
+                }
+
+                Logger.Warn($"{nameof(GetWpfTextViewFromFrame)}: {nameof(docView)} ist kein {nameof(IVsCodeWindow)}");
+                return null;
+            }
+        }
+
+        [CanBeNull]
+        public static IWpfTextView OpenFile(string file) {
+
+            using (Logger.LogBlock(nameof(OpenFile))) {
+
+                ThreadHelper.ThrowIfNotOnUIThread();
+
+                var serviceProvider = GetServiceProvider();
+
+                Guid logicalView = Guid.Empty;
+                VsShellUtilities.OpenDocument(serviceProvider, file, logicalView, out var _, out var _, out var windowFrame);
+
+                return GetWpfTextViewFromFrame(windowFrame);
+            }
+        }
+
+        [CanBeNull]
+        public static IWpfTextView OpenFileInPreviewTab(string file) {
+
+            ThreadHelper.ThrowIfNotOnUIThread();
+
+            using (Logger.LogBlock(nameof(OpenFileInPreviewTab))) {
+
+                var state = __VSNEWDOCUMENTSTATE.NDS_Provisional; // | __VSNEWDOCUMENTSTATE.NDS_NoActivate;
+                using (new NewDocumentStateScope(state, VSConstants.NewDocumentStateReason.Navigation)) {
+                    return OpenFile(file);
+                }
+            }
+        }
+
         public override IVsAsyncToolWindowFactory GetAsyncToolWindowFactory(Guid toolWindowType) {
 
             if (toolWindowType.Equals(Guid.Parse(GdOutlineToolWindowPane.WindowGuidString))) {
@@ -236,7 +347,7 @@ namespace Pharmatechnik.Language.Gd.Extension {
         }
 
         protected override string GetToolWindowTitle(Type toolWindowType, int id) {
-           
+
             if (toolWindowType == typeof(GdOutlineToolWindowPane)) {
                 return GdOutlineToolWindowPane.DefaultCaption;
             }

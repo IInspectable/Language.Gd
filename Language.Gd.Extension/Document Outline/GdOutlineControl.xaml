@@ -19,6 +19,7 @@
         <TreeView x:Name="TreeView" Grid.Row="0" BorderThickness="0,0,0,0"
                   Background="{DynamicResource {x:Static vsui:TreeViewColors.BackgroundBrushKey}}"
                   BorderBrush="{DynamicResource {x:Static vsui:EnvironmentColors.ToolWindowBorderBrushKey}}">
+
             <TreeView.Resources>
                 <Style x:Key="TreeViewItemFocusVisual">
                     <Setter Property="Control.Template">

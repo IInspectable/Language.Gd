@@ -35,6 +35,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         }
 
         public event EventHandler<RequestNavigateToEventArgs> RequestNavigateToSource;
+        public event EventHandler<RequestNavigateToEventArgs> RequestNavigateToSecondaryLocation;
 
         public bool NavigateDown() {
             return Navigate(up: false);
@@ -178,21 +179,10 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
             if (isMatch || item.Items.Count > 0) {
 
-                item.Selected += (o, e) => {
-
-                    e.Handled = true;
-
-                    if (_isNavigatingToOutline) {
-                        return;
-                    }
-
-                    var outlineElement = (OutlineElement) ((TreeViewItem) o).Tag;
-                    RequestNavigateToSource?.Invoke(this, new RequestNavigateToEventArgs(outlineElement));
-
-                };
-
+                item.Selected             += OnItemSelected;
                 item.RequestBringIntoView += OnItemRequestBringIntoView;
                 item.KeyDown              += OnTreeViewItemKeyDown;
+                item.MouseDoubleClick     += OnItemDoubleClick;
 
                 itemCollection.Add(item);
 
@@ -246,6 +236,29 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                     break;
 
             }
+        }
+
+        private void OnItemDoubleClick(object sender, MouseButtonEventArgs e) {
+            var tvi = sender as TreeViewItem;
+
+            if (tvi?.IsSelected == false || _isNavigatingToOutline) {
+                return;
+            }
+
+            e.Handled = true;
+            var outlineElement = (OutlineElement) ((TreeViewItem) sender).Tag;
+            RequestNavigateToSecondaryLocation?.Invoke(this, new RequestNavigateToEventArgs(outlineElement));
+        }
+
+        private void OnItemSelected(object sender, RoutedEventArgs e) {
+            e.Handled = true;
+
+            if (_isNavigatingToOutline) {
+                return;
+            }
+
+            var outlineElement = (OutlineElement) ((TreeViewItem) sender).Tag;
+            RequestNavigateToSource?.Invoke(this, new RequestNavigateToEventArgs(outlineElement));
         }
 
     }

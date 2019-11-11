@@ -124,6 +124,31 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
 
             }
 
+            if (controlSection.SectionBegin?.ControlTypeToken.GetText() == "UserControlReference") {
+
+                if (controlSection.PropertiesSection != null) {
+                    // TODO Review
+                    var typeName = controlSection.PropertiesSection.Properties.OfType<PropertyAssignSyntax>().Where(
+                                                      pa => pa.LvalueExpression?.MemberAccessExpression is SimpleMemberAccessExpressionSyntax sma &&
+                                                            sma.IdentifierName?.GetText() == "TypeName")
+                                                 .Select(pa => pa.Rvalue?.GetText() ?? String.Empty)
+                                                 .FirstOrDefault()?.Trim('"');
+
+                    var containingGdFile = controlSection.SyntaxTree?.SourceText?.FileInfo?.FullName;
+
+                    if (!containingGdFile.IsNullOrWhiteSpace() && !typeName.IsNullOrWhiteSpace()) {
+
+                        var r = new Reference(containingGdFile, typeName);
+                        if (ReferenceFinder.TryResolveFileName(r, out var gdFileName)) {
+                            Location secondaryLocation = new Location(gdFileName);
+                            return CreateSectionElement(controlSection, default, secondaryLocation);
+                        }
+
+                    }
+                }
+
+            }
+
             return base.VisitControlSectionSyntax(controlSection);
         }
 
@@ -174,7 +199,9 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
         }
 
         [CanBeNull]
-        OutlineElement CreateSectionElement(SyntaxNode sectionSyntax, ImmutableArray<OutlineElement> children = default) {
+        OutlineElement CreateSectionElement(SyntaxNode sectionSyntax,
+                                            ImmutableArray<OutlineElement> children = default,
+                                            Location secondaryLocation = null) {
 
             var section      = sectionSyntax as ISectionSyntax;
             var sectionBegin = section?.SectionBegin;
@@ -192,7 +219,7 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
 
             var glyph = SectionGlyphs.GetGlyph(sectionSyntax);
 
-            return new OutlineElement(displayName, sectionSyntax.FullExtent, sectionSyntax.ExtentStart, glyph, children);
+            return new OutlineElement(displayName, sectionSyntax.FullExtent, sectionSyntax.ExtentStart, glyph, children, secondaryLocation);
         }
 
         ImmutableArray<ClassifiedText> GetDisplayParts(SyntaxNode node) {

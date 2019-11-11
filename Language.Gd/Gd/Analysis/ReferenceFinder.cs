@@ -37,6 +37,7 @@ namespace Pharmatechnik.Language.Gd {
 
             foreach (var reference in refs) {
 
+                // TODO wieder einbauen, wenn Model exisitiert
                 //if (reference.NoGdRef) {
                 //    continue;
                 //}
@@ -50,7 +51,17 @@ namespace Pharmatechnik.Language.Gd {
             }
         }
 
-        private bool FileExists(Reference r, ref string newFile) {
+        public static bool TryResolveFileName(Reference r, out string fileName) {
+            fileName = String.Empty;
+            var newFile = string.Empty;
+            if (FileExists(r, ref newFile)) {
+                fileName = newFile;
+                return true;
+            }
+            return false;
+        }
+
+        private static bool FileExists(Reference r, ref string newFile) {
 
             if (Try2Find(r, ref newFile, SearchOption.TopDirectoryOnly)) {
                 return true;
@@ -62,31 +73,33 @@ namespace Pharmatechnik.Language.Gd {
 
             if (string.IsNullOrEmpty(newFile)) {
                 var sb = new StringBuilder();
-                sb.AppendFormat("ReferenceFinder, File not found::: Filename={0}\n", r.RefFileName);
+                sb.AppendFormat("ReferenceFinder, File not found::: Filename={0}\n", r.ReferenceFileName);
                 sb.AppendFormat(" CurrentfilePathName: {0}",                         r.ContainingGdFileName);
                 sb.AppendFormat(" RefFullClassName: {0}",                            r.ReferenceTypeName);
-                sb.AppendFormat(" SuggestedPaths: {0}",                              string.Join("; ", r.SuggestedPaths));
+                sb.AppendFormat(" SuggestedPaths: {0}",                              string.Join("; ", r.GetSuggestedPaths()));
                 newFile = sb.ToString();
             }
 
             return false;
         }
 
-        private bool Try2Find(Reference r, ref string newFile, SearchOption searchOption) {
-        
-            foreach (var suggestedPath in r.SuggestedPaths) {
+        private static bool Try2Find(Reference r, ref string newFile, SearchOption searchOption) {
+
+            foreach (var suggestedPath in r.GetSuggestedPaths()) {
+
                 if (!Directory.Exists(suggestedPath))
                     continue;
 
-                if (FindInDirectory(suggestedPath, r.RefFileName, ref newFile, searchOption))
+                if (FindInDirectory(suggestedPath, r.ReferenceFileName, ref newFile, searchOption))
                     return true;
 
-                if (FindInDirectory(suggestedPath, r.RefFileName.Remove(0, 3), ref newFile, searchOption))
-                    return true;
-                if (FindInDirectory(suggestedPath, "Usr" + r.RefFileName, ref newFile, searchOption))
+                if (FindInDirectory(suggestedPath, r.ReferenceFileName.Remove(0, 3), ref newFile, searchOption))
                     return true;
 
-                if (FindInDirectory(suggestedPath, "Frm" + r.RefFileName, ref newFile, searchOption))
+                if (FindInDirectory(suggestedPath, "Usr" + r.ReferenceFileName, ref newFile, searchOption))
+                    return true;
+
+                if (FindInDirectory(suggestedPath, "Frm" + r.ReferenceFileName, ref newFile, searchOption))
                     return true;
 
             }
@@ -94,26 +107,29 @@ namespace Pharmatechnik.Language.Gd {
             return false;
         }
 
-        private bool FindInDirectory(string suggestedPath, string pattern, ref string newFile, SearchOption searchOption) {
+        private static bool FindInDirectory(string suggestedPath, string pattern, ref string newFile, SearchOption searchOption) {
+           
             if (TryFind(pattern, searchOption, suggestedPath, ref newFile))
                 return true;
 
-            if (TryFind(Converter.ConvertUmlaute(pattern), searchOption, suggestedPath, ref newFile))
+            if (TryFind(UmlautConverter.ConvertUmlaute(pattern), searchOption, suggestedPath, ref newFile))
                 return true;
 
-            if (TryFind(Converter.ReverseUmlaute(pattern), searchOption, suggestedPath, ref newFile))
+            if (TryFind(UmlautConverter.ReverseUmlaute(pattern), searchOption, suggestedPath, ref newFile))
                 return true;
 
             return false;
         }
 
-        private bool TryFind(string pattern, SearchOption searchOption, string suggestedPath, ref string newFile) {
+        private static bool TryFind(string pattern, SearchOption searchOption, string suggestedPath, ref string newFile) {
+            
             var files = Directory.GetFiles(suggestedPath, pattern, searchOption);
+            
             if (files.Length == 1) {
                 newFile = files[0];
                 return true;
             } else if (files.Length > 1) {
-                newFile = string.Format("ReferenceFinder: Several files match: {0} <--> {1}", files[0], files[1]);
+                newFile = $"ReferenceFinder: Several files match: {files[0]} <--> {files[1]}";
                 return false;
             }
 
@@ -122,34 +138,18 @@ namespace Pharmatechnik.Language.Gd {
 
     }
 
-    internal class Converter {
-
-        public static string ConvertUmlaute(string text) {
-            return text.Replace("ä", "ae").Replace("ü", "ue").Replace("ö", "oe").Replace("Ä", "Ae").Replace("Ü", "Ue").Replace("Ö", "Oe");
-        }
-
-        public static string ReverseUmlaute(string text) {
-            return text.Replace("ae", "ä").Replace("ue", "ü").Replace("oe", "ö").Replace("Ae", "Ä").Replace("Ue", "Ü").Replace("Oe", "Ö");
-        }
-
-    }
-
     public class Reference {
 
         public Reference(string containingGdFileName, string referenceTypeName) {
-            this.ContainingGdFileName = containingGdFileName;
-            this.ReferenceTypeName    = referenceTypeName;
-        }
-
-        public string RefFileName {
-            get { return ReferenceTypeName.Substring(ReferenceTypeName.LastIndexOf(".") + 1) + ".gd"; }
+            ContainingGdFileName = containingGdFileName ?? String.Empty;
+            ReferenceTypeName    = referenceTypeName    ?? String.Empty;
         }
 
         public string ContainingGdFileName { get; }
+        public string ReferenceTypeName    { get; }
+        public string ReferenceFileName    => ReferenceTypeName.Substring(ReferenceTypeName.LastIndexOf(".", StringComparison.Ordinal) + 1) + ".gd";
 
-        public string ReferenceTypeName { get; }
-
-        public List<string> SuggestedPaths => GetFileSuggestions(ContainingGdFileName, ReferenceTypeName);
+        public List<string> GetSuggestedPaths() => GetFileSuggestions(ContainingGdFileName, ReferenceTypeName);
 
         static List<string> GetFileSuggestions(string containingGdFileName, string referenceTypeName) {
 
@@ -163,9 +163,9 @@ namespace Pharmatechnik.Language.Gd {
             }
 
             var startDir = Path.GetDirectoryName(containingGdFileName);
-            startDir = startDir.Substring(0, startDir.LastIndexOf(Path.DirectorySeparatorChar + "src") + 4);
+            startDir = startDir?.Substring(0, startDir.LastIndexOf(Path.DirectorySeparatorChar + "src", StringComparison.Ordinal) + 4);
 
-            subFolder = subFolder.Remove(subFolder.LastIndexOf(".GUI."), subFolder.Length - subFolder.LastIndexOf(".GUI."));
+            subFolder = subFolder.Remove(subFolder.LastIndexOf(".GUI.", StringComparison.Ordinal), subFolder.Length - subFolder.LastIndexOf(".GUI.", StringComparison.Ordinal));
 
             var subFolders = new List<string>(subFolder.Split(new[] {'.'}, StringSplitOptions.RemoveEmptyEntries));
 
@@ -178,7 +178,7 @@ namespace Pharmatechnik.Language.Gd {
             //Umlaute Variante1
             foldersCloned = new List<string>(subFolders);
             for (var i = 0; i < foldersCloned.Count; i++) {
-                foldersCloned[i] = Converter.ConvertUmlaute(foldersCloned[i]);
+                foldersCloned[i] = UmlautConverter.ConvertUmlaute(foldersCloned[i]);
 
             }
 
@@ -187,7 +187,7 @@ namespace Pharmatechnik.Language.Gd {
             //Umlaute Variante2
             foldersCloned = new List<string>(subFolders);
             for (var i = 0; i < foldersCloned.Count; i++) {
-                foldersCloned[i] = Converter.ReverseUmlaute(foldersCloned[i]);
+                foldersCloned[i] = UmlautConverter.ReverseUmlaute(foldersCloned[i]);
 
             }
 
@@ -199,19 +199,19 @@ namespace Pharmatechnik.Language.Gd {
             AddSuggestions(foldersCloned, results, startDir);
 
             //erste zwei mit '.' verbinden
-            AddSuggestionsViaCombining(2, subFolders, results, startDir);
+            AddSuggestionsViaCombining(2, subFolders, results, startDir, xtplusprefix: false);
             //"xtplus." als prefix
-            AddSuggestionsViaCombining(2, subFolders, results, startDir, true);
+            AddSuggestionsViaCombining(2, subFolders, results, startDir, xtplusprefix: true);
 
             //erste drei mit '.' verbinden
-            AddSuggestionsViaCombining(3, subFolders, results, startDir);
+            AddSuggestionsViaCombining(3, subFolders, results, startDir, xtplusprefix: false);
             //"xtplus." als prefix
-            AddSuggestionsViaCombining(3, subFolders, results, startDir, true);
+            AddSuggestionsViaCombining(3, subFolders, results, startDir, xtplusprefix: true);
 
             //erste vier mit '.' verbinden
-            AddSuggestionsViaCombining(4, subFolders, results, startDir);
+            AddSuggestionsViaCombining(4, subFolders, results, startDir, xtplusprefix: false);
             //"xtplus." als prefix
-            AddSuggestionsViaCombining(4, subFolders, results, startDir, true);
+            AddSuggestionsViaCombining(4, subFolders, results, startDir, xtplusprefix: true);
 
             return results;
         }
@@ -219,7 +219,8 @@ namespace Pharmatechnik.Language.Gd {
         static void AddSuggestionsViaCombining(
             int combine,
             List<string> subFolders,
-            List<string> results, string startDir, bool xtplusprefix) {
+            List<string> results, string startDir,
+            bool xtplusprefix) {
 
             if (subFolders.Count >= combine) {
                 var foldersCloned  = new List<string>();
@@ -241,10 +242,6 @@ namespace Pharmatechnik.Language.Gd {
 
                 AddSuggestions(foldersCloned, results, startDir);
             }
-        }
-
-        static void AddSuggestionsViaCombining(int combine, List<string> subFolders, List<string> results, string startDir) {
-            AddSuggestionsViaCombining(combine, subFolders, results, startDir, false);
         }
 
         static void AddSuggestions(List<string> subFolders, List<string> results, string startDir) {
@@ -274,6 +271,18 @@ namespace Pharmatechnik.Language.Gd {
 
         static string DirectorySuggestion(string newDir, List<string> subFolders) {
             return subFolders.Aggregate(newDir, Path.Combine);
+        }
+
+    }
+
+    static class UmlautConverter {
+
+        public static string ConvertUmlaute(string text) {
+            return text.Replace("ä", "ae").Replace("ü", "ue").Replace("ö", "oe").Replace("Ä", "Ae").Replace("Ü", "Ue").Replace("Ö", "Oe");
+        }
+
+        public static string ReverseUmlaute(string text) {
+            return text.Replace("ae", "ä").Replace("ue", "ü").Replace("oe", "ö").Replace("Ae", "Ä").Replace("Ue", "Ü").Replace("Oe", "Ö");
         }
 
     }

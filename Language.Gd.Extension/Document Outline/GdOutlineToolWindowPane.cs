@@ -35,9 +35,10 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             BitmapImageMoniker = KnownMonikers.DocumentOutline;
             ToolBar            = new CommandID(PackageGuids.GdLanguagePackageCmdSetGuid, PackageIds.DocumentOutlineToolWindowToolbar);
 
-            _outlineControl                         =  new GdOutlineControl(textBlockBuilderService);
-            _outlineControl.IsVisibleChanged        += OnOutlineControlIsVisibleChanged;
-            _outlineControl.RequestNavigateToSource += OnRequestNavigateToSource;
+            _outlineControl                                    =  new GdOutlineControl(textBlockBuilderService);
+            _outlineControl.IsVisibleChanged                   += OnOutlineControlIsVisibleChanged;
+            _outlineControl.RequestNavigateToSource            += OnRequestNavigateToSource;
+            _outlineControl.RequestNavigateToSecondaryLocation += OnRequestNavigateToSecondaryLocation;
 
             _outlineController                          =  new GdOutlineController();
             _outlineController.RequestNavigateToOutline += OnRequestNavigateToOutline;
@@ -125,8 +126,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
             base.Dispose(disposing);
 
-            _outlineControl.IsVisibleChanged        -= OnOutlineControlIsVisibleChanged;
-            _outlineControl.RequestNavigateToSource -= OnRequestNavigateToSource;
+            _outlineControl.IsVisibleChanged                   -= OnOutlineControlIsVisibleChanged;
+            _outlineControl.RequestNavigateToSource            -= OnRequestNavigateToSource;
+            _outlineControl.RequestNavigateToSecondaryLocation -= OnRequestNavigateToSecondaryLocation;
 
             _outlineController.RequestNavigateToOutline -= OnRequestNavigateToOutline;
             _outlineController.OutlineDataChanged       -= OnOutlineDataChanged;
@@ -151,6 +153,11 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         void OnRequestNavigateToSource(object sender, RequestNavigateToEventArgs e) {
             _outlineController.NavigateToSource(e.OutlineElement);
+        }
+
+        void OnRequestNavigateToSecondaryLocation(object sender, RequestNavigateToEventArgs e) {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            GdLanguagePackage.GoToLocationInPreviewTab(e.OutlineElement.SecondaryNavigationLocation);
         }
 
         void OnRequestNavigateToOutline(object sender, NavigateToOutlineEventArgs e) {
