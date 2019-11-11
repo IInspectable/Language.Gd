@@ -87,8 +87,7 @@ namespace Pharmatechnik.Language.Gd.Extension {
 
         static readonly Logger Logger = Logger.Create<GdLanguagePackage>();
 
-        [CanBeNull]
-        private static GdLanguagePackage _instance;
+        [CanBeNull] private static GdLanguagePackage _instance;
 
         /// <summary>
         /// Initialization of the package; this method is called right after the package is sited, so this is the place
@@ -245,9 +244,9 @@ namespace Pharmatechnik.Language.Gd.Extension {
         }
 
         [CanBeNull]
-        public static IWpfTextView GoToLocationInPreviewTab(Location location) {
+        public static IWpfTextView GoToLocation(Location location, bool openInPreviewTab = false) {
 
-            using (Logger.LogBlock(nameof(GoToLocationInPreviewTab))) {
+            using (Logger.LogBlock(nameof(GoToLocation))) {
 
                 ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -257,7 +256,11 @@ namespace Pharmatechnik.Language.Gd.Extension {
 
                 IWpfTextView wpfTextView = null;
                 if (location.FilePath != null) {
-                    wpfTextView = OpenFileInPreviewTab(location.FilePath);
+                    if (openInPreviewTab) {
+                        wpfTextView = OpenFileInPreviewTab(location.FilePath);
+                    } else {
+                        wpfTextView = OpenFile(location.FilePath);
+                    }
                 }
 
                 if (wpfTextView == null) {

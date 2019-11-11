@@ -157,7 +157,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         void OnRequestNavigateToSecondaryLocation(object sender, RequestNavigateToEventArgs e) {
             ThreadHelper.ThrowIfNotOnUIThread();
-            GdLanguagePackage.GoToLocationInPreviewTab(e.OutlineElement.SecondaryNavigationLocation);
+            GdLanguagePackage.GoToLocation(e.OutlineElement.SecondaryNavigationLocation);
         }
 
         void OnRequestNavigateToOutline(object sender, NavigateToOutlineEventArgs e) {
