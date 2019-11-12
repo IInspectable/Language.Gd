@@ -20,22 +20,6 @@
         d:DesignWidth="50">
     <StackPanel Orientation="Horizontal" x:Name="LayoutPanel">
 
-        <Button x:Name="GuiPreviewButton"
-                Padding="0"
-                Click="OnGuiPreviewClick"
-                BorderBrush="Transparent"
-                Background="{DynamicResource {x:Static platformUi:EnvironmentColors.ScrollBarBackgroundBrushKey}}">
-
-            <imaging:CrispImage
-                Margin="1"
-                VerticalAlignment="Center"
-                HorizontalAlignment="Center"
-                StretchDirection="Both"
-                Stretch="UniformToFill"
-                Height="13"
-                Moniker="{x:Static catalog:KnownMonikers.SwitchToPreview}" />
-        </Button>
-
         <Button x:Name="ShowGuiOutlineButton"
                 Padding="0"
                 Click="OnShowGuiOutlineClick"
@@ -50,6 +34,22 @@
                 Stretch="UniformToFill"
                 Height="13"
                 Moniker="{x:Static catalog:KnownMonikers.DocumentOutline}" />
+        </Button>
+
+        <Button x:Name="GuiPreviewButton"
+                Padding="0"
+                Click="OnGuiPreviewClick"
+                BorderBrush="Transparent"
+                Background="{DynamicResource {x:Static platformUi:EnvironmentColors.ScrollBarBackgroundBrushKey}}">
+
+            <imaging:CrispImage
+                Margin="1"
+                VerticalAlignment="Center"
+                HorizontalAlignment="Center"
+                StretchDirection="Both"
+                Stretch="UniformToFill"
+                Height="13"
+                Moniker="{x:Static catalog:KnownMonikers.SwitchToPreview}" />
         </Button>
 
         <Button x:Name="GenerateGuiButton"
