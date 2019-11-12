@@ -20,6 +20,7 @@
 
         // Misc
         Column,
+        ContextMenu,
 
         // Control Derivate
         UnknownControl,

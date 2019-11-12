@@ -68,6 +68,8 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
 
         protected internal override OutlineElement VisitControlSectionSyntax(ControlSectionSyntax controlSection) {
 
+            var contextMenuOutlines = Detailed ? CreateContextMenuOutlines(controlSection.ContextMenuSection) : ImmutableArray<OutlineElement>.Empty;
+
             if (Detailed && controlSection.SectionBegin?.ControlTypeToken.GetText() == "Table") {
 
                 // Spaltendefinitionen als Kinder der Tabelle
@@ -119,6 +121,7 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
 
                     }
 
+                    columnOutlines.AddRange(contextMenuOutlines);
                     return CreateSectionElement(controlSection, columnOutlines.ToImmutableArray());
                 }
 
@@ -149,7 +152,12 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
 
             }
 
-            return base.VisitControlSectionSyntax(controlSection);
+            if (contextMenuOutlines.Any()) {
+                return CreateSectionElement(controlSection, contextMenuOutlines);
+            } else {
+                return base.VisitControlSectionSyntax(controlSection);
+            }
+
         }
 
         protected internal override OutlineElement VisitBarManagerSectionSyntax(BarManagerSectionSyntax barManagerSection) {
@@ -176,6 +184,61 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
 
         protected internal override OutlineElement VisitMultiViewSectionSyntax(MultiViewSectionSyntax multiViewSection) {
             return CreateSectionWithChildElements(multiViewSection, multiViewSection.UserControlsSection?.ControlSections);
+        }
+
+        ImmutableArray<OutlineElement> CreateContextMenuOutlines(ContextMenuSectionSyntax contextMenuSection) {
+
+            var contextMenuOutlines = new List<OutlineElement>();
+            if (contextMenuSection == null) {
+                return ImmutableArray<OutlineElement>.Empty;
+            }
+
+            var columnInfos = contextMenuSection.Properties.OfType<PropertyAssignSyntax>().Where(
+                                                     pa => pa.LvalueExpression?.MemberAccessExpression is ElementAccessExpressionSyntax mae &&
+                                                           mae.IdentifierName?.GetText() == "ToolItems"                                     &&
+                                                           pa.LvalueExpression?.LvalueExpressionContinuation?.LvalueExpression?.MemberAccessExpression is SimpleMemberAccessExpressionSyntax)
+                                                .Select(pa => {
+                                                         var mae = (ElementAccessExpressionSyntax) pa.LvalueExpression?.MemberAccessExpression;
+                                                         var sae = ((SimpleMemberAccessExpressionSyntax) pa.LvalueExpression?.LvalueExpressionContinuation?.LvalueExpression?.MemberAccessExpression);
+                                                         return new {
+                                                             Name       = sae.IdentifierName?.GetText(),
+                                                             Value      = pa.Rvalue?.GetText() ?? String.Empty,
+                                                             Index      = mae.IntegerToken.GetText(),
+                                                             Extent     = pa.Extent,
+                                                             FullExtent = pa.FullExtent
+                                                         };
+                                                     }
+                                                 ).GroupBy(item => item.Index);
+
+            foreach (var column in columnInfos) {
+
+                var keyProperty     = column.FirstOrDefault(ci => ci.Name == "Key");
+                var captionProperty = column.FirstOrDefault(ci => ci.Name == "Caption");
+
+                if (keyProperty != null) {
+
+                    var displayParts = new List<ClassifiedText>(2);
+
+                    var caption = captionProperty?.Value;
+                    if (!caption.IsNullOrWhiteSpace()) {
+                        displayParts.Add(new ClassifiedText(caption, GdClassification.StringLiteral));
+                        displayParts.Add(WhiteSpace);
+                    }
+
+                    displayParts.Add(new ClassifiedText(keyProperty.Value.Trim('"'), GdClassification.Text));
+
+                    var extent          = keyProperty.FullExtent.MergeWithAdjacent(column.Select(c => c.FullExtent).ToList());
+                    var navigationPoint = keyProperty.Extent.Start;
+
+                    contextMenuOutlines.Add(new OutlineElement(displayParts: displayParts.ToImmutableArray(),
+                                                               extent: extent,
+                                                               navigationPoint: navigationPoint,
+                                                               glyph: Glyph.ContextMenu));
+                }
+
+            }
+
+            return contextMenuOutlines.ToImmutableArray();
         }
 
         [CanBeNull]
