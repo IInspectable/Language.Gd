@@ -51,6 +51,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Imaging {
             {Glyph.Scanner, KnownMonikers.InfraredDevice},
             {Glyph.Table, KnownMonikers.Table},
             {Glyph.Column, KnownMonikers.Column},
+            {Glyph.HiddenColumn, KnownMonikers.KeyColumn},
             {Glyph.ContextMenu, KnownMonikers.ContextMenu},
             {Glyph.Textbox, KnownMonikers.TextBox},
             {Glyph.TimeTextbox, KnownMonikers.TimePicker},
@@ -59,7 +60,6 @@ namespace Pharmatechnik.Language.Gd.Extension.Imaging {
             {Glyph.WebBrowser, KnownMonikers.WebBrowserItem},
             {Glyph.Property, KnownMonikers.Property},
             {Glyph.Event, KnownMonikers.EventPublic},
-            
 
         }.ToImmutableDictionary();
 

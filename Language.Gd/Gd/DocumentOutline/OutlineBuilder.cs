@@ -97,10 +97,14 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
 
                         var keyProperty     = column.FirstOrDefault(ci => ci.Name == "Key");
                         var captionProperty = column.FirstOrDefault(ci => ci.Name == "Caption");
+                        var hiddenProperty  = column.FirstOrDefault(ci => ci.Name == "Hidden");
 
                         if (keyProperty != null) {
 
                             var displayParts = new List<ClassifiedText>(2);
+
+                            var hidden = hiddenProperty?.Value?.Trim('"').ToLowerInvariant() == "true";
+                            var glyph  = hidden ? Glyph.HiddenColumn : Glyph.Column;
 
                             var caption = captionProperty?.Value;
                             if (!caption.IsNullOrWhiteSpace()) {
@@ -116,7 +120,7 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
                             columnOutlines.Add(new OutlineElement(displayParts: displayParts.ToImmutableArray(),
                                                                   extent: extent,
                                                                   navigationPoint: navigationPoint,
-                                                                  glyph: Glyph.Column));
+                                                                  glyph: glyph));
                         }
 
                     }
