@@ -30,6 +30,11 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VisualSudio.Interop", "Visu
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Language.Gd.Extension.Tests", "Language.Gd.Extension.Tests\Language.Gd.Extension.Tests.csproj", "{C21B9D4B-9669-40B4-B798-6F37C411E993}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{20805BEF-2E88-4047-9390-A3444D082C4C}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
