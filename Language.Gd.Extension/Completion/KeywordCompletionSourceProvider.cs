@@ -10,7 +10,7 @@ using Microsoft.VisualStudio.Language.Intellisense.AsyncCompletion;
 
 namespace Pharmatechnik.Language.Gd.Extension.Completion {
 
-    [Export(typeof(IAsyncCompletionSourceProvider))]
+  //  [Export(typeof(IAsyncCompletionSourceProvider))]
     [ContentType(GdLanguageContentDefinitions.ContentType)]
     [Name(nameof(KeywordCompletionSourceProvider))]
     class KeywordCompletionSourceProvider: IAsyncCompletionSourceProvider {

@@ -126,7 +126,8 @@ namespace Pharmatechnik.Language.Gd {
 
         public SyntaxToken FindToken(int position) {
 
-            if (TryGetEofAt(out var eof)) {
+            var eof = default(SyntaxToken);
+            if (TryGetEofAt(out eof)) {
                 return eof;
             }
 
