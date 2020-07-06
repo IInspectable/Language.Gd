@@ -2,8 +2,8 @@
 
 ## Gui Outline
 
-![Aha](_art\Gui-Outline.png)
+![Gui-Outline](_art\Gui-Outline.png?raw=true)
 
 ## Quick Access Toolbar
 
-![Aha ](_art\qat.png)
+![Quick Access Toolbar](_art\qat.png?raw=true)
