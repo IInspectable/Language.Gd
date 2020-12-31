@@ -3,7 +3,6 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -11,6 +10,7 @@ using System.Windows.Input;
 using JetBrains.Annotations;
 
 using Microsoft.VisualStudio.Shell;
+using Microsoft.VisualStudio.Text.PatternMatching;
 
 using Pharmatechnik.Language.Gd.DocumentOutline;
 using Pharmatechnik.Language.Gd.Extension.Classification;
@@ -84,11 +84,11 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         }
 
-        internal void ShowOutline([CanBeNull] OutlineData outlineData, [CanBeNull] Regex searchPattern) {
+        internal void ShowOutline([CanBeNull] OutlineData outlineData, [CanBeNull] IPatternMatcher patternMatcher) {
 
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            AddOutlineElement(null, outlineData?.OutlineElement, searchPattern);
+            AddOutlineElement(null, outlineData?.OutlineElement, patternMatcher);
 
             if (TreeView.Items.Count == 0) {
                 TreeView.Visibility  = Visibility.Collapsed;
@@ -111,17 +111,17 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         void ExpandCollapseItems(bool expand) {
             foreach (var item in TreeView.Items.OfType<TreeViewItem>()) {
-                ExpandCollapseItems(item);
+                ExpandCollapseItemsImpl(item);
             }
 
-            void ExpandCollapseItems(TreeViewItem item) {
+            void ExpandCollapseItemsImpl(TreeViewItem item) {
                 item.IsExpanded = expand;
 
                 foreach (TreeViewItem childItem in item.Items) {
                     childItem.IsExpanded = expand;
 
                     if (childItem.HasItems)
-                        ExpandCollapseItems(childItem);
+                        ExpandCollapseItemsImpl(childItem);
                 }
             }
         }
@@ -143,7 +143,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             }
         }
 
-        private void AddOutlineElement(TreeViewItem parent, [CanBeNull] OutlineElement outline, [CanBeNull] Regex searchPattern) {
+        private void AddOutlineElement(TreeViewItem parent, [CanBeNull] OutlineElement outline, [CanBeNull] IPatternMatcher patternMatcher) {
 
             ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -163,7 +163,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
                     CrispImage = {
                         Moniker = GdImageMonikers.GetMoniker(outline.Glyph)
                     },
-                    TextContent = {Content = MakeItemContent(outline, searchPattern, out var hasMatch)}
+                    TextContent = {Content = MakeItemContent(outline, patternMatcher, out var hasMatch)}
                 },
                 Tag        = outline,
                 IsExpanded = true,
@@ -172,10 +172,10 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
             _flattenTree[outline] = item;
 
             foreach (var child in outline.Children) {
-                AddOutlineElement(item, child, searchPattern);
+                AddOutlineElement(item, child, patternMatcher);
             }
 
-            var isMatch = searchPattern == null || hasMatch;
+            var isMatch = patternMatcher == null || hasMatch;
 
             if (isMatch || item.Items.Count > 0) {
 
@@ -192,9 +192,9 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         }
 
-        private TextBlock MakeItemContent(OutlineElement outline, [CanBeNull] Regex searchPattern, out bool hasMatch) {
+        private TextBlock MakeItemContent(OutlineElement outline, [CanBeNull] IPatternMatcher patternMatcher, out bool hasMatch) {
             ThreadHelper.ThrowIfNotOnUIThread();
-            return _textBlockBuilderService.ToTextBlock(outline.DisplayParts, searchPattern, out hasMatch);
+            return _textBlockBuilderService.ToTextBlock(outline.DisplayParts, patternMatcher, out hasMatch);
         }
 
         readonly ScopedProperty<bool> _isHandlingOnItemRequestBringIntoView = ScopedProperty.Boolean();

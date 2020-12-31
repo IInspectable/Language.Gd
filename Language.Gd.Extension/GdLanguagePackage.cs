@@ -24,6 +24,7 @@ using Microsoft.VisualStudio.Text.Editor;
 using Microsoft.VisualStudio.LanguageServices;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text.Outlining;
+using Microsoft.VisualStudio.Text.PatternMatching;
 using Microsoft.VisualStudio.TextManager.Interop;
 
 using Pharmatechnik.Language.Gd.Extension.Classification;
@@ -367,7 +368,12 @@ namespace Pharmatechnik.Language.Gd.Extension {
                 var cmp = await GetServiceAsync(typeof(SComponentModel)) as IComponentModel;
 
                 var tbbs = cmp?.GetService<TextBlockBuilderService>();
-                return tbbs;
+                var pmf  = cmp?.GetService<IPatternMatcherFactory>();
+
+                return new GdOutlineToolWindowPaneInitParams {
+                    TextBlockBuilderService = tbbs, 
+                    PatternMatcherFactory   = pmf
+                };
             }
 
             return null;

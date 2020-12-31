@@ -2,8 +2,8 @@
 
 using System;
 using System.ComponentModel.Design;
+using System.Globalization;
 using System.Runtime.InteropServices;
-using System.Text.RegularExpressions;
 
 using JetBrains.Annotations;
 
@@ -12,9 +12,9 @@ using Microsoft.VisualStudio.Imaging;
 using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Text.PatternMatching;
 
 using Pharmatechnik.Language.Gd.Extension.Classification;
-using Pharmatechnik.Language.Gd.Extension.Common;
 
 using Util = Microsoft.Internal.VisualStudio.PlatformUI.Utilities;
 
@@ -22,20 +22,30 @@ using Util = Microsoft.Internal.VisualStudio.PlatformUI.Utilities;
 
 namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
+    public struct GdOutlineToolWindowPaneInitParams {
+
+        public IPatternMatcherFactory  PatternMatcherFactory;
+        public TextBlockBuilderService TextBlockBuilderService;
+
+    }
+
     [Guid(WindowGuidString)]
     public class GdOutlineToolWindowPane: ToolWindowPane {
 
         public const string WindowGuidString = "7e927358-0b4d-4953-b2bb-48ef216eb8cb";
 
-        private readonly GdOutlineControl    _outlineControl;
-        private readonly GdOutlineController _outlineController;
+        private readonly GdOutlineControl       _outlineControl;
+        private readonly GdOutlineController    _outlineController;
+        private readonly IPatternMatcherFactory _patternMatcherFactory;
 
-        public GdOutlineToolWindowPane(TextBlockBuilderService textBlockBuilderService): base(null) {
+        public GdOutlineToolWindowPane(GdOutlineToolWindowPaneInitParams initParams): base(null) {
 
             BitmapImageMoniker = KnownMonikers.DocumentOutline;
             ToolBar            = new CommandID(PackageGuids.GdLanguagePackageCmdSetGuid, PackageIds.DocumentOutlineToolWindowToolbar);
 
-            _outlineControl                                    =  new GdOutlineControl(textBlockBuilderService);
+            _patternMatcherFactory = initParams.PatternMatcherFactory;
+
+            _outlineControl                                    =  new GdOutlineControl(initParams.TextBlockBuilderService);
             _outlineControl.IsVisibleChanged                   += OnOutlineControlIsVisibleChanged;
             _outlineControl.RequestNavigateToSource            += OnRequestNavigateToSource;
             _outlineControl.RequestNavigateToSecondaryLocation += OnRequestNavigateToSecondaryLocation;
@@ -187,21 +197,24 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
             ThreadHelper.ThrowIfNotOnUIThread();
 
-            var searchPattern = BuildSearchPattern(e);
+            var patternMatcher = BuildPatternMatcher(e);
 
-            _outlineControl.ShowOutline(e.OutlineData, searchPattern);
+            _outlineControl.ShowOutline(e.OutlineData, patternMatcher);
 
             UpdateSearchBox();
             UpdateCaption(e.OutlineData);
         }
 
-        private static Regex BuildSearchPattern(OutlineDataEventArgs e) {
+        [CanBeNull]
+        private IPatternMatcher BuildPatternMatcher(OutlineDataEventArgs e) {
 
-            // TODO Hier könnte man evtl. Syntaxfehler abfangen und als Infobar anzeigen
-            var searchPattern = RegexUtil.BuildSearchPattern(searchString: e.SearchString,
-                                                             matchCase: e.SearchOptions.MatchCase,
-                                                             useRegularExpressions: e.SearchOptions.UseRegularExpressions);
-            return searchPattern;
+            if (String.IsNullOrEmpty(e.SearchString)) {
+                return null;
+            }
+
+            return _patternMatcherFactory.CreatePatternMatcher(
+                e.SearchString,
+                new PatternMatcherCreationOptions(CultureInfo.CurrentCulture, PatternMatcherCreationFlags.IncludeMatchedSpans));
         }
 
         public const string DefaultCaption = "Gui Outline";

@@ -4,7 +4,6 @@ using System.Collections.Generic;
 using System.Collections.Immutable;
 using System.ComponentModel.Composition;
 using System.Linq;
-using System.Text.RegularExpressions;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Controls;
@@ -16,6 +15,7 @@ using Microsoft.VisualStudio.PlatformUI;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
 using Microsoft.VisualStudio.Text.Classification;
+using Microsoft.VisualStudio.Text.PatternMatching;
 
 using Pharmatechnik.Language.Gd.Extension.Common;
 
@@ -48,7 +48,13 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
         }
 
         [CanBeNull]
-        public TextBlock ToTextBlock(IReadOnlyCollection<ClassifiedText> parts, [CanBeNull] Regex searchPattern, out bool hasMatch) {
+        public TextBlock ToTextBlock(ClassifiedText part, [CanBeNull] IPatternMatcher patternMatcher, out bool hasMatch) {
+            ThreadHelper.ThrowIfNotOnUIThread();
+            return ToTextBlock(new[] {part}, patternMatcher, out hasMatch);
+        }
+
+        [CanBeNull]
+        public TextBlock ToTextBlock(IReadOnlyCollection<ClassifiedText> parts, [CanBeNull] IPatternMatcher patternMatcher, out bool hasMatch) {
 
             ThreadHelper.ThrowIfNotOnUIThread();
 
@@ -58,10 +64,8 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
                 return null;
             }
 
-            var runInfos  = ToRunInfo(parts, searchPattern, out hasMatch);
-            var textBlock = new TextBlock {TextWrapping = TextWrapping.Wrap};
-
-            textBlock.SetDefaultTextProperties(ClassificationFormatMap);
+            var runInfos  = ToRunInfo(parts, patternMatcher, out hasMatch);
+            var textBlock = new TextBlock {TextWrapping = TextWrapping.Wrap, VerticalAlignment = VerticalAlignment.Center};
 
             var highlightedSpanBrush = hasMatch ? GetHighlightedSpanBrush() : Brushes.Transparent;
             foreach (var runInfo in runInfos) {
@@ -72,31 +76,35 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
             return textBlock;
         }
 
-        IList<RunInfo> ToRunInfo(IReadOnlyCollection<ClassifiedText> parts, [CanBeNull] Regex searchPattern, out bool hasMatches) {
-            hasMatches = false;
+        IList<RunInfo> ToRunInfo(IReadOnlyCollection<ClassifiedText> parts, [CanBeNull] IPatternMatcher patternMatcher, out bool hasMatch) {
+            hasMatch = false;
 
-            if (searchPattern == null) {
+            if (patternMatcher == null) {
                 return parts.Select(part => new RunInfo(part, isMatch: false)).ToList();
             }
 
             var runInfos = new List<RunInfo>();
             foreach (var part in parts) {
 
-                var matches = searchPattern.Matches(part.Text);
-                if (matches.Count > 0) {
+                var patternMatch = patternMatcher.TryMatch(part.Text);
+                
+                if (patternMatch != null && patternMatch.Value.MatchedSpans.Length > 0) {
+
+                    var matchedSpans = patternMatch.Value.MatchedSpans;
 
                     var currentIndex = 0;
-                    foreach (Match match in matches) {
+                    foreach (var match in matchedSpans) {
 
                         // Der Text vor dem Treffertext
-                        if (match.Index > currentIndex) {
-                            var text = part.Text.Substring(currentIndex, length: match.Index - currentIndex);
+                        if (match.Start > currentIndex) {
+                            var text = part.Text.Substring(currentIndex, length: match.Start - currentIndex);
                             runInfos.Add(new RunInfo(new ClassifiedText(text, part.Classification), isMatch: false));
                         }
 
                         // Der Treffertext
-                        runInfos.Add(new RunInfo(new ClassifiedText(match.Value, part.Classification), isMatch: true));
-                        currentIndex = match.Index + match.Length;
+                        var matchtext = part.Text.Substring(match.Start, match.Length);
+                        runInfos.Add(new RunInfo(new ClassifiedText(matchtext, part.Classification), isMatch: true));
+                        currentIndex = match.End;
 
                     }
 
@@ -106,7 +114,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
                         runInfos.Add(new RunInfo(new ClassifiedText(text, part.Classification), isMatch: false));
                     }
 
-                    hasMatches = true;
+                    hasMatch = true;
                 } else {
                     runInfos.Add(new RunInfo(part, false));
                 }
@@ -142,7 +150,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Classification {
             return new SolidColorBrush(color);
         }
 
-        struct RunInfo {
+        readonly struct RunInfo {
 
             readonly ClassifiedText _classifiedText;
 

@@ -18,8 +18,8 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
         public GdOutlineToolWindowSearchOptions() {
 
             var list = new List<IVsWindowSearchOption> {
-                new WindowSearchBooleanOption(displayText: "Match case",              tooltip: "Match case",              getter: () => MatchCase,             setter: value => MatchCase = value),
-                new WindowSearchBooleanOption(displayText: "Use Regular Expressions", tooltip: "Use Regular Expressions", getter: () => UseRegularExpressions, setter: value => UseRegularExpressions = value)
+                //new WindowSearchBooleanOption(displayText: "Match case",              tooltip: "Match case",              getter: () => MatchCase,             setter: value => MatchCase = value),
+                //new WindowSearchBooleanOption(displayText: "Use Regular Expressions", tooltip: "Use Regular Expressions", getter: () => UseRegularExpressions, setter: value => UseRegularExpressions = value)
             };
 
             SearchOptionsEnum = new WindowSearchOptionEnumerator(list);
@@ -27,35 +27,35 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
         public IVsEnumWindowSearchOptions SearchOptionsEnum { get; }
 
-        private bool _matchCase;
+        //private bool _matchCase;
 
-        public bool MatchCase {
-            get => _matchCase;
-            set {
-                if (value == _matchCase) {
-                    return;
-                }
+        //public bool MatchCase {
+        //    get => _matchCase;
+        //    set {
+        //        if (value == _matchCase) {
+        //            return;
+        //        }
 
-                _matchCase = value;
+        //        _matchCase = value;
 
-                OnPropertyChanged(nameof(MatchCase));
-            }
-        }
+        //        OnPropertyChanged(nameof(MatchCase));
+        //    }
+        //}
 
-        private bool _useRegularExpressions;
+        //private bool _useRegularExpressions;
 
-        public bool UseRegularExpressions {
-            get => _useRegularExpressions;
-            set {
-                if (value == _useRegularExpressions) {
-                    return;
-                }
+        //public bool UseRegularExpressions {
+        //    get => _useRegularExpressions;
+        //    set {
+        //        if (value == _useRegularExpressions) {
+        //            return;
+        //        }
 
-                _useRegularExpressions = value;
+        //        _useRegularExpressions = value;
 
-                OnPropertyChanged(nameof(UseRegularExpressions));
-            }
-        }
+        //        OnPropertyChanged(nameof(UseRegularExpressions));
+        //    }
+        //}
 
         public event PropertyChangedEventHandler PropertyChanged;
 
