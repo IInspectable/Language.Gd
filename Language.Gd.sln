@@ -26,8 +26,6 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tool.GdSyntaxGenerator", "T
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Language.Gd.Extension", "Language.Gd.Extension\Language.Gd.Extension.csproj", "{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VisualSudio.Interop", "VisualSudio.Interop\VisualSudio.Interop.csproj", "{1FA03477-AC9E-4FCF-A068-A3ACCBC0F7EB}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Language.Gd.Extension.Tests", "Language.Gd.Extension.Tests\Language.Gd.Extension.Tests.csproj", "{C21B9D4B-9669-40B4-B798-6F37C411E993}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{20805BEF-2E88-4047-9390-A3444D082C4C}"
@@ -69,10 +67,6 @@ Global
 		{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}.Release|Any CPU.Build.0 = Release|Any CPU
-		{1FA03477-AC9E-4FCF-A068-A3ACCBC0F7EB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{1FA03477-AC9E-4FCF-A068-A3ACCBC0F7EB}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{1FA03477-AC9E-4FCF-A068-A3ACCBC0F7EB}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{1FA03477-AC9E-4FCF-A068-A3ACCBC0F7EB}.Release|Any CPU.Build.0 = Release|Any CPU
 		{C21B9D4B-9669-40B4-B798-6F37C411E993}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{C21B9D4B-9669-40B4-B798-6F37C411E993}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{C21B9D4B-9669-40B4-B798-6F37C411E993}.Release|Any CPU.ActiveCfg = Release|Any CPU

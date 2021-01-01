@@ -147,6 +147,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
         #region Workspace Management
 
         void OnWorkspaceRegistrationChanged(object sender, EventArgs e) {
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             DisconnectFromWorkspace();
 
@@ -156,6 +157,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
         }
 
         void ConnectToWorkspace([CanBeNull] Workspace workspace) {
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             DisconnectFromWorkspace();
 
@@ -179,6 +181,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
         }
 
         void OnWorkspaceChanged(object sender, WorkspaceChangeEventArgs args) {
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // We're getting an event for a workspace we already disconnected from
             if (args.NewSolution.Workspace != _workspace) {
@@ -201,6 +204,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
         #endregion
 
         int IVsDropdownBarClient.SetDropdownBar(IVsDropdownBar pDropdownBar) {
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             _dropdownBar = pDropdownBar;
 
@@ -350,6 +354,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
         }
 
         void OnTextViewGotAggregateFocus(object sender, EventArgs e) {
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             // Es kann keine Combobox mehr einen Fokus haben
             _focusedCombo = -1;
@@ -386,6 +391,8 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
         }
 
         void UpdateNavigationItems() {
+            ThreadHelper.ThrowIfNotOnUIThread();
+
             using (Logger.LogBlock(nameof(UpdateNavigationItems))) {
 
                 UpdateProjectItems();
@@ -401,6 +408,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
         const int MemberComboIndex  = 2;
 
         void UpdateProjectItems() {
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             _projectItems = NavigationBarProjectItemBuilder.Build(ParserService.SyntaxTreeAndSnapshot);
 

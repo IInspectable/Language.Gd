@@ -3,6 +3,7 @@
 using System.Collections.Immutable;
 
 using Microsoft.VisualStudio.Imaging;
+using Microsoft.VisualStudio.Shell;
 
 using Pharmatechnik.Language.Gd.Extension.Common;
 using Pharmatechnik.Language.Gd.Extension.ParserService;
@@ -15,6 +16,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
     static class NavigationBarProjectItemBuilder {
 
         public static ImmutableList<NavigationBarItem> Build(SyntaxTreeAndSnapshot codeGenerationUnitAndSnapshot) {
+            ThreadHelper.ThrowIfNotOnUIThread();
 
             if (codeGenerationUnitAndSnapshot == null) {
                 return ImmutableList<NavigationBarItem>.Empty;
