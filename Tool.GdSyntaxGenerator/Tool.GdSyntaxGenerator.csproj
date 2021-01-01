@@ -8,7 +8,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>Tool.GdSyntaxGenerator</RootNamespace>
     <AssemblyName>Tool.GdSyntaxGenerator</AssemblyName>
-    <LangVersion>8</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ApplicationIcon />
     <StartupObject />
@@ -67,7 +67,10 @@
     <ProjectReference Include="..\Language.Core\Language.Core.csproj" />
   </ItemGroup>
 
- 
   <Import Project="CustomBuild.targets" />
+
+  <ItemGroup>
+    <Compile Include="..\_build\CompilerServices.cs" Link="CompilerServices.cs" />
+  </ItemGroup>
 
 </Project>

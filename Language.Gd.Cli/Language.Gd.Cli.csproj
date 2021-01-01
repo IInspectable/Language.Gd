@@ -8,7 +8,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>Pharmatechnik.Language.Gd.Cli</RootNamespace>
     <AssemblyName>gd</AssemblyName>
-    <LangVersion>8</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
     <ApplicationIcon />
     <StartupObject />
@@ -25,5 +25,9 @@
   </ItemGroup>
 
   <Import Project="CustomBuild.targets"/>
+
+  <ItemGroup>
+    <Compile Include="..\_build\CompilerServices.cs" Link="CompilerServices.cs" />
+  </ItemGroup>
 
 </Project>

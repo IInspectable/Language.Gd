@@ -8,7 +8,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <RootNamespace>Pharmatechnik.Language.Gd.Tests</RootNamespace>
     <AssemblyName>Pharmatechnik.Language.Gd.Tests</AssemblyName>
-    <LangVersion>8</LangVersion>
+    <LangVersion>9.0</LangVersion>
     <AppendTargetFrameworkToOutputPath>false</AppendTargetFrameworkToOutputPath>
   </PropertyGroup>
 
@@ -27,5 +27,9 @@
   </ItemGroup>
 
   <Import Project="CustomBuild.targets"/>
+
+  <ItemGroup>
+    <Compile Include="..\_build\CompilerServices.cs" Link="CompilerServices.cs" />
+  </ItemGroup>
 
 </Project>
