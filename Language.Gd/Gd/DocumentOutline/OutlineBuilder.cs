@@ -312,8 +312,7 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
         IReadOnlyCollection<ClassifiedText> TryGetPrefixParts(SyntaxNode node) {
 
             IReadOnlyCollection<ClassifiedText> result = null;
-            if (node is ControlSectionBeginSyntax controlBeginSection &&
-                controlBeginSection.Parent is ControlSectionSyntax controlSection) {
+            if (node is ControlSectionBeginSyntax {Parent: ControlSectionSyntax controlSection} controlBeginSection) {
 
                 // TODO: Entweder via Visitor abfrühstücken, oder per Semantic Model
                 var hotkeysCandidate = controlBeginSection.ControlTypeToken.GetText() == "DynamicFunctionButton" ||

@@ -71,7 +71,7 @@ namespace Pharmatechnik.Language {
         }
 
         public string ToString(DiagnosticFormatter formatter) {
-            formatter = formatter ?? DiagnosticFormatter.Instance;
+            formatter ??= DiagnosticFormatter.Instance;
             return formatter.Format(this);
         }
 

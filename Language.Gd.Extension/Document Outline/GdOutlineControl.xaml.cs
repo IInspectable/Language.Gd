@@ -207,8 +207,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
             using (_isHandlingOnItemRequestBringIntoView.Enter()) {
 
-                if (sender is TreeViewItem tvi &&
-                    tvi.Header is OutlineItemControl oic) {
+                if (sender is TreeViewItem {Header: OutlineItemControl oic} tvi) {
 
                     tvi.UpdateLayout();
                     // See: https://stackoverflow.com/questions/3225940/prevent-automatic-horizontal-scroll-in-treeview/34269542#42238409

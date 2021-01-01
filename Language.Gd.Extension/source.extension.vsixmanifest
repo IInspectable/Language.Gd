@@ -1,7 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011" xmlns:d="http://schemas.microsoft.com/developer/vsx-schema-design/2011">
   <Metadata>
-    <Identity Id="GDHighLighter..9155d4e6-f55c-421b-9013-e8b2cf33726f" Version="2.0.100" Language="en-US" Publisher="Dipl.-Ing. Maximilian Hänel" />
+    <Identity Id="GDHighLighter..9155d4e6-f55c-421b-9013-e8b2cf33726f" Version="2.0.101" Language="en-US" Publisher="Dipl.-Ing. Maximilian Hänel" />
     <DisplayName>GD Language Extensions</DisplayName>
     <Description xml:space="preserve">Support for the Pharmatechnik Gui Description Language like syntax highlighting and semantic analysis. </Description>
     <MoreInfo>https://github.com/IInspectable/Language.Gd</MoreInfo>

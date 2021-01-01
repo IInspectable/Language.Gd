@@ -8,7 +8,7 @@ namespace Pharmatechnik.Language {
             base(displayEndLocations: true, workingDirectory: null) {
         }
 
-        public new static readonly DiagnosticFormatter Instance = new UnitTestDiagnosticFormatter();
+        public static new readonly DiagnosticFormatter Instance = new UnitTestDiagnosticFormatter();
 
         public static String LinePrefix => "//==>>";
 

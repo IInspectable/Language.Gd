@@ -8,13 +8,13 @@ namespace Pharmatechnik.Language.Gd {
 
     public class ReferenceFinder {
 
-        List<string> _refs = new List<string>();
+        readonly List<string> _refs = new();
 
         public IEnumerable<string> ErrorRefs {
             get { return _errorRefs; }
         }
 
-        List<string> _errorRefs = new List<string>();
+        readonly List<string> _errorRefs = new();
 
         public IEnumerable<string> References {
             get { return _refs; }
@@ -31,7 +31,7 @@ namespace Pharmatechnik.Language.Gd {
 
         private void Parse() {
 
-            // TODO Hier die Refeences auslesen.. Idealerweise über das Model, nicht den Syntaxbaum...
+            // TODO Hier die References auslesen.. Idealerweise über das Model, nicht den Syntaxbaum...
             var refs = _desc.DescendantNodes().OfType<ControlSectionSyntax>().Where(cs => cs.ControlSectionBegin?.ControlTypeToken.GetText() == "UserControlReference")
                             .Select(cs => new {TypeFullName = "Foo"});
 

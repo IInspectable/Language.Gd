@@ -1,7 +1,8 @@
-﻿using System;
+﻿#region Using Directives
+
+using System;
 using System.Collections;
 using System.Collections.Generic;
-#region Using Directives
 
 using Pharmatechnik.Language.Gd.Internal;
 using Pharmatechnik.Language.Text;
@@ -10,7 +11,7 @@ using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd {
 
-    public struct SyntaxTriviaList: IReadOnlyList<SyntaxTrivia> {
+    public readonly struct SyntaxTriviaList: IReadOnlyList<SyntaxTrivia> {
 
         private readonly SyntaxToken _token;
         private readonly Slot        _slot;

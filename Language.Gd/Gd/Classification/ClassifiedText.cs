@@ -4,7 +4,7 @@ using JetBrains.Annotations;
 
 namespace Pharmatechnik.Language.Gd {
 
-    public struct ClassifiedText: IEquatable<ClassifiedText> {
+    public readonly struct ClassifiedText: IEquatable<ClassifiedText> {
 
         readonly string _text;
 
@@ -14,7 +14,7 @@ namespace Pharmatechnik.Language.Gd {
 
         }
 
-        public ClassifiedText WithClassification(GdClassification classification) => new ClassifiedText(Text, classification);
+        public ClassifiedText WithClassification(GdClassification classification) => new(Text, classification);
 
         [NotNull]
         public string Text => _text ?? String.Empty;

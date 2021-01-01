@@ -10,7 +10,7 @@ using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd {
 
-    public struct SyntaxList<TSyntax>: IReadOnlyList<TSyntax> where TSyntax : SyntaxNode {
+    public readonly struct SyntaxList<TSyntax>: IReadOnlyList<TSyntax> where TSyntax : SyntaxNode {
 
         private readonly SyntaxNode _node;
 
@@ -19,7 +19,7 @@ namespace Pharmatechnik.Language.Gd {
         }
 
         internal static SyntaxList<TSyntax> CreateList(SyntaxNode node) {
-            return new SyntaxList<TSyntax>(node);
+            return new(node);
         }
 
         public int Count => _node == null ? 0 : _node.IsList ? _node.SlotCount : 1;

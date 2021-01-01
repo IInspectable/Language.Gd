@@ -6,7 +6,7 @@ using System;
 
 namespace Pharmatechnik.Language.Gd.Extension.Utilities {
 
-    struct ProjectInfo {
+    readonly struct ProjectInfo {
 
         private readonly string _name;
 

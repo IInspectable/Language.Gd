@@ -504,7 +504,7 @@ namespace Pharmatechnik.Language.Gd.Extension.NavigationBar {
 
         IWpfTextView GetCurrentView() {
             _codeWindow.GetLastActiveView(out var lastActiveView);
-            lastActiveView = lastActiveView ?? _trackedViews.Keys.FirstOrDefault();
+            lastActiveView ??= _trackedViews.Keys.FirstOrDefault();
             return _editorAdaptersFactoryService.GetWpfTextView(lastActiveView);
         }
 

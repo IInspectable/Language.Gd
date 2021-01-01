@@ -22,10 +22,10 @@ using Util = Microsoft.Internal.VisualStudio.PlatformUI.Utilities;
 
 namespace Pharmatechnik.Language.Gd.Extension.Document_Outline {
 
-    public struct GdOutlineToolWindowPaneInitParams {
+    public record GdOutlineToolWindowPaneInitParams {
 
-        public IPatternMatcherFactory  PatternMatcherFactory;
-        public TextBlockBuilderService TextBlockBuilderService;
+        public IPatternMatcherFactory  PatternMatcherFactory   { get; init; }
+        public TextBlockBuilderService TextBlockBuilderService { get; init; }
 
     }
 

@@ -124,11 +124,11 @@ namespace Pharmatechnik.Language.Gd.Extension.ParserService {
             ParseResultChanged?.Invoke(this, e);
         }
 
-        struct BuildResultArgs {
+        readonly struct BuildResultArgs {
 
-            public ITextSnapshot Snapshot    { get; set; }
-            public SourceText    SourceText  { get; set; }
-            public ParseMethod   ParseMethod { get; set; }
+            public ITextSnapshot Snapshot    { get; init; }
+            public SourceText    SourceText  { get; init; }
+            public ParseMethod   ParseMethod { get; init; }
 
         }
 

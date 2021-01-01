@@ -58,7 +58,7 @@ namespace Pharmatechnik.Language.Gd {
                                         [CanBeNull] Func<GdGrammar, ParserRuleContext> treeCreator,
                                         CancellationToken cancellationToken) {
 
-            treeCreator = treeCreator ?? (p => p.guiDescription());
+            treeCreator ??= (p => p.guiDescription());
 
             var diagnostics = ImmutableArray.CreateBuilder<Diagnostic>();
 

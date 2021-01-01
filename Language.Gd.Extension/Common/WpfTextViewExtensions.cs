@@ -48,7 +48,7 @@ namespace Pharmatechnik.Language.Gd.Extension.Common {
         }
 
         public static void PrepareSizeToFit(this IWpfTextView view) {
-            view.LayoutChanged += (s, e) => {
+            view.LayoutChanged += (_, _) => {
                 ThreadHelper.JoinableTaskFactory.RunAsync(async () => {
 
                     await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync();

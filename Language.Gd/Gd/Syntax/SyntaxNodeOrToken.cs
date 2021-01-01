@@ -9,7 +9,7 @@ using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd {
 
-    public struct SyntaxNodeOrToken {
+    public readonly struct SyntaxNodeOrToken {
 
         [CanBeNull] readonly TokenSlot _tokenSlot;
 

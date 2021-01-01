@@ -4,7 +4,7 @@ using Pharmatechnik.Language.Text;
 
 namespace Pharmatechnik.Language.Gd {
 
-    public struct ClassifiedExtent: IEquatable<ClassifiedExtent> {
+    public readonly struct ClassifiedExtent: IEquatable<ClassifiedExtent> {
 
         public ClassifiedExtent(TextExtent extent, GdClassification classification) {
             Extent         = extent;
