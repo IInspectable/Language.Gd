@@ -70,65 +70,18 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
 
             var contextMenuOutlines = Detailed ? CreateContextMenuOutlines(controlSection.ContextMenuSection) : ImmutableArray<OutlineElement>.Empty;
 
+            if (Detailed && controlSection.SectionBegin?.ControlTypeToken.GetText() == "HeaderScroller") {
+                // Spaltendefinitionen als Kinder des HeaderScrollers
+                var columnOutlines = CollectColumnOutlines(controlSection);
+                columnOutlines.AddRange(contextMenuOutlines);
+                return CreateSectionElement(controlSection, columnOutlines.ToImmutableArray());
+            }
+
             if (Detailed && controlSection.SectionBegin?.ControlTypeToken.GetText() == "Table") {
-
                 // Spaltendefinitionen als Kinder der Tabelle
-                if (controlSection.PropertiesSection != null) {
-
-                    var columnInfos = controlSection.PropertiesSection.Properties.OfType<PropertyAssignSyntax>().Where(
-                                                         pa => pa.LvalueExpression?.MemberAccessExpression is ElementAccessExpressionSyntax mae &&
-                                                               mae.IdentifierName?.GetText() == "ColumnInfos"                                   &&
-                                                               pa.LvalueExpression?.LvalueExpressionContinuation?.LvalueExpression?.MemberAccessExpression is SimpleMemberAccessExpressionSyntax)
-                                                    .Select(pa => {
-                                                             var mae = (ElementAccessExpressionSyntax) pa.LvalueExpression?.MemberAccessExpression;
-                                                             var sae = ((SimpleMemberAccessExpressionSyntax) pa.LvalueExpression?.LvalueExpressionContinuation?.LvalueExpression?.MemberAccessExpression);
-                                                             return new {
-                                                                 Name       = sae.IdentifierName?.GetText(),
-                                                                 Value      = pa.Rvalue?.GetText() ?? String.Empty,
-                                                                 Index      = mae.IntegerToken.GetText(),
-                                                                 Extent     = pa.Extent,
-                                                                 FullExtent = pa.FullExtent
-                                                             };
-                                                         }
-                                                     ).GroupBy(item => item.Index);
-
-                    var columnOutlines = new List<OutlineElement>();
-                    foreach (var column in columnInfos) {
-
-                        var keyProperty     = column.FirstOrDefault(ci => ci.Name == "Key");
-                        var captionProperty = column.FirstOrDefault(ci => ci.Name == "Caption");
-                        var hiddenProperty  = column.FirstOrDefault(ci => ci.Name == "Hidden");
-
-                        if (keyProperty != null) {
-
-                            var displayParts = new List<ClassifiedText>(2);
-
-                            var hidden = hiddenProperty?.Value?.Trim('"').ToLowerInvariant() == "true";
-                            var glyph  = hidden ? Glyph.HiddenColumn : Glyph.Column;
-
-                            var caption = captionProperty?.Value;
-                            if (!caption.IsNullOrWhiteSpace()) {
-                                displayParts.Add(new ClassifiedText(caption, GdClassification.StringLiteral));
-                                displayParts.Add(WhiteSpace);
-                            }
-
-                            displayParts.Add(new ClassifiedText(keyProperty.Value.Trim('"'), GdClassification.Text));
-
-                            var extent          = keyProperty.FullExtent.MergeWithAdjacent(column.Select(c => c.FullExtent).ToList());
-                            var navigationPoint = keyProperty.Extent.Start;
-
-                            columnOutlines.Add(new OutlineElement(displayParts: displayParts.ToImmutableArray(),
-                                                                  extent: extent,
-                                                                  navigationPoint: navigationPoint,
-                                                                  glyph: glyph));
-                        }
-
-                    }
-
-                    columnOutlines.AddRange(contextMenuOutlines);
-                    return CreateSectionElement(controlSection, columnOutlines.ToImmutableArray());
-                }
-
+                var columnOutlines = CollectColumnOutlines(controlSection);
+                columnOutlines.AddRange(contextMenuOutlines);
+                return CreateSectionElement(controlSection, columnOutlines.ToImmutableArray());
             }
 
             if (controlSection.SectionBegin?.ControlTypeToken.GetText() == "UserControlReference") {
@@ -162,6 +115,64 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
                 return base.VisitControlSectionSyntax(controlSection);
             }
 
+        }
+
+        private static List<OutlineElement> CollectColumnOutlines(ControlSectionSyntax controlSection) {
+
+            var columnOutlines = new List<OutlineElement>();
+            if (controlSection.PropertiesSection != null) {
+                var columnInfos = controlSection.PropertiesSection.Properties.OfType<PropertyAssignSyntax>().Where(
+                                                     pa => pa.LvalueExpression?.MemberAccessExpression is ElementAccessExpressionSyntax mae &&
+                                                           mae.IdentifierName?.GetText() == "ColumnInfos"                                   &&
+                                                           pa.LvalueExpression?.LvalueExpressionContinuation?.LvalueExpression?.MemberAccessExpression is SimpleMemberAccessExpressionSyntax)
+                                                .Select(pa => {
+                                                         var mae = (ElementAccessExpressionSyntax)pa.LvalueExpression?.MemberAccessExpression;
+                                                         var sae = ((SimpleMemberAccessExpressionSyntax)pa.LvalueExpression?.LvalueExpressionContinuation?.LvalueExpression?.MemberAccessExpression);
+                                                         return new {
+                                                             Name       = sae.IdentifierName?.GetText(),
+                                                             Value      = pa.Rvalue?.GetText() ?? String.Empty,
+                                                             Index      = mae.IntegerToken.GetText(),
+                                                             Extent     = pa.Extent,
+                                                             FullExtent = pa.FullExtent
+                                                         };
+                                                     }
+                                                 ).GroupBy(item => item.Index);
+
+
+                foreach (var column in columnInfos) {
+
+                    var keyProperty     = column.FirstOrDefault(ci => ci.Name == "Key");
+                    var captionProperty = column.FirstOrDefault(ci => ci.Name == "Caption");
+                    var hiddenProperty  = column.FirstOrDefault(ci => ci.Name == "Hidden");
+
+                    if (keyProperty != null) {
+
+                        var displayParts = new List<ClassifiedText>(2);
+
+                        var hidden = hiddenProperty?.Value?.Trim('"').ToLowerInvariant() == "true";
+                        var glyph  = hidden ? Glyph.HiddenColumn : Glyph.Column;
+
+                        var caption = captionProperty?.Value;
+                        if (!caption.IsNullOrWhiteSpace()) {
+                            displayParts.Add(new ClassifiedText(caption, GdClassification.StringLiteral));
+                            displayParts.Add(WhiteSpace);
+                        }
+
+                        displayParts.Add(new ClassifiedText(keyProperty.Value.Trim('"'), GdClassification.Text));
+
+                        var extent          = keyProperty.FullExtent.MergeWithAdjacent(column.Select(c => c.FullExtent).ToList());
+                        var navigationPoint = keyProperty.Extent.Start;
+
+                        columnOutlines.Add(new OutlineElement(displayParts: displayParts.ToImmutableArray(),
+                                                              extent: extent,
+                                                              navigationPoint: navigationPoint,
+                                                              glyph: glyph));
+                    }
+
+                }
+            }
+
+            return columnOutlines;
         }
 
         protected internal override OutlineElement VisitBarManagerSectionSyntax(BarManagerSectionSyntax barManagerSection) {
