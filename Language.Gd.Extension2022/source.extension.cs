@@ -7,8 +7,8 @@ namespace Pharmatechnik.Language.Gd.Extension
 {
     internal sealed partial class Vsix
     {
-        public const string Id = "GDHighLighter..9155d4e6-f55c-421b-9013-e8b2cf33726f";
-        public const string Name = "GD Language Extensions 2019";
+        public const string Id = "GDHighLighter..9155d4e6-f55c-421b-9013-e8b2cf33726g";
+        public const string Name = "GD Language Extensions 2022";
         public const string Description = @"Support for the Pharmatechnik Gui Description Language like syntax highlighting and semantic analysis. ";
         public const string Language = "en-US";
         public const string Version = "2.2.0";

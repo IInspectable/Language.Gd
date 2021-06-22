@@ -1,0 +1,171 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<CommandTable xmlns="http://schemas.microsoft.com/VisualStudio/2005-10-18/CommandTable" xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <!--  This is the file that defines the actual layout and type of the commands.
+        It is divided in different sections (e.g. command definition, command
+        placement, ...), with each defining a specific set of properties.
+        See the comment before each section for more details about how to
+        use it. -->
+
+  <!--  The VSCT compiler (the tool that translates this file into the binary
+        format that VisualStudio will consume) has the ability to run a preprocessor
+        on the vsct file; this preprocessor is (usually) the C++ preprocessor, so
+        it is possible to define includes and macros with the same syntax used
+        in C++ files. Using this ability of the compiler here, we include some files
+        defining some of the constants that we will use inside the file. -->
+
+  <!--This is the file that defines the IDs for all the commands exposed by VisualStudio. -->
+  <Extern href="stdidcmd.h"/>
+
+  <!--This header contains the command ids for the menus provided by the shell. -->
+  <Extern href="vsshlids.h"/>
+
+  <Include href="KnownImageIds.vsct"/>
+
+
+  <!--The Commands section is where commands, menus, and menu groups are defined.
+      This section uses a Guid to identify the package that provides the command defined inside it. -->
+  <Commands package="GdLanguagePackageGuid">
+    <!-- Inside this section we have different sub-sections: one for the menus, another
+    for the menu groups, one for the buttons (the actual commands), one for the combos
+    and the last one for the bitmaps used. Each element is identified by a command id that
+    is a unique pair of guid and numeric identifier; the guid part of the identifier is usually
+    called "command set" and is used to group different command inside a logically related
+    group; your package should define its own command set in order to avoid collisions
+    with command ids defined by other packages. -->
+
+
+    <Menus>
+      <Menu guid="GdLanguagePackageCmdSetGuid" id="DocumentOutlineToolWindowToolbar"
+            type="ToolWindowToolbar">
+        <CommandFlag>DefaultDocked</CommandFlag>
+        <Strings>
+          <ButtonText>Gui Outline Toolbar</ButtonText>
+          <CommandName>Gui Outline Toolbar</CommandName>
+        </Strings>
+      </Menu>
+    </Menus>
+
+    <Groups>
+      <Group guid="GdLanguagePackageCmdSetGuid" id="ExpandCollapseGroup" priority="0">
+        <Parent guid="GdLanguagePackageCmdSetGuid" id="DocumentOutlineToolWindowToolbar" />
+      </Group>
+      <Group guid="GdLanguagePackageCmdSetGuid" id="GdToolsGroup" priority="1">
+        <Parent guid="GdLanguagePackageCmdSetGuid" id="DocumentOutlineToolWindowToolbar" />
+      </Group>
+    </Groups>
+
+    <!--Buttons section. -->
+    <!--This section defines the elements the user can interact with, like a menu command or a button
+        or combo box in a toolbar. -->
+    <Buttons>
+      <!--To define a menu group you have to specify its ID, the parent menu and its display priority.
+          The command is visible and enabled by default. If you need to change the visibility, status, etc, you can use
+          the CommandFlag node.
+          You can add more than one CommandFlag node e.g.:
+              <CommandFlag>DefaultInvisible</CommandFlag>
+              <CommandFlag>DynamicVisibility</CommandFlag>
+          If you do not want an image next to your command, remove the Icon node /> -->
+      <Button guid     = "GdLanguagePackageCmdSetGuid"
+              id       = "OutlineWindowShowId"
+              priority = "0x0100"
+              type     = "Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_VIEW_CODEBROWSENAV_WINDOWS" />
+        <Icon guid="ImageCatalogGuid" id="DocumentOutline" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <Strings>
+          <ButtonText>Gui Outl&amp;ine</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid     = "GdLanguagePackageCmdSetGuid"
+              id       = "OutlineWindowSearchId"
+              priority = "0x0101"
+              type     = "Button">
+        <Parent guid="guidSHLMainMenu" id="IDG_VS_WINDOW_NAVIGATION" />
+        <CommandFlag>CommandWellOnly</CommandFlag>
+        <Strings>
+          <ButtonText>Activate Gui Outline Search</ButtonText>
+        </Strings>
+      </Button>
+
+      <!-- Gui Outline Toolbar Buttons -->
+      <Button guid="GdLanguagePackageCmdSetGuid" id="OutlineWindowExpandAllId" priority="0" type="Button">
+        <Parent guid="GdLanguagePackageCmdSetGuid" id="ExpandCollapseGroup" />
+        <Icon guid="ImageCatalogGuid" id="ExpandAll" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Expand All</ButtonText>
+        </Strings>
+      </Button>
+
+      <Button guid="GdLanguagePackageCmdSetGuid" id="OutlineWindowCollapseAllId" priority="1" type="Button">
+        <Parent guid="GdLanguagePackageCmdSetGuid" id="ExpandCollapseGroup" />
+        <Icon guid="ImageCatalogGuid" id="CollapseAll" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Collapse All</ButtonText>
+        </Strings>
+      </Button> 
+
+      <Button guid="GdLanguagePackageCmdSetGuid" id="GdPreviewSelectionId" priority="0" type="Button">
+        <Parent guid="GdLanguagePackageCmdSetGuid" id="GdToolsGroup" />
+        <Icon guid="ImageCatalogGuid" id="SwitchToPreview" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Preview GUI</ButtonText>
+        </Strings>
+      </Button> 
+
+      <Button guid="GdLanguagePackageCmdSetGuid" id="GdGenerateSelectionId" priority="1" type="Button">
+        <Parent guid="GdLanguagePackageCmdSetGuid" id="GdToolsGroup" />
+        <Icon guid="ImageCatalogGuid" id="GenerateFile" />
+        <CommandFlag>IconIsMoniker</CommandFlag>
+        <CommandFlag>DefaultDisabled</CommandFlag>
+        <Strings>
+          <ButtonText>Generate GUI</ButtonText>
+        </Strings>
+      </Button> 
+      
+
+    </Buttons>
+
+
+  </Commands>
+
+  <KeyBindings>
+    <KeyBinding guid="GdLanguagePackageCmdSetGuid" id="OutlineWindowShowId" key1="w" mod1="Control" key2="i"
+                editor="guidVSStd97" />
+  </KeyBindings>
+
+  <Symbols>
+    <!-- This is the package guid. -->
+    <GuidSymbol name="GdLanguagePackageGuid" value="{ECAD3E41-42EA-49C5-BE56-4865B09C0FCD}" />
+
+    <!-- This is the guid used to group the menu commands together -->
+    <GuidSymbol name="GdLanguagePackageCmdSetGuid" value="{a6c3ace3-0816-4c80-943d-d043c438deb8}">
+      
+      <!-- Document Outline Toolbar-->
+      <IDSymbol name="DocumentOutlineToolWindowToolbar" value="0x1000" />
+
+      <!--Groups-->
+      <IDSymbol name="ExpandCollapseGroup" value="0x2000" />
+      <IDSymbol name="GdToolsGroup" value="0x2001" />
+
+      <!-- Command Ids-->
+      <IDSymbol name="OutlineWindowShowId" value="0x3000" />
+      <IDSymbol name="OutlineWindowSearchId" value="0x3001" />
+      <IDSymbol name="OutlineWindowExpandAllId" value="0x3002" />
+      <IDSymbol name="OutlineWindowCollapseAllId" value="0x3003" />
+
+
+      <IDSymbol name="GdGenerateSelectionId" value="0x3004" />
+      <IDSymbol name="GdPreviewSelectionId" value="0x3005" />
+
+    </GuidSymbol>
+
+  </Symbols>
+</CommandTable>
