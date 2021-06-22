@@ -24,7 +24,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Language.Core\Language.Core.csproj" />
-    <ProjectReference Include="..\Language.Gd.Extension\Language.Gd.Extension.csproj" />
+    <ProjectReference Include="..\Language.Gd.Extension2019\Language.Gd.Extension2019.csproj" />
     <ProjectReference Include="..\Language.Gd\Language.Gd.csproj" />
   </ItemGroup>
 

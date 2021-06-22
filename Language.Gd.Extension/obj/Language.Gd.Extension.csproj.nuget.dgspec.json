@@ -1,0 +1,215 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\ws\\git\\Language.Gd\\Language.Gd.Extension\\Language.Gd.Extension.csproj": {}
+  },
+  "projects": {
+    "C:\\ws\\git\\Language.Gd\\Language.Core\\Language.Core.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\ws\\git\\Language.Gd\\Language.Core\\Language.Core.csproj",
+        "projectName": "Pharmatechnik.Language.Core",
+        "projectPath": "C:\\ws\\git\\Language.Gd\\Language.Core\\Language.Core.csproj",
+        "packagesPath": "C:\\Users\\mnhaenel\\.nuget\\packages\\",
+        "outputPath": "C:\\ws\\git\\Language.Gd\\Language.Core\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\mnhaenel\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net472": {
+            "targetAlias": "net472",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net472": {
+          "targetAlias": "net472",
+          "dependencies": {
+            "System.Collections.Immutable": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            },
+            "System.Memory": {
+              "target": "Package",
+              "version": "[4.5.4, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.203\\RuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\ws\\git\\Language.Gd\\Language.Gd.Extension\\Language.Gd.Extension.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\ws\\git\\Language.Gd\\Language.Gd.Extension\\Language.Gd.Extension.csproj",
+        "projectName": "Language.Gd.Extension",
+        "projectPath": "C:\\ws\\git\\Language.Gd\\Language.Gd.Extension\\Language.Gd.Extension.csproj",
+        "packagesPath": "C:\\Users\\mnhaenel\\.nuget\\packages\\",
+        "outputPath": "C:\\ws\\git\\Language.Gd\\Language.Gd.Extension\\obj\\",
+        "projectStyle": "PackageReference",
+        "skipContentFileWrite": true,
+        "configFilePaths": [
+          "C:\\Users\\mnhaenel\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net472": {
+            "projectReferences": {
+              "C:\\ws\\git\\Language.Gd\\Language.Core\\Language.Core.csproj": {
+                "projectPath": "C:\\ws\\git\\Language.Gd\\Language.Core\\Language.Core.csproj"
+              },
+              "C:\\ws\\git\\Language.Gd\\Language.Gd\\Language.Gd.csproj": {
+                "projectPath": "C:\\ws\\git\\Language.Gd\\Language.Gd\\Language.Gd.csproj"
+              }
+            }
+          }
+        }
+      },
+      "frameworks": {
+        "net472": {
+          "dependencies": {
+            "Microsoft.CodeAnalysis.Analyzers": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[3.3.2, )"
+            },
+            "Microsoft.CodeAnalysis.EditorFeatures.Text": {
+              "target": "Package",
+              "version": "[3.8.0, )"
+            },
+            "Microsoft.VSSDK.BuildTools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[16.8.3038, )"
+            },
+            "Microsoft.VisualStudio.LanguageServices": {
+              "target": "Package",
+              "version": "[3.8.0, )"
+            },
+            "Microsoft.VisualStudio.SDK": {
+              "include": "Compile, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "target": "Package",
+              "version": "[16.0.206, )"
+            },
+            "Microsoft.VisualStudio.TextManager.Interop.16.0.DesignTime": {
+              "target": "Package",
+              "version": "[16.7.30328.74, )"
+            },
+            "NLog": {
+              "target": "Package",
+              "version": "[4.7.6, )"
+            },
+            "System.Reactive": {
+              "target": "Package",
+              "version": "[5.0.0, )"
+            }
+          }
+        }
+      },
+      "runtimes": {
+        "win": {
+          "#import": []
+        },
+        "win-x64": {
+          "#import": []
+        },
+        "win-x86": {
+          "#import": []
+        }
+      }
+    },
+    "C:\\ws\\git\\Language.Gd\\Language.Gd\\Language.Gd.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\ws\\git\\Language.Gd\\Language.Gd\\Language.Gd.csproj",
+        "projectName": "Pharmatechnik.Language.Gd",
+        "projectPath": "C:\\ws\\git\\Language.Gd\\Language.Gd\\Language.Gd.csproj",
+        "packagesPath": "C:\\Users\\mnhaenel\\.nuget\\packages\\",
+        "outputPath": "C:\\ws\\git\\Language.Gd\\Language.Gd\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files\\dotnet\\sdk\\NuGetFallbackFolder"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\mnhaenel\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net472"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net472": {
+            "targetAlias": "net472",
+            "projectReferences": {
+              "C:\\ws\\git\\Language.Gd\\Language.Core\\Language.Core.csproj": {
+                "projectPath": "C:\\ws\\git\\Language.Gd\\Language.Core\\Language.Core.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        }
+      },
+      "frameworks": {
+        "net472": {
+          "targetAlias": "net472",
+          "dependencies": {
+            "Antlr4": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[4.6.6, )"
+            },
+            "Antlr4.Runtime": {
+              "target": "Package",
+              "version": "[4.6.6, )"
+            },
+            "StringTemplate4": {
+              "target": "Package",
+              "version": "[4.0.8, )"
+            },
+            "System.Memory": {
+              "target": "Package",
+              "version": "[4.5.4, )"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\5.0.203\\RuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

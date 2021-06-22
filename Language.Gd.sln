@@ -24,7 +24,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "_build", "_build", "{1515F2
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Tool.GdSyntaxGenerator", "Tool.GdSyntaxGenerator\Tool.GdSyntaxGenerator.csproj", "{0DE4F6EF-0E82-4D25-BF59-BD321CB0985B}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Language.Gd.Extension", "Language.Gd.Extension\Language.Gd.Extension.csproj", "{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Language.Gd.Extension2019", "Language.Gd.Extension2019\Language.Gd.Extension2019.csproj", "{D3820422-2EB5-4AE5-A6ED-648B88A8EAB2}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Language.Gd.Extension.Tests", "Language.Gd.Extension.Tests\Language.Gd.Extension.Tests.csproj", "{C21B9D4B-9669-40B4-B798-6F37C411E993}"
 EndProject
@@ -33,7 +33,13 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		.editorconfig = .editorconfig
 	EndProjectSection
 EndProject
+Project("{D954291E-2A0B-460D-934E-DC6B0785DB48}") = "Language.Gd.ExtensionShared", "Language.Gd.ExtensionShared\Language.Gd.ExtensionShared.shproj", "{D1BEE92C-46AB-488D-8783-9031535F7D51}"
+EndProject
 Global
+	GlobalSection(SharedMSBuildProjectFiles) = preSolution
+		Language.Gd.ExtensionShared\Language.Gd.ExtensionShared.projitems*{d1bee92c-46ab-488d-8783-9031535f7d51}*SharedItemsImports = 13
+		Language.Gd.ExtensionShared\Language.Gd.ExtensionShared.projitems*{d3820422-2eb5-4ae5-a6ed-648b88a8eab2}*SharedItemsImports = 4
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU

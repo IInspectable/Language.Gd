@@ -16,8 +16,11 @@
 /Language.Gd.Cli/bin
 /Language.Gd.Cli/obj
 
-/Language.Gd.Extension/bin
-/Language.Gd.Extension/obj
+/Language.Gd.Extension2019/bin
+/Language.Gd.Extension2019/obj
+
+/Language.Gd.Extension2022/bin
+/Language.Gd.Extension2022/obj
 
 /Language.Gd.Extension.Tests/bin
 /Language.Gd.Extension.Tests/obj
