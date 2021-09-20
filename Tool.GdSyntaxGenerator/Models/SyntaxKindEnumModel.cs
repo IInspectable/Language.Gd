@@ -51,7 +51,7 @@ namespace Tool.GdSyntaxGenerator.Models {
 
         public string Namespace { get; }
 
-        public List<EnumMemberModel> EnumMembers { get; } = new List<EnumMemberModel>();
+        public List<EnumMemberModel> EnumMembers { get; } = new();
 
     }
 

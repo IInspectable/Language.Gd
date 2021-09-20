@@ -15,7 +15,7 @@ namespace Tool.GdSyntaxGenerator {
             Verify();
         }
 
-        public List<ParserRule> Rules { get; } = new List<ParserRule>();
+        public List<ParserRule> Rules { get; } = new();
 
         public void Verify() {
             foreach (var rule in Rules) {

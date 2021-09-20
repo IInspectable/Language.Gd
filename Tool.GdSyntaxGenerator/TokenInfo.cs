@@ -9,7 +9,7 @@ namespace Tool.GdSyntaxGenerator {
 
     class TokenInfo: AntlrV4GrammarBaseVisitor<string> {
 
-        public List<LexerRule> Tokens { get; } = new List<LexerRule>();
+        public List<LexerRule> Tokens { get; } = new();
 
         public TokenInfo(AntlrV4Grammar.GrammarSpecContext tree) {
 
@@ -67,23 +67,21 @@ namespace Tool.GdSyntaxGenerator {
 
         public static T SingleIfOnly<T>(this IEnumerable<T> source) where T : class {
 
-            using (var iter = source.GetEnumerator()) {
+            using var iter = source.GetEnumerator();
 
-                // Kein Element
-                if (!iter.MoveNext()) {
-                    return default;
-                }
-
-                var elem = iter.Current;
-
-                // Mehr als ein Element
-                if (iter.MoveNext()) {
-                    return null;
-                }
-
-                return elem;
-
+            // Kein Element
+            if (!iter.MoveNext()) {
+                return default;
             }
+
+            var elem = iter.Current;
+
+            // Mehr als ein Element
+            if (iter.MoveNext()) {
+                return null;
+            }
+
+            return elem;
 
         }
 

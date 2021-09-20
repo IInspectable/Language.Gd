@@ -26,7 +26,7 @@ namespace Tool.GdSyntaxGenerator {
         const string ModelAttributeName   = "model";
         const string ContextAttributeName = "context";
 
-        static readonly ThreadLocal<TemplateGroup> SyntaxKindEnumTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.SyntaxKindEnumTemplate));
+        static readonly ThreadLocal<TemplateGroup> SyntaxKindEnumTemplateGroup = new(() => LoadTemplateGroup(Resources.SyntaxKindEnumTemplate));
 
         public static string GenerateSyntaxKindEnum(SyntaxKindEnumModel model, CodeGeneratorContext context) {
 
@@ -36,7 +36,7 @@ namespace Tool.GdSyntaxGenerator {
             return content;
         }
 
-        static readonly ThreadLocal<TemplateGroup> SyntaxSlotTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.SyntaxSlotTemplate));
+        static readonly ThreadLocal<TemplateGroup> SyntaxSlotTemplateGroup = new(() => LoadTemplateGroup(Resources.SyntaxSlotTemplate));
 
         public static string GenerateSyntaxSlot(SlotModels models, CodeGeneratorContext context) {
 
@@ -46,7 +46,7 @@ namespace Tool.GdSyntaxGenerator {
             return content;
         }
 
-        static readonly ThreadLocal<TemplateGroup> SyntaxNodeTemplateGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.SyntaxNodeTemplate));
+        static readonly ThreadLocal<TemplateGroup> SyntaxNodeTemplateGroup = new(() => LoadTemplateGroup(Resources.SyntaxNodeTemplate));
 
         public static string GenerateSyntaxNode(SlotModels models, CodeGeneratorContext context) {
 
@@ -56,7 +56,7 @@ namespace Tool.GdSyntaxGenerator {
             return content;
         }
 
-        static readonly ThreadLocal<TemplateGroup> SyntaxSlotBuilderGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.SyntaxSlotBuilderTemplate));
+        static readonly ThreadLocal<TemplateGroup> SyntaxSlotBuilderGroup = new(() => LoadTemplateGroup(Resources.SyntaxSlotBuilderTemplate));
 
         public static string GenerateSyntaxSlotBuilder(SlotModels models, CodeGeneratorContext context) {
 
@@ -66,7 +66,7 @@ namespace Tool.GdSyntaxGenerator {
             return content;
         }
 
-        static readonly ThreadLocal<TemplateGroup> SyntaxVisitorGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.SyntaxVisitorTemplate));
+        static readonly ThreadLocal<TemplateGroup> SyntaxVisitorGroup = new(() => LoadTemplateGroup(Resources.SyntaxVisitorTemplate));
 
         public static string GenerateSyntaxVisitor(SlotModels models, CodeGeneratorContext context) {
 
@@ -76,7 +76,7 @@ namespace Tool.GdSyntaxGenerator {
             return content;
         }
 
-        static readonly ThreadLocal<TemplateGroup> SyntaxFactoryGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.SyntaxFactoryTemplate));
+        static readonly ThreadLocal<TemplateGroup> SyntaxFactoryGroup = new(() => LoadTemplateGroup(Resources.SyntaxFactoryTemplate));
 
         public static string GenerateSyntaxFactory(SlotModels models, CodeGeneratorContext context) {
 
@@ -86,7 +86,7 @@ namespace Tool.GdSyntaxGenerator {
             return content;
         }
 
-        static readonly ThreadLocal<TemplateGroup> SyntaxFactsGroup = new ThreadLocal<TemplateGroup>(() => LoadTemplateGroup(Resources.SyntaxFactsTemplate));
+        static readonly ThreadLocal<TemplateGroup> SyntaxFactsGroup = new(() => LoadTemplateGroup(Resources.SyntaxFactsTemplate));
 
         public static string GenerateSyntaxFacts(TokenModel model, CodeGeneratorContext context) {
 

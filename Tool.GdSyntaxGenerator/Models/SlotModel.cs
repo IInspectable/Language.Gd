@@ -71,7 +71,7 @@ namespace Tool.GdSyntaxGenerator.Models {
         public string BaseRuleName { get; }
         public string SyntaxKind   { get; }
 
-        public List<SlotMemberModel>        Slots       { get; } = new List<SlotMemberModel>();
+        public List<SlotMemberModel>        Slots       { get; } = new();
         public IEnumerable<SlotMemberModel> SyntaxSlots => Slots.Where(s => !s.IsToken);
         public IEnumerable<SlotMemberModel> TokenSlots  => Slots.Where(s => s.IsToken);
 

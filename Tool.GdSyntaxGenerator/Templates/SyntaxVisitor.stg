@@ -5,17 +5,17 @@ Begin(model, context) ::=<<
 
 namespace <model.Namespace> {
 
-	<writeSyntaxVisitor(model)>
+    <writeSyntaxVisitor(model)>
 
-	<writeSyntaxVisitorOfT(model)>
+    <writeSyntaxVisitorOfT(model)>
 }
 >>
 
 writeSyntaxVisitor(model)  ::=<<
 public abstract partial class SyntaxVisitor {
 
-	<writeAbstractSlots(model.AbstractSlots)>
-	<writeSlots(model.Slots)>
+    <writeAbstractSlots(model.AbstractSlots)>
+    <writeSlots(model.Slots)>
 }
 >>
 
@@ -32,13 +32,13 @@ protected internal virtual void Visit<abstractSlot.RuleName>Syntax(<abstractSlot
 
 writeSlots(slots) ::=<<
 <slots:writeSlot(); separator="\r\n">
-  
+
 >>
 
 writeSlot(slot) ::=<<
 
 protected internal virtual void Visit<slot.RuleName>Syntax(<slot.RuleName>Syntax <slot.RuleNameParameter>) {
-	<if(slot.BaseRuleName)>Visit<slot.BaseRuleName>Syntax<else>DefaultVisit<endif>(<slot.RuleNameParameter>);
+    <if(slot.BaseRuleName)>Visit<slot.BaseRuleName>Syntax<else>DefaultVisit<endif>(<slot.RuleNameParameter>);
 }
 
 >>
@@ -48,9 +48,9 @@ protected internal virtual void Visit<slot.RuleName>Syntax(<slot.RuleName>Syntax
 writeSyntaxVisitorOfT(model)  ::=<<
 public abstract partial class SyntaxVisitor\<TResult> {
 
-	
-	<writeAbstractSlotsOfT(model.AbstractSlots)>
-	<writeSlotsOfT(model.Slots)>
+
+    <writeAbstractSlotsOfT(model.AbstractSlots)>
+    <writeSlotsOfT(model.Slots)>
 }
 >>
 
@@ -67,13 +67,13 @@ protected internal virtual TResult Visit<abstractSlot.RuleName>Syntax(<abstractS
 
 writeSlotsOfT(slots) ::=<<
 <slots:writeSlotOfT(); separator="\r\n">
-  
+
 >>
 
 writeSlotOfT(slot) ::=<<
 
 protected internal virtual TResult Visit<slot.RuleName>Syntax(<slot.RuleName>Syntax <slot.RuleNameParameter>) {
-	return <if(slot.BaseRuleName)>Visit<slot.BaseRuleName>Syntax<else>DefaultVisit<endif>(<slot.RuleNameParameter>);
+    return <if(slot.BaseRuleName)>Visit<slot.BaseRuleName>Syntax<else>DefaultVisit<endif>(<slot.RuleNameParameter>);
 }
 
 >>

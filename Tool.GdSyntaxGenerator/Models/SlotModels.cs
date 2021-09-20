@@ -39,8 +39,8 @@ namespace Tool.GdSyntaxGenerator.Models {
         }
 
         public string                  Namespace     { get; }
-        public List<SlotModel>         Slots         { get; } = new List<SlotModel>();
-        public List<AbstractSlotModel> AbstractSlots { get; } = new List<AbstractSlotModel>();
+        public List<SlotModel>         Slots         { get; } = new();
+        public List<AbstractSlotModel> AbstractSlots { get; } = new();
 
     }
 

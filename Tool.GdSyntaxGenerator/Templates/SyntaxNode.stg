@@ -7,7 +7,7 @@ using JetBrains.Annotations;
 using Pharmatechnik.Language.Gd.Internal;
 
 namespace <model.Namespace> {
-   
+
     <writeAbstractSyntaxClasses(model.AbstractSlots)>
     <writeSyntaxClasses(model.Slots)>
 }
@@ -19,17 +19,17 @@ writeAbstractSyntaxClasses(abstractSlots) ::=<<
 
 writeAbstractSyntaxClass(abstractSlot) ::=<<
 public abstract partial class <abstractSlot.RuleName>Syntax: SyntaxNode {
-    
+
     internal <abstractSlot.RuleName>Syntax(
         SyntaxTree syntaxTree, 
         SyntaxSlot slot, 
         SyntaxNode parent,
-		int position)
+        int position)
 
         : base(syntaxTree: syntaxTree, 
                slot      : slot, 
                parent    : parent,
-			   position  : position) {
+               position  : position) {
 
     }
 
@@ -44,33 +44,33 @@ writeSyntaxClasses(slots) ::=<<
 
 writeSyntaxClass(slot) ::=<<
 public partial class <slot.RuleName>Syntax : <if(slot.BaseRuleName)><slot.BaseRuleName>Syntax<else>SyntaxNode<endif><if(slot.IsSection)>, ISectionSyntax<endif><if(slot.IsNamedSection)>, INamedSectionSyntax<endif> {
-    
+
     <writeSyntaxNodeFields(slot.SyntaxSlots)>
 
     internal <slot.RuleName>Syntax (
         SyntaxTree syntaxTree, 
         <slot.RuleName>SyntaxSlot slot, 
         SyntaxNode parent,
-		int position)
+        int position)
 
         : base(syntaxTree: syntaxTree, 
                slot      : slot, 
                parent    : parent,
-			   position  : position) {
+               position  : position) {
 
     }
-	
-	<writeSlotProperties(slot.Slots)>
 
-	<writeGetSyntaxNodeMethod(slot.Slots)>
+    <writeSlotProperties(slot.Slots)>
 
-	<writeGetCachedSyntaxNodeMethod(slot.Slots)>
+    <writeGetSyntaxNodeMethod(slot.Slots)>
 
-	<writeSectionSyntaxImplementation(slot)>
+    <writeGetCachedSyntaxNodeMethod(slot.Slots)>
 
-	<writeVisitorImplementation(slot)>
-	    
-	[NotNull]
+    <writeSectionSyntaxImplementation(slot)>
+
+    <writeVisitorImplementation(slot)>
+
+    [NotNull]
     internal new <slot.RuleName>SyntaxSlot Slot => (<slot.RuleName>SyntaxSlot) base.Slot;
 
 }
@@ -120,18 +120,18 @@ writeGetCachedSyntaxNodeMethod(slotModels) ::=<<
 
 [CanBeNull]
 private protected override SyntaxNode GetCachedSyntaxNode(int index) {
-	switch(index) {
-		<slotModels:writeGetCachedSyntaxNodeCase(); anchor>
-		default:
-			return null;
-	}
+    switch(index) {
+        <slotModels:writeGetCachedSyntaxNodeCase(); anchor>
+        default:
+            return null;
+    }
 }
 >>
 
 writeGetCachedSyntaxNodeCase(slotModel) ::=<<
 <if(slotModel.IsSyntaxNode)>
 case <slotModel.SlotIndex>:
-	return <slotModel.FieldName>;<endif>
+    return <slotModel.FieldName>;<endif>
 >>
 
 // GetSyntaxNodeMethod
@@ -140,18 +140,18 @@ writeGetSyntaxNodeMethod(slotModels) ::=<<
 
 [CanBeNull]
 internal override SyntaxNode GetSyntaxNode(int index) {
-	switch(index) {
-		<slotModels:writeGetSyntaxNodeCase(); anchor>
-		default:
-			return null;
-	}
+    switch(index) {
+        <slotModels:writeGetSyntaxNodeCase(); anchor>
+        default:
+            return null;
+    }
 }
 >>
 
 writeGetSyntaxNodeCase(slotModel) ::=<<
 <if(slotModel.IsSyntaxNode)>
 case <slotModel.SlotIndex>:
-	return GetSyntaxNode(ref <slotModel.FieldName>, Slot.<slotModel.PropertyName>, index: <slotModel.SlotIndex>);<endif>
+    return GetSyntaxNode(ref <slotModel.FieldName>, Slot.<slotModel.PropertyName>, index: <slotModel.SlotIndex>);<endif>
 >>
 
 writeSectionSyntaxImplementation(slot) ::=<<
@@ -178,10 +178,10 @@ SyntaxToken? INamedSectionSyntax.NameEnd   => SectionEnd?.<slot.NamedSectionIden
 
 writeVisitorImplementation(slot) ::=<<
 public override void Accept(SyntaxVisitor visitor) {
-	visitor.Visit<slot.RuleName>Syntax(this);
+    visitor.Visit<slot.RuleName>Syntax(this);
 }
 
 public override TResult Accept\<TResult>(SyntaxVisitor\<TResult> visitor) {
-	return visitor.Visit<slot.RuleName>Syntax(this);
+    return visitor.Visit<slot.RuleName>Syntax(this);
 }
 >>

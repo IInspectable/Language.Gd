@@ -32,7 +32,7 @@ abstract partial class <abstractSlot.RuleName>SyntaxSlot: SyntaxSlot {
 
 writeSlots(slots) ::=<<
 <slots:writeSlot(); separator="\r\n">
-  
+
 >>
 
 writeSlot(slot) ::=<<
@@ -47,12 +47,12 @@ partial class <slot.RuleName>SyntaxSlot: <if(slot.BaseRuleName)><slot.BaseRuleNa
 
     <writeProperties(slot.Slots)>
 
-	<writeSlotMethod(slot.Slots)>
+    <writeSlotMethod(slot.Slots)>
 
     public override SyntaxNode Realize(
         SyntaxTree syntaxTree,
         SyntaxNode parent,
-		int position) {
+        int position) {
 
         return new <slot.RuleName>Syntax(syntaxTree, this, parent, position);
     }
@@ -127,16 +127,16 @@ public override int SlotCount => <slotModels.Count>;
 
 [CanBeNull]
 public override Slot GetSlot(int index) {
-	switch(index) {
-		<slotModels:writeSlotCase(); anchor, separator="\r\n">
-		default:
-			return null;
-	}
+    switch(index) {
+        <slotModels:writeSlotCase(); anchor, separator="\r\n">
+        default:
+            return null;
+    }
 }
 >>
 
 writeSlotCase(slotModel) ::=<<
 case <slotModel.SlotIndex>:
-	return <slotModel.PropertyName><if(slotModel.IsToken)>Token<else><endif>;
+    return <slotModel.PropertyName><if(slotModel.IsToken)>Token<else><endif>;
 >>
 

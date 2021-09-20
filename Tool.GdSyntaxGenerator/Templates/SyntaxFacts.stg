@@ -6,10 +6,10 @@ Begin(model, context) ::=<<
 
 namespace <model.Namespace> {
 
-	public static partial class SyntaxFacts {
+    public static partial class SyntaxFacts {
 
-		<model.TokenInfo.Tokens:writeTokenProperty()>
-	}
+        <model.TokenInfo.Tokens:writeTokenProperty()>
+    }
 }
 >>
 

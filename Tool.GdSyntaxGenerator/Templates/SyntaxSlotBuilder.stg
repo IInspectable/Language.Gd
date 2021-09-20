@@ -9,8 +9,8 @@ namespace <model.Namespace>.Antlr {
    
     partial class GdSyntaxSlotBuilder: GdGrammarBaseVisitor\<SyntaxSlot> {
 
-		<writeVisitMethods(model.Slots)>
-	}
+        <writeVisitMethods(model.Slots)>
+    }
 }
 >>
 
@@ -20,9 +20,9 @@ writeVisitMethods(syntaxSlots) ::=<<
 
 writeVisitMethod(syntaxSlot) ::=<<
 public override SyntaxSlot Visit<syntaxSlot.RuleName>([CanBeNull] GdGrammar.<syntaxSlot.RuleName>Context context) {
-	return new <syntaxSlot.RuleName>SyntaxSlot(
-		<writeParameterList(syntaxSlot.Slots)>
-	);
+    return new <syntaxSlot.RuleName>SyntaxSlot(
+        <writeParameterList(syntaxSlot.Slots)>
+    );
 }
 
 >>
