@@ -17,6 +17,11 @@
   &lt;Assembly Path="C:\Program Files (x86)\Microsoft Visual Studio\2019\Enterprise\Common7\IDE\PublicAssemblies\Microsoft.VisualStudio.Shell.15.0.dll" /&gt;&#xD;
   &lt;Assembly Path="C:\Users\mnhaenel\.nuget\packages\microsoft.visualstudio.shell.15.0\16.0.28729\lib\net45\Microsoft.VisualStudio.Shell.15.0.dll" /&gt;&#xD;
 &lt;/AssemblyExplorer&gt;</s:String>
+	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=24519278_002D9c4e_002D4f35_002Da495_002D2bbbcbcd7c87/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" IsActive="True" Name="SourceTextTests" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
+  &lt;TestAncestor&gt;&#xD;
+    &lt;TestId&gt;NUnit3x::375AA745-DD12-4F36-A6A4-22A303BE7A87::.NETFramework,Version=v4.7.2::Pharmatechnik.Language.Core.Tests.SourceTextTests&lt;/TestId&gt;&#xD;
+  &lt;/TestAncestor&gt;&#xD;
+&lt;/SessionState&gt;</s:String>
 	<s:String x:Key="/Default/Environment/UnitTesting/UnitTestSessionStore/Sessions/=df565c04_002Dcca6_002D4116_002Dbdea_002Deaff3e76cb0a/@EntryIndexedValue">&lt;SessionState ContinuousTestingMode="0" Name="All tests from &amp;lt;Language.Gd.Tests&amp;gt;" xmlns="urn:schemas-jetbrains-com:jetbrains-ut-session"&gt;&#xD;
   &lt;Project Location="C:\ws\git\Language.Gd\Language.Gd.Tests" Presentation="&amp;lt;Language.Gd.Tests&amp;gt;" /&gt;&#xD;
 &lt;/SessionState&gt;</s:String></wpf:ResourceDictionary>
