@@ -33,7 +33,7 @@ namespace Pharmatechnik.Language.Gd {
 
             // TODO Hier die References auslesen.. Idealerweise über das Model, nicht den Syntaxbaum...
             var refs = _desc.DescendantNodes().OfType<ControlSectionSyntax>().Where(cs => cs.ControlSectionBegin?.ControlTypeToken.GetText() == "UserControlReference")
-                            .Select(cs => new {TypeFullName = "Foo"});
+                            .Select(_ => new { TypeFullName = "Foo" });
 
             foreach (var reference in refs) {
 
@@ -58,6 +58,7 @@ namespace Pharmatechnik.Language.Gd {
                 fileName = newFile;
                 return true;
             }
+
             return false;
         }
 
@@ -108,7 +109,7 @@ namespace Pharmatechnik.Language.Gd {
         }
 
         private static bool FindInDirectory(string suggestedPath, string pattern, ref string newFile, SearchOption searchOption) {
-           
+
             if (TryFind(pattern, searchOption, suggestedPath, ref newFile))
                 return true;
 
@@ -122,9 +123,9 @@ namespace Pharmatechnik.Language.Gd {
         }
 
         private static bool TryFind(string pattern, SearchOption searchOption, string suggestedPath, ref string newFile) {
-            
+
             var files = Directory.GetFiles(suggestedPath, pattern, searchOption);
-            
+
             if (files.Length == 1) {
                 newFile = files[0];
                 return true;
@@ -151,7 +152,7 @@ namespace Pharmatechnik.Language.Gd {
 
         public List<string> GetSuggestedPaths() => GetFileSuggestions(ContainingGdFileName, ReferenceTypeName);
 
-        static List<string> GetFileSuggestions(string containingGdFileName, string referenceTypeName) {
+        List<string> GetFileSuggestions(string containingGdFileName, string referenceTypeName) {
 
             var subFolder = referenceTypeName.Replace("Pharmatechnik.Apotheke.XTplus", "");
 
@@ -167,74 +168,113 @@ namespace Pharmatechnik.Language.Gd {
 
             subFolder = subFolder.Remove(subFolder.LastIndexOf(".GUI.", StringComparison.Ordinal), subFolder.Length - subFolder.LastIndexOf(".GUI.", StringComparison.Ordinal));
 
-            var subFolders = new List<string>(subFolder.Split(new[] {'.'}, StringSplitOptions.RemoveEmptyEntries));
+            var subFolders = new List<string>(subFolder.Split(new[] { '.' }, StringSplitOptions.RemoveEmptyEntries));
 
-            var results = new List<string>();
+            List<string> results = new List<string>();
 
-            //Standard-Strategy
-            var foldersCloned = new List<string>(subFolders);
-            AddSuggestions(foldersCloned, results, startDir);
-
-            //Umlaute Variante1
-            foldersCloned = new List<string>(subFolders);
-            for (var i = 0; i < foldersCloned.Count; i++) {
-                foldersCloned[i] = UmlautConverter.ConvertUmlaute(foldersCloned[i]);
-
-            }
-
-            AddSuggestions(foldersCloned, results, startDir);
-
-            //Umlaute Variante2
-            foldersCloned = new List<string>(subFolders);
-            for (var i = 0; i < foldersCloned.Count; i++) {
-                foldersCloned[i] = UmlautConverter.ReverseUmlaute(foldersCloned[i]);
-
-            }
-
-            AddSuggestions(foldersCloned, results, startDir);
-
-            //XTplus. in added
-            foldersCloned    = new List<string>(subFolders);
-            foldersCloned[0] = "XTplus." + foldersCloned[0];
-            AddSuggestions(foldersCloned, results, startDir);
+            List<string> foldersUmlaut1;
+            StandardStrategy();
+            StandardStrategy(true);
+            UmlautStrategie1();
+            UmlautStrategie1(true);
+            UmlautStrategie2();
+            UmlautStrategie2(true);
+            XTPlusStrategie();
+            XTPlusStrategie(true);
 
             //erste zwei mit '.' verbinden
-            AddSuggestionsViaCombining(2, subFolders, results, startDir, xtplusprefix: false);
+            AddSuggestionsViaCombining(2, subFolders, results, startDir);
+            AddSuggestionsViaCombining(2, subFolders, results, startDir, false, true);
             //"xtplus." als prefix
-            AddSuggestionsViaCombining(2, subFolders, results, startDir, xtplusprefix: true);
+            AddSuggestionsViaCombining(2, subFolders, results, startDir, true);
+            AddSuggestionsViaCombining(2, subFolders, results, startDir, true, true);
 
             //erste drei mit '.' verbinden
-            AddSuggestionsViaCombining(3, subFolders, results, startDir, xtplusprefix: false);
+            AddSuggestionsViaCombining(3, subFolders, results, startDir);
+            AddSuggestionsViaCombining(3, subFolders, results, startDir, false, true);
             //"xtplus." als prefix
-            AddSuggestionsViaCombining(3, subFolders, results, startDir, xtplusprefix: true);
+            AddSuggestionsViaCombining(3, subFolders, results, startDir, true);
+            AddSuggestionsViaCombining(3, subFolders, results, startDir, true, true);
 
             //erste vier mit '.' verbinden
-            AddSuggestionsViaCombining(4, subFolders, results, startDir, xtplusprefix: false);
+            AddSuggestionsViaCombining(4, subFolders, results, startDir);
+            AddSuggestionsViaCombining(4, subFolders, results, startDir, false, true);
             //"xtplus." als prefix
-            AddSuggestionsViaCombining(4, subFolders, results, startDir, xtplusprefix: true);
+            AddSuggestionsViaCombining(4, subFolders, results, startDir, true);
+            AddSuggestionsViaCombining(4, subFolders, results, startDir, true, true);
 
             return results;
+
+            void StandardStrategy(bool shared = false) {
+                //Standard-Strategy
+                var foldersStandard = new List<string>(subFolders);
+                if (shared) {
+                    foldersStandard[0] += ".Shared";
+                }
+
+                AddSuggestions(foldersStandard, results, startDir);
+            }
+
+            void UmlautStrategie1(bool shared = false) {
+                //Umlaute Variante1
+                foldersUmlaut1 = new List<string>(subFolders);
+                if (shared) {
+                    foldersUmlaut1[0] += ".Shared";
+                }
+
+                for (int i = 0; i < foldersUmlaut1.Count; i++) {
+                    foldersUmlaut1[i] = Converter.ConvertUmlaute(foldersUmlaut1[i]);
+                }
+
+                AddSuggestions(foldersUmlaut1, results, startDir);
+            }
+
+            void UmlautStrategie2(bool shared = false) {
+                //Umlaute Variante2
+                foldersUmlaut1 = new List<string>(subFolders);
+                if (shared) {
+                    foldersUmlaut1[0] += ".Shared";
+                }
+
+                for (int i = 0; i < foldersUmlaut1.Count; i++) {
+                    foldersUmlaut1[i] = Converter.ReverseUmlaute(foldersUmlaut1[i]);
+                }
+
+                AddSuggestions(foldersUmlaut1, results, startDir);
+            }
+
+            void XTPlusStrategie(bool shared = false) {
+                //XTplus. in added
+                foldersUmlaut1    = new List<string>(subFolders);
+                foldersUmlaut1[0] = "XTplus." + foldersUmlaut1[0];
+                if (shared) {
+                    foldersUmlaut1[0] += ".Shared";
+                }
+
+                AddSuggestions(foldersUmlaut1, results, startDir);
+            }
         }
 
-        static void AddSuggestionsViaCombining(
-            int combine,
-            List<string> subFolders,
-            List<string> results, string startDir,
-            bool xtplusprefix) {
+        private void AddSuggestionsViaCombining(int combine, List<string> subFolders, List<string> results, string startDir, bool xtplusprefix, bool shared = false) {
 
             if (subFolders.Count >= combine) {
-                var foldersCloned  = new List<string>();
-                var combinedFolder = subFolders[0];
-                for (var c = 1; c < combine; c++) {
+                List<string> foldersCloned  = new List<string>();
+                string       combinedFolder = subFolders[0];
+                for (int c = 1; c < combine; c++) {
                     combinedFolder += $".{subFolders[c]}";
                 }
 
                 //combine-Anzahl zusammenfassen
-                foldersCloned.Add(combinedFolder);
+                if (shared) {
+                    foldersCloned.Add(combinedFolder + ".Shared");
+                } else {
+                    foldersCloned.Add(combinedFolder);
+                }
 
                 //nach combine-Anzahl weitermachen
-                for (var i = combine; i < subFolders.Count; i++)
+                for (int i = combine; i < subFolders.Count; i++) {
                     foldersCloned.Add(subFolders[i]);
+                }
 
                 if (xtplusprefix) {
                     foldersCloned[0] = "XTplus." + foldersCloned[0];
@@ -242,6 +282,10 @@ namespace Pharmatechnik.Language.Gd {
 
                 AddSuggestions(foldersCloned, results, startDir);
             }
+        }
+
+        private void AddSuggestionsViaCombining(int combine, List<string> subFolders, List<string> results, string startDir) {
+            AddSuggestionsViaCombining(combine, subFolders, results, startDir, false);
         }
 
         static void AddSuggestions(List<string> subFolders, List<string> results, string startDir) {
@@ -283,6 +327,55 @@ namespace Pharmatechnik.Language.Gd {
 
         public static string ReverseUmlaute(string text) {
             return text.Replace("ae", "ä").Replace("ue", "ü").Replace("oe", "ö").Replace("Ae", "Ä").Replace("Ue", "Ü").Replace("Oe", "Ö");
+        }
+
+    }
+
+    internal class Converter {
+
+        public static string ConvertUmlaute(string text) {
+            return text.Replace("ä", "ae").Replace("ü", "ue").Replace("ö", "oe").Replace("Ä", "Ae").Replace("Ü", "Ue").Replace("Ö", "Oe");
+        }
+
+        public static string ReverseUmlaute(string text) {
+            return text.Replace("ae", "ä").Replace("ue", "ü").Replace("oe", "ö").Replace("Ae", "Ä").Replace("Ue", "Ü").Replace("Oe", "Ö");
+        }
+
+    }
+
+    class ImplicitPathAnalyser {
+
+        public DirectoryInfo ProjectRootDirectory { get; }
+        public DirectoryInfo UiRootDirectory      { get; }
+        public DirectoryInfo IwflRootDirectory    { get; }
+
+        public bool IsSharedProject => ProjectRootDirectory?.FullName.EndsWith(".Shared") ?? false;
+
+        public ImplicitPathAnalyser(string fileNameOrPath) {
+
+            DirectoryInfo dir = new DirectoryInfo(fileNameOrPath);
+            while (dir.Parent != null) {
+
+                if (dir.Parent.Name == "src") {
+                    ProjectRootDirectory = dir;
+                    break;
+                }
+
+                dir = dir.Parent;
+            }
+
+            if (ProjectRootDirectory == null) {
+                return;
+            }
+
+            if (IsSharedProject) {
+                UiRootDirectory   = new DirectoryInfo(ProjectRootDirectory.FullName.Replace(".Shared", ".Client"));
+                IwflRootDirectory = ProjectRootDirectory;
+            } else {
+                //Default-Generierung
+                ProjectRootDirectory = null;
+            }
+
         }
 
     }
