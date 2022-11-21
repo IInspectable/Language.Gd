@@ -339,8 +339,10 @@ namespace Pharmatechnik.Language.Gd.DocumentOutline {
 
                 // TODO: Entweder via Visitor abfrühstücken, oder per Semantic Model
                 var textCandidate = controlBeginSection.ControlTypeToken.GetText() == "Label"                 ||
+                                    controlBeginSection.ControlTypeToken.GetText() == "DynamicLabel"          ||
                                     controlBeginSection.ControlTypeToken.GetText() == "DynamicFunctionButton" ||
                                     controlBeginSection.ControlTypeToken.GetText() == "FunctionButton"        ||
+                                    controlBeginSection.ControlTypeToken.GetText() == "Radiobutton"           ||
                                     controlBeginSection.ControlTypeToken.GetText() == "Button";
 
                 if (textCandidate &&
